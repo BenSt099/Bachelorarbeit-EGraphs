@@ -16,4 +16,4 @@ Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgan
 
 ## License
 
-This project is licensed under MIT License. For more information, please click [here](https://github.com/BenSt099/Bachelorarbeit-EGraphs/blob/main/LICENSE). Das Icon im Logo stammt von [Bootstrap](https://icons.getbootstrap.com/icons/tools/).
+Dieses Projekt wird unter der **MIT License** veröffentlicht. Für weiterführende Informationen klicken Sie bitte [hier](https://github.com/BenSt099/Bachelorarbeit-EGraphs/blob/main/LICENSE). Das Icon im Logo wurde aus dem Framework [Bootstrap](https://icons.getbootstrap.com/icons/tools/) genommen.
