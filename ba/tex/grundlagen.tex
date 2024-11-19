@@ -1,0 +1,34 @@
+\section{Grundlagen}\label{sec:grundlagen}
+
+
+\subsection{Äquivalenzrelation}
+
+Eine Äquivalenzrelation beschreibt eine Gleichwertigkeit zwischen Objekten, die folgende Eigenschaften erfüllen muss~\cite{Ehrig2001}:
+
+\begin{itemize}
+  \item \textbf{Reflexivität} Das Objekt ist gleichwertig zu sich selbst.
+  \item \textbf{Symmetrie} Wenn Objekt $a$ zu Objekt $b$ gleichwertig ist, gilt das auch andersherum.
+  \item \textbf{Transitivität} Wenn Objekt $a$ zu Objekt $b$ gleichwertig ist, und Objekt $b$ zu Objekt $c$, dann gilt auch, dass $a$ zu $c$ gleichwertig ist.
+\end{itemize}
+
+Als Beispiel dienen hier Schuhe verschiedener Marken. Zwei Schuhe $a, b$ sind bzgl. ihrer Größe äquivalent, wenn sie dieselbe Schuhgröße haben. 
+
+\subsection{Äquivalenzklasse}
+
+Eine Äquivalenzrelation teilt eine Menge von Objekten in Äquivalenzklassen klein, in denen die Objekte jeweils die drei oben genannten Eigenschaften erfüllen~\cite{Ehrig2001}.
+Die Schuhe werden also bzgl. ihrer Größe in die Äquivalenzklassen \textit{Schuhgröße} eingeteilt.
+
+\subsection{E-Graphs}
+
+
+Es gibt verschiedene Implementierungsmöglichkeiten für E-Graphs. Die hier benutzte stammt aus dem Paper~\cite{2021-egg}.
+Ein E-Graph ist ein Tuple $(\mathbf{U}, \mathbf{M}, \mathbf{H})$ mit folgenden Definitionen:
+
+\begin{itemize}
+  \item $\mathbf{U}$ Eine Union-Find-Datenstruktur, die eine Äquivalenzrelation über e-IDs abspeichert.
+  \item $\mathbf{M}$ Eine (Hash)-map, die IDs von e-Klassen auf e-Klassen abbildet. 
+  \item $\mathbf{H}$ Eine (Hashcons)-map, die e-Nodes auf IDs von e-Klassen abbildet.
+\end{itemize}
+
+\subsection{Equality Saturation}
+

@@ -1,3 +1,16 @@
+\input{tex/einleitung.tex}
+
+\input{tex/grundlagen.tex}
+
+\input{tex/entwicklung.tex}
+
+\input{tex/architektur.tex}
+
+\input{tex/entscheidungen_und_probleme.tex}
+
+\input{tex/zusammenfassung.tex}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Diese Datei beinhaltet den eigentlichen Inhalt Ihrer Arbeit.
 %
@@ -17,128 +30,94 @@
 %     +- thesis.tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Einleitung}
+% Dies ist der Hauptteil Ihrer Arbeit.
+% In der Datei \texttt{references.bib} finden Sie bereits einige Quellen,
+% die Sie wahrscheinlich zitieren mögen,
+% wie z.B. die B Methode~\cite{abrial1996b,abrial2010modeling}
+% oder \textsc{ProB}~\cite{leuschel2003prob,leuschel2008prob}.
+% Beachten Sie den Artikel ``Common Errors in Bibliographies'' von John Owens.%
+% \footnote{\url{https://www.ece.ucdavis.edu/~jowens/biberrors.html}}
 
-Dies ist der Hauptteil Ihrer Arbeit.
-In der Datei \texttt{references.bib} finden Sie bereits einige Quellen,
-die Sie wahrscheinlich zitieren mögen,
-wie z.B. die B Methode~\cite{abrial1996b,abrial2010modeling}
-oder \textsc{ProB}~\cite{leuschel2003prob,leuschel2008prob}.
-Beachten Sie den Artikel ``Common Errors in Bibliographies'' von John Owens.%
-\footnote{\url{https://www.ece.ucdavis.edu/~jowens/biberrors.html}}
+%\cref{sec:figures,sec:tables}
+%geben je ein kurzes Beispiel,
+%wie Bilder bzw. Tabellen in \LaTeX{} erstellt werden.
+%\cref{sec:plot} zeigt die Einbindung eines Graphen.
 
-\cref{sec:figures,sec:tables}
-geben je ein kurzes Beispiel,
-wie Bilder bzw. Tabellen in \LaTeX{} erstellt werden.
-\cref{sec:plot} zeigt die Einbindung eines Graphen.
-
-
-\subsection{Motivation}
-
-\subsection{Ziel der Arbeit}
-
-\subsection{Aufbau der Arbeit}
+% Im Wurzelverzeichnis finden Sie ein \texttt{Makefile}.
+% Über das Terminal können Sie die folgenden Befehle aufrufen:
 
 
-
-
-Im Wurzelverzeichnis finden Sie ein \texttt{Makefile}.
-Über das Terminal können Sie die folgenden Befehle aufrufen:
-
-
-\begin{tabularx}{\textwidth}{lX}
-  \toprule
-  \texttt{make} & Kompiliert das PDF und löscht aux-Files. \\
-  \texttt{make clean} & Löscht das PDF und dazugehörige aux-Files. \\
-  \texttt{make bibtool} & Sortiert \texttt{references.bib}
-  und formatiert die Einträge einheitlich. \\
-  \texttt{make watch} & Rekompiliert das PDF bei Änderungen und
-  hält die Anzeige in Ihrem PDF-Betrachter aktuell. \\
-  \bottomrule
-\end{tabularx}
-
-\subsection{Verwandte Arbeiten}
+% \begin{tabularx}{\textwidth}{lX}
+%   \toprule
+%   \texttt{make} & Kompiliert das PDF und löscht aux-Files. \\
+%   \texttt{make clean} & Löscht das PDF und dazugehörige aux-Files. \\
+%   \texttt{make bibtool} & Sortiert \texttt{references.bib}
+%   und formatiert die Einträge einheitlich. \\
+%   \texttt{make watch} & Rekompiliert das PDF bei Änderungen und
+%   hält die Anzeige in Ihrem PDF-Betrachter aktuell. \\
+%   \bottomrule
+% \end{tabularx}
 
 
 
-\section{Grundlagen}
 
-\subsection{Mathematische Grundlagen}
+% \subsection{Bilder}%
+% \label{sec:figures}
 
-\subsection{E-Graphs}
+% \begin{figure}[h]
+%   \includegraphics[width=4cm]{fig/the.png}
+%   \caption{Initial thesis draft.}%
+%   \label{fig:initial-draft}
+% \end{figure}
 
-\subsection{Equality Saturation}
-
-
-
-\subsection{Bilder}%
-\label{sec:figures}
-
-\begin{figure}[h]
-  \includegraphics[width=4cm]{fig/the.png}
-  \caption{Initial thesis draft.}%
-  \label{fig:initial-draft}
-\end{figure}
-
-In \cref{fig:initial-draft} ist festgehalten,
-wie alles angefangen hat.
+% In \cref{fig:initial-draft} ist festgehalten,
+% wie alles angefangen hat.
 
 
-\subsection{Tabellen}%
-\label{sec:tables}
+% \subsection{Tabellen}%
+% \label{sec:tables}
 
-\cref{table:truths} fasst die Wahrheiten dieser Welt zusammen.
+% \cref{table:truths} fasst die Wahrheiten dieser Welt zusammen.
 
-\begin{table}[ht]
-  \begin{center}
-    \begin{tabular}{lr}
-      \toprule
-      Fakt                                & Wahrheitsgehalt \\
-      \midrule
-      booktabs Tabellen sind hübscher     & 90 \%           \\
-      Han Solo schoss zuerst              & 100 \%          \\
-      Game of Thrones fand ein gutes Ende & 0 \%            \\
-      \bottomrule
-    \end{tabular}
-    \caption{Table of truths.}%
-    \label{table:truths}
-  \end{center}
-\end{table}
+% \begin{table}[ht]
+%   \begin{center}
+%     \begin{tabular}{lr}
+%       \toprule
+%       Fakt                                & Wahrheitsgehalt \\
+%       \midrule
+%       booktabs Tabellen sind hübscher     & 90 \%           \\
+%       Han Solo schoss zuerst              & 100 \%          \\
+%       Game of Thrones fand ein gutes Ende & 0 \%            \\
+%       \bottomrule
+%     \end{tabular}
+%     \caption{Table of truths.}%
+%     \label{table:truths}
+%   \end{center}
+% \end{table}
 
-\subsection{Plots}%
-\label{sec:plot}
+% \subsection{Plots}%
+% \label{sec:plot}
 
-Sie können mithilfe von \texttt{tikz} und \texttt{pgfplots}
-ganz leicht Graphen erstellen:
+% Sie können mithilfe von \texttt{tikz} und \texttt{pgfplots}
+% ganz leicht Graphen erstellen:
 
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}
-    \begin{axis}
-      \foreach \y in {0,0.1,...,1} % Wiederholt \addplot mit jeweils anderem \y
-        \addplot coordinates {
-            ( 1, 3.0 -\y)
-            ( 2, 3.25-\y)
-            ( 3, 3.5 -\y)
-            ( 4, 3.75-\y)
-            ( 5, 4.0 -\y)
-          };
-    \end{axis}
-  \end{tikzpicture}
-  \caption{A beautiful plot.}%
-  \label{fig:the-plot}
-\end{figure}
+% \begin{figure}[ht]
+%   \centering
+%   \begin{tikzpicture}
+%     \begin{axis}
+%       \foreach \y in {0,0.1,...,1} % Wiederholt \addplot mit jeweils anderem \y
+%         \addplot coordinates {
+%             ( 1, 3.0 -\y)
+%             ( 2, 3.25-\y)
+%             ( 3, 3.5 -\y)
+%             ( 4, 3.75-\y)
+%             ( 5, 4.0 -\y)
+%           };
+%     \end{axis}
+%   \end{tikzpicture}
+%   \caption{A beautiful plot.}%
+%   \label{fig:the-plot}
+% \end{figure}
 
-\section{Entwicklung}
-
-
-\section{Architektur}
-
-
-\section{Entscheidungen}
-
-
-\section{Zusammenfassung}
-
-Am Ende der Arbeit werden noch einmal die erreichten Ergebnisse
-zusammengefasst und diskutiert.
+% Am Ende der Arbeit werden noch einmal die erreichten Ergebnisse
+% zusammengefasst und diskutiert.
