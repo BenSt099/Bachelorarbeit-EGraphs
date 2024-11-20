@@ -2,7 +2,18 @@
 
 \subsection{Motivation}
 
-%~\cite{phaseorder-2009}
+\noindent Die Abkürzung \textit{E-Graphs} steht für \textit{Equality-} oder \textit{Equivalence-}Graphs und beschreibt eine Datenstruktur, die es
+ erlaubt, äquivalente (mathematische) Ausdrücke kompakt abzuspeichern, indem
+Äquivalenzklassen der Ausdrücke abgespeichert werden. Die Äquivalenzrelation ist dabei kongruent. 
+Ursprünglich wurde diese Datenstruktur nur in der automatisierten Beweisführung verwendet, wird mittlerweile aber auch für Compiler eingesetzt~\cite{2021-egg}.
+
+\noindent Im Compiler gibt es verschiedene Technicken, um den Zwischencode (engl. \textit{Intermediate Representation}) zu optimieren, bevor dieser in 
+Assemblersprache übersetzt wird. Optimierungen werden dabei sequentiell durchgeführt. Bei dem Ausführen von Optimierungen wird der Compiler mit dem \textit{Phase Ordering Problem}
+konfrontiert. Beim \textit{Phase Ordering Problem} geht es um die Frage, in welcher Reihenfolge die Optimierungen auf das eingegebene 
+Programm angewendet werden sollen. Bei einer falschen Reihenfolge kann ein lokales Optimum erreicht werden, wodurch die Effizienz nachlässt~\cite{phaseorder-2009}.
+
+\noindent Es gibt mehrere Möglichkeiten, dieses Problem zu lösen. Neben Backtracking und Brute-Force sind \textit{E-Graphs} eine Möglichkeit, da sie durch \textit{Equality Saturation}
+in der Lage sind, viele mögliche Optimierungen des Eingabe-Programms gleichzeitig effizient zu speichern und das beste aus diesen zu extrahieren.
 
 \subsection{Ziel der Arbeit}
 
