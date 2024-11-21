@@ -1,98 +1,86 @@
 from collections import deque
 import re
 
-class Node():
-    left = ''
-    key = ''
-    right = ''
 
-def process(input):
-    arr = [c for c in input]
-    i = 0
-    first = ''
+class ASTNode:
+    left = ""
+    key = ""
+    right = ""
+
+
+representation = str()
+
+
+def to_string(node):
+    global representation
+    preorder(node)
+    representation = representation.strip()
+    return representation
+
+
+def preorder(node):
+    global representation
+    if node.left == "" and node.right == "":
+        representation += str(node.key) + " "
+        return
+    else:
+        representation += str(node.key) + " "
+    preorder(node.left)
+    preorder(node.right)
+
+
+def process(expr):
+    root = ""
     stack = deque()
-    print(arr)
-    
-    while i < len(arr):
-        
-        if arr[i] == '(':
-
+    for c in expr:
+        if c == "(":
             if not stack:
-                k = Node()
+                k = ASTNode()
                 stack.append(k)
-                first = k
+                root = k
             else:
-                
                 s = stack[-1]
-                k = Node()
-                if s.left == '' and s.right == '':
+                k = ASTNode()
+                if s.left == "" and s.right == "":
                     s.left = k
-                elif s.left ==  '':
+                elif s.left == "":
                     s.left = k
                 else:
                     s.right = k
                 stack.append(k)
-                
-        elif arr[i] == ')':    
+        elif c == ")":
             stack.pop()
-
-        elif re.search("[0-9]+", arr[i]):
+        elif re.search("[0-9]+", c):
             s = stack[-1]
-
-            if s.left == '' and s.right == '':
-                k = Node()
-                k.key = arr[i]
+            if s.left == "" and s.right == "":
+                k = ASTNode()
+                k.key = c
                 s.left = k
-                
-            elif s.left ==  '':
-                k = Node()
-                k.key = arr[i]
+            elif s.left == "":
+                k = ASTNode()
+                k.key = c
                 s.left = k
-             
             else:
-                k = Node()
-                k.key = arr[i]
+                k = ASTNode()
+                k.key = c
                 s.right = k
-         
-        elif arr[i] == '/' or arr[i] == '*':
+        elif c == "/" or c == "*" or c == "+" or c == "-" or c == "<<" or c == ">>":
             s = stack[-1]
-            s.key = arr[i]
-
-        elif arr[i] == ' ':
+            s.key = c
+        elif c == " ":
             pass
-
         else:
             s = stack[-1]
-
-            if s.left == '' and s.right == '':
-                k = Node()
-                k.key = arr[i]
+            if s.left == "" and s.right == "":
+                k = ASTNode()
+                k.key = c
                 s.left = k
-            elif s.left ==  '':
-                k = Node()
-                k.key = arr[i]
+            elif s.left == "":
+                k = ASTNode()
+                k.key = c
                 s.left = k
             else:
-                k = Node()
-                k.key = arr[i]
+                k = ASTNode()
+                k.key = c
                 s.right = k
-
-        i += 1
-
-    return first
-
-def preorder(node):
-    
-    if node.left == '' and node.right == '':
-        print(node.key)
-        print(' ')
-        return
-    else:
-        print(node.key)
-    preorder(node.left)
-    preorder(node.right)
-
-first = process("(/ (* a 2) 2)") 
-
-
-preorder(first)
+    return root
