@@ -22,13 +22,10 @@ class AST:
         return self.representation
 
     def preorder(self, node):
-        if node.left == "" and node.right == "":
+        if node != "":
             self.representation += str(node.key) + " "
-            return
-        else:
-            self.representation += str(node.key) + " "
-        self.preorder(node.left)
-        self.preorder(node.right)
+            self.preorder(node.left)
+            self.preorder(node.right)
 
     def process(self, expr):
         root = ""
