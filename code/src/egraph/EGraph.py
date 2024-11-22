@@ -1,4 +1,6 @@
+from graphviz import Digraph
 from scipy.cluster.hierarchy import DisjointSet
+
 from EClass import EClass
 from ENode import ENode
 
@@ -13,8 +15,10 @@ class EGraph:
 
     def add(self, enode):
         enode = self.canonicalize(enode)
-        if enode in [key.key for key in self.h.keys()]:
-            return self.h[enode]
+        if enode.key in [key.key for key in self.h.keys()]:
+            for x in self.h.keys():
+                if x.key == enode.key:
+                    return self.h[x]
         else:
             eclass_id = self.new_singleton_eclass(enode)
             for child in enode.arguments:
@@ -41,7 +45,7 @@ class EGraph:
     def new_singleton_eclass(self, enode):
         s = EClass()
         s.nodes.append(enode)
-        self.u.add(s)
+        self.u.add(s.id)
         self.m[s.id] = s
         return s.id
 
@@ -69,4 +73,40 @@ class EGraph:
         pass
 
     def graphviz_representation(self):
-        pass
+        graph = Digraph(
+            name="parent",
+            format="svg",
+            node_attr={"shape": "polygon"},
+            directory="graphviz-output",
+            graph_attr=dict(compound="true"),
+        )
+        node_set = set()
+        for subset in self.u.subsets():
+            eclass_id = self.u.__getitem__(next(iter(subset)))
+            sg = Digraph(
+                name="cluster-" + str(eclass_id),
+                graph_attr=dict(
+                    compound="true",
+                    style="dashed, rounded, filled",
+                    fillcolor="goldenrod1",
+                ),
+            )
+            for ss in subset:
+                cl = self.m[ss]
+                for x in cl.nodes:
+                    node_set.add(x)
+                    sg.node(
+                        name=x.key,
+                        style="rounded, filled",
+                        fontname="Times-Bold",
+                        fontsize="20",
+                        fillcolor="white",
+                    )
+            graph.subgraph(sg)
+        for node in node_set:
+            for x in node.arguments:
+                k = "cluster-" + str(self.find(x))
+                rand_node = next(iter(self.m[x].nodes))
+                graph.edge(node.key, rand_node.key, lhead=k)
+        # graph.render()
+        return graph.pipe(encoding="utf-8")
