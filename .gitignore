@@ -1,3 +1,7 @@
+
+graphviz-output/
+*.gv
+
 # Ignore compiled thesis
 thesis.pdf
 
