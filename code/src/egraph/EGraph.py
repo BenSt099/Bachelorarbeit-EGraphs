@@ -109,4 +109,4 @@ class EGraph:
                 rand_node = next(iter(self.m[x].nodes))
                 graph.edge(node.key, rand_node.key, lhead=k)
         # graph.render()
-        return graph.pipe(encoding="utf-8")
+        return graph.pipe()

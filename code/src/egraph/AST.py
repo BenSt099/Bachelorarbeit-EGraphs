@@ -62,7 +62,7 @@ class AST:
                     k = ASTNode()
                     k.key = c
                     s.right = k
-            elif c == "/" or c == "*" or c == "+" or c == "-" or c == "<<" or c == ">>":
+            elif c == "/" or c == "*" or c == "+" or c == "-" or c == "<" or c == ">":
                 s = stack[-1]
                 s.key = c
             elif c == " ":
