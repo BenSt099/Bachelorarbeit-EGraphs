@@ -1,7 +1,6 @@
 from scipy.cluster.hierarchy import DisjointSet
-
-from src.egraph.EClass import EClass
-from src.egraph.ENode import ENode
+from EClass import EClass
+from ENode import ENode
 
 
 class EGraph:
@@ -21,17 +20,23 @@ class EGraph:
             for child in enode.arguments:
                 self.m[child].parents.append((enode, eclass_id))
             self.h[enode] = eclass_id
+            self.u.add(eclass_id)
             return eclass_id
 
     def add_node(self, node):
-        if node.left != "" and node.right != "":
-            return self.add(
-                ENode(node.key, [self.add_node(node.left), self.add_node(node.left)])
-            )
-        elif node.left != "":
-            return self.add(ENode(node.key, [self.add_node(node.left)]))
-        else:
-            return self.add(ENode(node.key, [self.add_node(node.right)]))
+        if node != "":
+            if node.left != "" and node.right != "":
+                return self.add(
+                    ENode(
+                        node.key, [self.add_node(node.left), self.add_node(node.right)]
+                    )
+                )
+            elif node.left != "":
+                return self.add(ENode(node.key, [self.add_node(node.left)]))
+            elif node.right != "":
+                return self.add(ENode(node.key, [self.add_node(node.right)]))
+            else:
+                return self.add(ENode(node.key, []))
 
     def new_singleton_eclass(self, enode):
         s = EClass()
@@ -50,7 +55,9 @@ class EGraph:
         if self.u.__getitem__(id1) == self.u.__getitem__(id2):
             return self.find(id1)
         self.u.merge(id1, id2)
-        return self.find(id1)
+        new_id = self.find(id1)
+        self.pending.append(new_id)
+        return new_id
 
     def rebuild(self):
         pass
