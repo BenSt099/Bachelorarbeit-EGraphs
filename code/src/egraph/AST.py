@@ -3,9 +3,9 @@ import re
 
 
 class ASTNode:
-    left = ""
+    left = None
     key = ""
-    right = ""
+    right = None
 
 
 class AST:
@@ -22,7 +22,7 @@ class AST:
         return self.representation
 
     def preorder(self, node):
-        if node != "":
+        if node is not None:
             self.representation += str(node.key) + " "
             self.preorder(node.left)
             self.preorder(node.right)
@@ -39,9 +39,9 @@ class AST:
                 else:
                     s = stack[-1]
                     k = ASTNode()
-                    if s.left == "" and s.right == "":
+                    if s.left is None and s.right is None:
                         s.left = k
-                    elif s.left == "":
+                    elif s.left is None:
                         s.left = k
                     else:
                         s.right = k
@@ -50,11 +50,11 @@ class AST:
                 stack.pop()
             elif re.search("[0-9]+", c):
                 s = stack[-1]
-                if s.left == "" and s.right == "":
+                if s.left is None and s.right is None:
                     k = ASTNode()
                     k.key = c
                     s.left = k
-                elif s.left == "":
+                elif s.left is None:
                     k = ASTNode()
                     k.key = c
                     s.left = k
@@ -69,11 +69,11 @@ class AST:
                 pass
             else:
                 s = stack[-1]
-                if s.left == "" and s.right == "":
+                if s.left is None and s.right is None:
                     k = ASTNode()
                     k.key = c
                     s.left = k
-                elif s.left == "":
+                elif s.left is None:
                     k = ASTNode()
                     k.key = c
                     s.left = k

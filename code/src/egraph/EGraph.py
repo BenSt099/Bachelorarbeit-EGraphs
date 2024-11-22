@@ -28,16 +28,16 @@ class EGraph:
             return eclass_id
 
     def add_node(self, node):
-        if node != "":
-            if node.left != "" and node.right != "":
+        if node is not None:
+            if node.left is not None and node.right is not None:
                 return self.add(
                     ENode(
                         node.key, [self.add_node(node.left), self.add_node(node.right)]
                     )
                 )
-            elif node.left != "":
+            elif node.left is not None:
                 return self.add(ENode(node.key, [self.add_node(node.left)]))
-            elif node.right != "":
+            elif node.right is not None:
                 return self.add(ENode(node.key, [self.add_node(node.right)]))
             else:
                 return self.add(ENode(node.key, []))
@@ -108,5 +108,5 @@ class EGraph:
                 k = "cluster-" + str(self.find(x))
                 rand_node = next(iter(self.m[x].nodes))
                 graph.edge(node.key, rand_node.key, lhead=k)
-        # graph.render()
+        graph.render()
         return graph.pipe()
