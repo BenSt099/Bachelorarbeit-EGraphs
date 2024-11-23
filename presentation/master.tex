@@ -1,11 +1,16 @@
-\pdfoptionpdfminorversion=5
-\documentclass[9pt,hyperref={pdfpagelabels=false}]{beamer}
+\documentclass[%
+%handout,%
+9pt,hyperref={pdfpagelabels=false},aspectratio=169]{beamer}
 
 \mode<presentation> {
     \usetheme{HHUD}
     \setbeamercovered{invisible}
 }
-\usepackage[ngerman]{babel}
+
+
+%\listfiles
+
+\usepackage[english]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{times}
 \usepackage[T1]{fontenc}
@@ -15,18 +20,26 @@
 \usepackage{hyperref}
 \usepackage{xmpmulti}
 \usepackage{multicol}
-\usepackage{appendixnumberbeamer}
+
+%\usepackage{appendixnumberbeamer}
+
+% potentially useful packages
+\usepackage{nicefrac}
+\usepackage{tikz}
+
 
 % background image
-\usebackgroundtemplate{\includegraphics[width=\paperwidth]{fig/background}}
+\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/background_16-9.pdf}}
 % commands for low and high decoration in frame foot
-\newcommand{\footdecorationlow}{\usebackgroundtemplate{\includegraphics[width=\paperwidth]{fig/background_small}}}
-\newcommand{\footdecorationhigh}{\usebackgroundtemplate{\includegraphics[width=\paperwidth]{fig/background}}}
+\newcommand{\footdecorationlow}{\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/background_small_16-9}}}
+%\newcommand{\footdecorationhigh}{\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/titel_slide_info.pdf}}}
+\newcommand{\footdecorationend}{\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/end_slide.pdf}}}
+
 
 % Fix build errors on debian (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=452333)
 \providecommand \thispdfpagelabel[1]{} {}
 
-%% Die folgenden Zeilen können auskommentiert werden, um vor jedem Kapitel eine Gliederungsfolie einzufügen
+%% The following lines are used to include section slides at the beginning of a new section;
 % \AtBeginSection[] {
 %   \footdecorationhigh
 %   \begin{frame}<beamer>
@@ -38,49 +51,85 @@
 %   \footdecorationlow
 % }
 
+
+% Template based on slides from the Institute of Computer Science
+% Modifications regarding the design by Marcel Käufler and Sara Schulte
 % % % % % % % % % %  CHANGE TOPIC AND AUTHOR INFORMATION HERE % % % % % % % % %
-\newcommand{\abschluss}{Bachelor/Master/Diplom}                              % HIER UNZUTREFFENDES LÖSCHEN
-\title{\abschluss{}arbeit:\\TITEL DER ABSCHLUSSARBEIT}                      % HIER DEN TITEL DER ARBEIT EINTRAGEN
-\author{VORNAME NAME}                                                       % HIER DEN NAMEN UND VORNAMEN EINTRAGEN
-\date{DATUM}                                                                % HIER DAS PRÄSENTATIONSDATUM EINTRAGEN
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-\institute{Institut für Informatik\\Heinrich-Heine-Universität Düsseldorf}
+                    
+\title{Entwicklung einer Anwendung zum Vermitteln von Lerninhalten über E-Graphs und Equality Saturation für die Lehre}
+%\subtitle{Add further information / subtitles / authors ...}
+\author{Ben Steinhauer}
+\date{17.02.2025}
+\institute{Lehrstuhl für Softwaretechnik und Programmiersprachen \\Heinrich-Heine-Universität Düsseldorf}
 \subject{Informatik}
 
 %
-% Hier beginnt das Dokument
+% Start of the document
 %
 \begin{document}
+%\footdecorationhigh
+\begin{frame}[noframenumbering]
+\thispagestyle{empty}
+%\titlepage
+	%\begin{columns}
+	 %  	\column{0.4\paperwidth}
+	  % 	{
+	   %		\footnotesize
+	   	%	\color{hhuUniBlau}
+	   		%\put(50,-190){\insertdate}
+	   		
+	   	%}
+	   	%\column{0.6\paperwidth}
+	   	\centering 
+		\Large\color{black} \textbf{Bachelorarbeit}\\[\baselineskip]
+	   	
+		\color{hhuUniBlau}
+	   	\LARGE \inserttitle\\[\baselineskip]
+	   	%\normalsize \insertsubtitle\\[1.2\baselineskip]
+	   	
+	   	\large \insertauthor\\[\baselineskip]
 
-  \footdecorationhigh
-  \begin{frame}
-    \thispagestyle{empty}
-    \titlepage
-  \end{frame}
+	   	
+	   	\color{black}
+	   	\small
+	   	\insertinstitute\\[\baselineskip]
+	   	\small  \insertdate
+	%\end{columns}
+\end{frame}
 
-  \begin{frame}
-    \thispagestyle{empty}
-    \frametitle{Gliederung}
-    Diese Gliederung ist optional und nicht unbedingt empfohlen (Löschen in master.tex)
-    \vspace{-5mm}
-    \tableofcontents
-  \end{frame}
-  \footdecorationlow
+% \footdecorationlow
+% \begin{frame}
+% 	\thispagestyle{empty}
+% 	\frametitle{Gliederung}
+% 	Diese Gliederung ist optional und nicht unbedingt empfohlen (vor allem bei Präsentationen unter einer halben Stunde; löschen in master.tex)
+% 	\vspace{-5mm}
+% 	\tableofcontents
+% \end{frame}
+% \footdecorationlow
 
-  % % % % % % % % % % Ab hier werden die LaTeX-Dateien der einzelnen Abschnitte eingefügt % % % % % % % % % %
+% % % % % % % % % % Start of the conent % % % % % % % % % %
 
-  \input{einleitung}
+%%% Slides can directly be included here instead of additional tex files
+\input{einleitung}
 
-  \input{ergebnisse}
+\input{ergebnisse}
 
-  \appendix
+\input{schluss}
 
-  \input{anhang}
 
-  % % % % % % % % % % Ende der eingefügten LaTeX-Dateien % % % % % % % % % %
+\footdecorationlow
+\section{Quellen}
+\begin{frame}[allowframebreaks]
+	\thispagestyle{empty}
+	\frametitle{Literatur}
+	Die Quellen werden in der Datei \textit{references.bib} eingefügt und hier angezeigt.
+	\nocite{*}
+	\bibliography{references.bib}
+	\bibliographystyle{abbrv}
+\end{frame}
+
+\appendix
+
+\input{anhang}
 
 \end{document}
-
-%
-% Hier endet das Dokument
-%
