@@ -88,7 +88,7 @@ class EGraph:
                 graph_attr=dict(
                     compound="true",
                     style="dashed, rounded, filled",
-                    fillcolor="goldenrod1",
+                    fillcolor="navajowhite",
                 ),
             )
             for ss in subset:
@@ -97,6 +97,7 @@ class EGraph:
                     node_set.add(x)
                     sg.node(
                         name=x.key,
+                        shape='square',
                         style="rounded, filled",
                         fontname="Times-Bold",
                         fontsize="20",
@@ -108,5 +109,5 @@ class EGraph:
                 k = "cluster-" + str(self.find(x))
                 rand_node = next(iter(self.m[x].nodes))
                 graph.edge(node.key, rand_node.key, lhead=k)
-        graph.render()
+        # graph.render()
         return graph.pipe()
