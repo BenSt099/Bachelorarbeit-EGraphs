@@ -6,6 +6,7 @@
  erlaubt, äquivalente (mathematische) Ausdrücke kompakt abzuspeichern, indem
 Äquivalenzklassen der Ausdrücke abgespeichert werden. Die Äquivalenzrelation ist dabei kongruent. 
 Ursprünglich wurde diese Datenstruktur nur in der automatisierten Beweisführung verwendet, wird mittlerweile aber auch für Compiler eingesetzt~\cite{2021-egg}.
+Als Beispiel dient \textit{Cranelift}, ein Compiler Backend, welches \textit{E-Graphs} für die Optimierung verwendet~\cite{cranelift}.
 
 \noindent Im Compiler gibt es verschiedene Technicken, um den Zwischencode (engl. \textit{Intermediate Representation}) zu optimieren, bevor dieser in 
 Assemblersprache übersetzt wird. Optimierungen werden dabei sequentiell durchgeführt. Bei dem Ausführen von Optimierungen wird der Compiler mit dem \textit{Phase Ordering Problem}
