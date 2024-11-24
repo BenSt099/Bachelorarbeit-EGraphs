@@ -10,6 +10,8 @@ Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgan
 
 ## Overview
 
+<img src="egraph.png">
+
 ## Setup
 
 1. Bitte installieren Sie die [Dependencies](##Dependencies).
