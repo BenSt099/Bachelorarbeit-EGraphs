@@ -56,7 +56,7 @@ class EGraph:
         return self.u.__getitem__(eclassid)
 
     def merge(self, id1, id2):
-        if self.u.__getitem__(id1) == self.u.__getitem__(id2):
+        if self.find(id1) == self.find(id2):
             return self.find(id1)
         self.u.merge(id1, id2)
         new_id = self.find(id1)
@@ -64,9 +64,28 @@ class EGraph:
         return new_id
 
     def rebuild(self):
-        pass
+        todo = [self.find(eclass) for eclass in self.pending]
+        self.pending = list()
+        for eclass in todo:
+            self.repair(eclass)
+        self.is_saturated = True
 
     def repair(self, id1):
+        for item in self.m[id1].parents:
+            self.h.pop(item[0])
+            pnode = self.canonicalize(item[0])
+            self.h[pnode] = self.find(item[1])
+        new_parents = []
+        for item in self.m[id1].parents:
+            pnode = self.canonicalize(item[0])
+            if pnode.key in [s[0].key for s in new_parents]:
+                for x in new_parents:
+                    if x[0].key == pnode.key:
+                        self.merge(item[1], x[1])
+            new_parents.append((pnode, self.find(item[1])))
+        self.m[id1].parents = new_parents
+
+    def ematch(self):
         pass
 
     def equality_saturation(self):
@@ -97,7 +116,7 @@ class EGraph:
                     node_set.add(x)
                     sg.node(
                         name=x.key,
-                        shape='square',
+                        shape="square",
                         style="rounded, filled",
                         fontname="Times-Bold",
                         fontsize="20",
