@@ -10,7 +10,7 @@ Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgan
 
 ## Overview
 
-<img src="egraph.png">
+<img src="egraph.png" alt="example of an egraph">
 
 ## Setup
 
