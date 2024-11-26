@@ -91,50 +91,10 @@ class EGraph:
     def equality_saturation(self):
         pass
 
-    def _old_graphviz_representation(self):
-        graph = Digraph(
-            name="parent",
-            format="svg",
-            node_attr={"shape": "polygon"},
-            directory="graphviz-output",
-            graph_attr=dict(compound="true"),
-        )
-        node_set = set()
-        for subset in self.u.subsets():
-            eclass_id = self.u.__getitem__(next(iter(subset)))
-            sg = Digraph(
-                name="cluster-" + str(eclass_id),
-                graph_attr=dict(
-                    compound="true",
-                    style="dashed, rounded, filled",
-                    fillcolor="navajowhite",
-                ),
-            )
-            for ss in subset:
-                cl = self.m[ss]
-                for x in cl.nodes:
-                    node_set.add(x)
-                    sg.node(
-                        name=x.key,
-                        shape="square",
-                        style="rounded, filled",
-                        fontname="Times-Bold",
-                        fontsize="20",
-                        fillcolor="white",
-                    )
-            graph.subgraph(sg)
-        for node in node_set:
-            for x in node.arguments:
-                k = "cluster-" + str(self.find(x))
-                rand_node = next(iter(self.m[x].nodes))
-                graph.edge(node.key, rand_node.key, lhead=k)
-        # graph.render()
-        return graph.pipe()
-
     def graphviz_representation(self):
         commands = [
             """digraph parent {
-	            graph [compound=true, rankdir=TB]
+	            graph [compound=true]
 	            node [shape=polygon]\n"""
         ]
         node_set = set()
@@ -145,11 +105,7 @@ class EGraph:
             commands.append(
                 'subgraph "cluster-'
                 + str(eclass_id)
-                + '" '
-                + """
-            {
-		    graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
-            """
+                + '" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]\n'
             )
 
             for ss in subset:
@@ -162,7 +118,7 @@ class EGraph:
                         + '"'
                         + ' [label=" <'
                         + str(i)
-                        + "0> |"
+                        + "0> | \\"
                         + x.key
                         + "| <"
                         + str(i)
