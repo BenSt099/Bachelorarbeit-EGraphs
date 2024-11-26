@@ -131,49 +131,6 @@ class EGraph:
         # graph.render()
         return graph.pipe()
 
-    def level_sort(self):
-        subsets = self.u.subsets()
-        root_sets = []
-        for subset in subsets:
-            if not self.m[next(iter(subset))].parents:
-                root_sets.append(subset)
-        # - roots found
-
-        tree_lists = []  # tuple(height, tree)
-        level_sort_set_list = []
-
-        for root_set in root_sets:
-            height = 0
-            level_list = []
-            current_level = list(root_set)
-            while current_level:
-                level_list.append(current_level)
-                height += 1
-                e_classes = []
-                for class_id in current_level:
-                    e_classes += self.m[class_id]
-                current_level = []
-                for e_class in e_classes:
-                    for node in e_class.nodes:
-                        for arg in node.arguments:
-                            current_level.append(arg)
-
-            tree_lists.append((height, level_list))
-
-        tree_lists.sort(key=lambda item: item[0], reverse=True)
-
-        longest_tree = tree_lists.pop(0)  # tuple(height, tree)
-        longest_tree[1].reverse()
-
-        for i in range(longest_tree[0]):  # initialize
-            level_sort_set_list.append(set(longest_tree[1][i]))
-
-        for tree in tree_lists:
-            tree[1].reverse()
-            for i in range(tree[0]):
-                level_sort_set_list[i].add(tree[1][i])
-        return level_sort_set_list
-
     def graphviz_representation(self):
         commands = [
             """digraph parent {
