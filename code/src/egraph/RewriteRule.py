@@ -1,13 +1,35 @@
-import AST
+"""This module implements rewrite rules.
+
+Classes:
+    RewriteRule: Represents a rewrite rule with a left and a right side.
+"""
+
+import AbstractSyntaxTree
 
 
 class RewriteRule:
-    def __init__(self, name, expr1, expr2):
+    """Class that represents a rewrite rule.
+
+    Attributes:
+        name: Name of that rewrite rule.
+        expr_lhs: Left side of the rewrite rule.
+        expr_rhs: Right side of the rewrite rule.
+    """
+
+    def __init__(self, name, expr_lhs, expr_rhs):
+        """Initialises class. Takes three arguments.
+
+        Arguments:
+            name: String
+            expr_lhs: String in prefix-notation
+            expr_rhs: String in prefix-notation
+        """
         self.name = name
-        self.expr_lhs = AST.AST(expr1)
-        self.expr_rhs = AST.AST(expr2)
+        self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
+        self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
 
     def to_string(self):
+        """Returns a string representation of this rule."""
         return (
             f"[{self.name}: {self.expr_lhs.to_string()} => {self.expr_rhs.to_string()}]"
         )

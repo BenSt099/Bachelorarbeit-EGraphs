@@ -1,8 +1,23 @@
+"""This module implements an EGraph class.
+
+Classes:
+    EClass: Represents an EClass together with its unique EClass-ID.
+"""
+
 import uuid
 
 
 class EClass:
+    """Class that represents an EClass.
+
+    Attributes:
+        id: Unique identifier for this class (EClass-ID).
+        nodes: A list of ENodes
+        parents: List of tuples with: tuple(ENode, EClass-ID).
+    """
+
     def __init__(self):
+        """Initialises class. Takes no arguments."""
         self.id = str(uuid.uuid4())
-        self.nodes = list()  # nodes in that eclass
-        self.parents = list()  # Tuple(ENode, eclass-id)
+        self.nodes = []
+        self.parents = []

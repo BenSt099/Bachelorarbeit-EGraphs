@@ -1,8 +1,8 @@
 """This module creates an AbstractSyntaxTree from a given expression.
 
-    Classes:
-        AbstractSyntaxTree: Class used for generating AST from expression.
-        AbstractSyntaxTreeNode: Class used for representing nodes in AST.
+Classes:
+    AbstractSyntaxTree: Class used for generating AST from expression.
+    AbstractSyntaxTreeNode: Class used for representing nodes in AST.
 """
 
 from collections import deque
@@ -35,10 +35,10 @@ class AbstractSyntaxTree:
     """
 
     def __init__(self, expression):
-        """Initializes the instance based on spam preference.
+        """Initializes class. Takes one argument.
 
         Arguments:
-          expression: a string representing an AST expression.
+          expression: A string representing an expression in prefix-notation.
         """
         self.root_node = self._process_expression(expression)
         self.string_representation = str()
@@ -64,7 +64,7 @@ class AbstractSyntaxTree:
         a variable.
 
         Arguments:
-        expression -- an expression in prefix-notation
+            expression -- an expression in prefix-notation
         """
         root_ast_node = None
         stack = deque()
