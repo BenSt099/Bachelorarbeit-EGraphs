@@ -132,11 +132,9 @@ class EGraph:
 
     def ematch(self):
         """"""
-        pass
 
     def equality_saturation(self):
         """"""
-        pass
 
     def egraph_to_dot(self):
         """Returns a string of the EGraph in DOT notation."""
@@ -146,7 +144,7 @@ class EGraph:
             node [fillcolor=white fontname=\"Times-Bold\" fontsize=20 
             shape=record style=\"rounded, filled\"]\n"""
         ]
-        node_set = []
+        node_set = set()
         node_identifier = 0
         for subset in self.u.subsets():
             dot_commands.append(
@@ -157,7 +155,7 @@ class EGraph:
             )
             for eclass_id in subset:
                 for enode in self.m[eclass_id].nodes:
-                    node_set.append((node_identifier, enode))
+                    node_set.add((node_identifier, enode))
                     dot_commands.append(
                         '"'
                         + enode.key
