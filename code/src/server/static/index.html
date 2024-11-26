@@ -6,8 +6,16 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <script src="d3.v7.js"></script>
+    <script src="graphviz.umd.js"></script>
+    <script src="d3-graphviz.js"></script>
 </head>
 <body>
+<script>
+    function render_egraph() {
+        d3.select("#graph").graphviz().renderDot(String.raw``);
+    }
+</script>
 <!--##########################################################################################################################-->
 <!-- HEADER -->
 <div class="container">
@@ -41,7 +49,7 @@
 <div class="container text-center">
     <div class="row">
         <div class="col">
-            Column
+            <div id="graph" style="text-align: center;"></div>
         </div>
         <div class="col">
             Column
