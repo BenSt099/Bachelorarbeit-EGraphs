@@ -91,7 +91,7 @@ class EGraph:
     def equality_saturation(self):
         pass
 
-    def graphviz_representation(self):
+    def _old_graphviz_representation(self):
         graph = Digraph(
             name="parent",
             format="svg",
@@ -130,3 +130,119 @@ class EGraph:
                 graph.edge(node.key, rand_node.key, lhead=k)
         # graph.render()
         return graph.pipe()
+
+    def level_sort(self):
+        subsets = self.u.subsets()
+        root_sets = []
+        for subset in subsets:
+            if not self.m[next(iter(subset))].parents:
+                root_sets.append(subset)
+        # - roots found
+
+        tree_lists = []  # tuple(height, tree)
+        level_sort_set_list = []
+
+        for root_set in root_sets:
+            height = 0
+            level_list = []
+            current_level = list(root_set)
+            while current_level:
+                level_list.append(current_level)
+                height += 1
+                e_classes = []
+                for class_id in current_level:
+                    e_classes += self.m[class_id]
+                current_level = []
+                for e_class in e_classes:
+                    for node in e_class.nodes:
+                        for arg in node.arguments:
+                            current_level.append(arg)
+
+            tree_lists.append((height, level_list))
+
+        tree_lists.sort(key=lambda item: item[0], reverse=True)
+
+        longest_tree = tree_lists.pop(0)  # tuple(height, tree)
+        longest_tree[1].reverse()
+
+        for i in range(longest_tree[0]):  # initialize
+            level_sort_set_list.append(set(longest_tree[1][i]))
+
+        for tree in tree_lists:
+            tree[1].reverse()
+            for i in range(tree[0]):
+                level_sort_set_list[i].add(tree[1][i])
+        return level_sort_set_list
+
+    def graphviz_representation(self):
+        commands = [
+            """digraph parent {
+	            graph [compound=true, rankdir=TB]
+	            node [shape=polygon]\n"""
+        ]
+        node_set = set()
+        i = 0
+        for subset in self.u.subsets():
+            eclass_id = self.u.__getitem__(next(iter(subset)))
+
+            commands.append(
+                'subgraph "cluster-'
+                + str(eclass_id)
+                + '" '
+                + """
+            {
+		    graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+            """
+            )
+
+            for ss in subset:
+                cl = self.m[ss]
+                for x in cl.nodes:
+                    node_set.add((i, x))
+                    commands.append(
+                        '"'
+                        + x.key
+                        + '"'
+                        + ' [label=" <'
+                        + str(i)
+                        + "0> |"
+                        + x.key
+                        + "| <"
+                        + str(i)
+                        + '1> ",fillcolor=white fontname="Times-Bold" fontsize=20 shape=record style="rounded, filled"]\n'
+                    )
+                    i += 1
+            commands.append("}\n")
+
+        for num, node in node_set:
+            if node.arguments:
+                x0, x1 = node.arguments
+                k0 = '"cluster-' + str(self.find(x0)) + '"'
+                k1 = '"cluster-' + str(self.find(x1)) + '"'
+                rand_node0 = next(iter(self.m[x0].nodes))
+                rand_node1 = next(iter(self.m[x1].nodes))
+                commands.append(
+                    '"'
+                    + node.key
+                    + '":'
+                    + str(num)
+                    + '0 -> "'
+                    + rand_node0.key
+                    + '" [lhead='
+                    + k0
+                    + "]\n"
+                )
+                commands.append(
+                    '"'
+                    + node.key
+                    + '":'
+                    + str(num)
+                    + '1 -> "'
+                    + rand_node1.key
+                    + '" [lhead='
+                    + k1
+                    + "]\n"
+                )
+
+        commands.append("}")
+        return "".join(commands)
