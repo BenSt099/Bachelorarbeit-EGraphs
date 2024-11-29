@@ -28,8 +28,8 @@ class RewriteRule:
         self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
         self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
 
-    def to_string(self):
+    def __str__(self):
         """Returns a string representation of this rule."""
         return (
-            f"[{self.name}: {self.expr_lhs.to_string()} => {self.expr_rhs.to_string()}]"
+            f"[{self.name}: {self.expr_lhs} => {self.expr_rhs}]"
         )
