@@ -20,12 +20,11 @@ Visualisation:
     It will return a string of the EGraph in DOT notation.
         url: https://graphviz.org/doc/info/lang.html
 """
-
 from scipy.cluster.hierarchy import DisjointSet
-
 from EClass import EClass
 from ENode import ENode
-
+import graphviz
+import pathlib
 import re
 
 
@@ -243,6 +242,15 @@ class EGraph:
 
     def equality_saturation(self):
         """"""
+
+    def export_egraph_to_file(self, filepath, extension="pdf"):
+        """Exports the EGraph into either svg or pdf file format."""
+        if not pathlib.Path(pathlib.Path(filepath).parents[0]).exists() or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir():
+            return False, filepath
+        egraph = self.egraph_to_dot()
+        src = graphviz.Source(egraph)
+        src.render(filename=pathlib.Path(filepath).stem + ".gv", directory=pathlib.Path(filepath).parents[0], format=extension)
+        return True, filepath
 
     def egraph_to_dot(self, nodesep=0.5, ranksep=0.5):
         """Returns a string of the EGraph in DOT notation."""

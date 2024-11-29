@@ -19,7 +19,10 @@ Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgan
 
 ## Dependencies
 
-Die notwendigen Pakete finden Sie in [requirements.txt](https://github.com/BenSt099/Bachelorarbeit-EGraphs/blob/main/code/requirements.txt):
+1. [Graphviz](https://graphviz.org/download/)
+   1. **PATH**: Achten Sie während der Installation darauf, Graphviz zum PATH hinzuzufügen.
+   2. **Windows**: Achten Sie darauf, dass ``dot`` vom Terminal aus aufrufbar ist; überprüfbar mit ``dot --version``. [Komplette Anleitung für Windows](https://forum.graphviz.org/t/new-simplified-installation-procedure-on-windows/224).
+2. Die notwendigen Pakete finden Sie in [requirements.txt](https://github.com/BenSt099/Bachelorarbeit-EGraphs/blob/main/code/requirements.txt):
 
 ```shell
 pip install -r requirements.txt
