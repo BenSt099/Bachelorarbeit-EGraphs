@@ -6,11 +6,13 @@ Classes:
 Implementation:
     This implementation is based on egg (e-graphs-good) and the corresponding
     paper:
-        title: egg: Fast and Extensible Equality Saturation
-        year: 2021
+        title: egg: Fast and Extensible Equality Saturation \n
+        year: 2021 \n
         url: https://doi.org/10.1145/3434304
 
-    The methods 'ematch', ... are based on this Google Colab notebook:
+    (DISCLAIMER)
+    The methods '_ematch' and '_substitute' are based on a Google Colab notebook
+    from Zachary DeVito (accessed 2024-11-29):
         url: https://colab.research.google.com/drive/1tNOQijJqe5tw-Pk9iqd6HHb2abC5aRid?usp=sharing
 
 Visualisation:
@@ -23,6 +25,8 @@ from scipy.cluster.hierarchy import DisjointSet
 
 from EClass import EClass
 from ENode import ENode
+
+import re
 
 
 class EGraph:
@@ -40,6 +44,14 @@ class EGraph:
         merge()
         rebuild()
         egraph_to_dot()
+
+        _add(enode)
+        _canonicalize(enode)
+        _ematch(ast_node)
+        _substitute()
+        _find(eclass_id)
+        _repair(eclass_id)
+        _new_singleton_eclass(enode)
     """
 
     def __init__(self):
@@ -53,10 +65,14 @@ class EGraph:
     def _add(self, enode):
         """Adds an ENode to the EGraph and returns the corresponding EClass-ID."""
         enode = self._canonicalize(enode)
-        if enode.key in [key.key for key in self.h.keys()]:
+        if enode.key not in ("/", "*", "+", "-", "<", ">") and enode.key in [
+            key.key for key in self.h.keys()
+        ]:
             for x in self.h.keys():
                 if x.key == enode.key:
                     return self.h[x]
+        elif enode in self.h.keys():
+            return self.h[enode]
         else:
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
@@ -73,7 +89,8 @@ class EGraph:
             if ast_node.left is not None and ast_node.right is not None:
                 return self._add(
                     ENode(
-                        ast_node.key, [self.add_node(ast_node.left), self.add_node(ast_node.right)]
+                        ast_node.key,
+                        [self.add_node(ast_node.left), self.add_node(ast_node.right)],
                     )
                 )
             elif ast_node.left is not None:
@@ -100,7 +117,7 @@ class EGraph:
         return self.u.__getitem__(eclass_id)
 
     def merge(self, eclass_id1, eclass_id2):
-        """Merges two EClasses in u via provided ID and returns the new root ID."""
+        """Merges two EClasses in u via their IDs and returns the new root ID."""
         if self._find(eclass_id1) == self._find(eclass_id2):
             return self._find(eclass_id1)
         self.u.merge(eclass_id1, eclass_id2)
@@ -130,18 +147,112 @@ class EGraph:
             new_parents.append((pnode, self._find(parent[1])))
         self.m[eclass_id].parents = new_parents
 
-    def ematch(self):
-        """"""
+    def _ematch(self, ast_node):
+        """Takes a pattern and matches it to ENodes in the EGraph.
+
+        (DISCLAIMER)
+        This method is based on work of Zachary DeVito. For more information,
+        please see the implementation section in the module's docstring."""
+
+        def _match_in(node_pattern, eid, env):
+
+            def enode_matches(node, enode, environment):
+                if enode.key != node.key:
+                    return False, environment
+                new_environment = environment
+                for arg_pattern, arg_eclass_id in zip(
+                    [node.left, node.right], enode.arguments
+                ):
+                    matched, new_environment = _match_in(
+                        arg_pattern, arg_eclass_id, new_environment
+                    )
+                    if not matched:
+                        return False, environment
+                return True, new_environment
+
+            if (
+                node_pattern.left is None
+                and node_pattern.right is None
+                and not re.match("[0-9]+", node_pattern.key)
+            ):
+                node_key = node_pattern.key
+                if node_key not in env:
+                    env = {**env}
+                    env[node_key] = eid
+                    return True, env
+                else:
+                    return env[node_key] is eid, env
+            else:
+                nodes = []
+                for cl in eclasses:
+                    if cl.id == eid:
+                        nodes = cl.nodes
+                for enode in nodes:
+                    matches, env_new = enode_matches(node_pattern, enode, env)
+                    if matches:
+                        return True, env_new
+                return False, env
+
+        eclasses = set(self.m.values())
+        list_of_matches = []
+        for eclass_id in [eclass.id for eclass in eclasses]:
+            is_a_match, environment = _match_in(ast_node, eclass_id, {})
+            if is_a_match:
+                list_of_matches.append((eclass_id, environment))
+        return list_of_matches
+
+    def _substitute(self, ast_node, environment):
+        """Extends the EGraph with a substitution.
+
+         (DISCLAIMER)
+        This method is based on work of Zachary DeVito. For more information,
+        please see the implementation section in the module's docstring."""
+        if (
+            ast_node.left is None
+            and ast_node.right is None
+            and not re.match("[0-9]+", ast_node.key)
+        ):
+            return environment[ast_node.key]
+        else:
+            if ast_node.left is None:
+                enode = ENode(
+                    ast_node.key,
+                    [self._substitute(ast_node.right, environment)],
+                )
+            elif ast_node.right is None:
+                enode = ENode(
+                    ast_node.key,
+                    [self._substitute(ast_node.left, environment)],
+                )
+            else:
+                enode = ENode(
+                    ast_node.key,
+                    [
+                        self._substitute(ast_node.left, environment),
+                        self._substitute(ast_node.right, environment),
+                    ],
+                )
+            return self._add(enode)
+
+    def _cost_model(self, key):
+        """Returns the cost of a key (integer) based on a simple cost model."""
+        costs = {"+": 1, "*": 2, "-": 1, "/": 3, "<": 1, ">": 1}
+        if key not in costs.keys():
+            return 0
+        return costs[key]
 
     def equality_saturation(self):
         """"""
 
-    def egraph_to_dot(self):
+    def egraph_to_dot(self, nodesep=0.5, ranksep=0.5):
         """Returns a string of the EGraph in DOT notation."""
         dot_commands = [
-            """digraph parent { 
-            graph [compound=true] 
-            node [fillcolor=white fontname=\"Times-Bold\" fontsize=20 
+            "digraph parent { graph [compound=true, nodesep="
+            + str(nodesep)
+            + ", ranksep="
+            + str(ranksep)
+            + "]\n"
+            + """node [fillcolor=white fontname=\"Times-Bold\" fontsize=20 
             shape=record style=\"rounded, filled\"]\n"""
         ]
         node_set = set()
@@ -155,10 +266,16 @@ class EGraph:
             )
             for eclass_id in subset:
                 for enode in self.m[eclass_id].nodes:
-                    node_set.add((node_identifier, enode))
+                    differentiator = ""
+                    if enode.key in ("/", "*", "+", "-", "<", ">"):
+                        differentiator = str(node_identifier)
+                    node_set.add(
+                        (str(self._find(next(iter(subset)))), node_identifier, enode)
+                    )
                     dot_commands.append(
                         '"'
                         + enode.key
+                        + differentiator
                         + '"'
                         + '[label="<'
                         + str(node_identifier)
@@ -169,18 +286,47 @@ class EGraph:
                         + '1>"]\n'
                     )
                     node_identifier += 1
-            dot_commands.append('}\n')
+            dot_commands.append("}\n")
 
-        for node_ident, enode in node_set:
+        for ecl_id, node_ident, enode in node_set:
             if enode.arguments:
+                differentiator = ""
+                differentiator_arg0 = ""
+                differentiator_arg1 = ""
                 enode_arg0, enode_arg1 = enode.arguments
+                if enode.key in ("/", "*", "+", "-", "<", ">"):
+                    differentiator = str(node_ident)
+                if next(iter(self.m[enode_arg0].nodes)).key in (
+                    "/",
+                    "*",
+                    "+",
+                    "-",
+                    "<",
+                    ">",
+                ):
+                    for x, y, z in node_set:
+                        if x == self.m[enode_arg0].id:
+                            differentiator_arg0 = str(y)
+                if next(iter(self.m[enode_arg1].nodes)).key in (
+                    "/",
+                    "*",
+                    "+",
+                    "-",
+                    "<",
+                    ">",
+                ):
+                    for x, y, z in node_set:
+                        if x == self.m[enode_arg1].id:
+                            differentiator_arg1 = str(y)
                 dot_commands.append(
                     '"'
                     + enode.key
+                    + differentiator
                     + '":'
                     + str(node_ident)
                     + '0 -> "'
                     + next(iter(self.m[enode_arg0].nodes)).key
+                    + differentiator_arg0
                     + '" [lhead='
                     + '"cluster-'
                     + str(self._find(enode_arg0))
@@ -190,10 +336,12 @@ class EGraph:
                 dot_commands.append(
                     '"'
                     + enode.key
+                    + differentiator
                     + '":'
                     + str(node_ident)
                     + '1 -> "'
                     + next(iter(self.m[enode_arg1].nodes)).key
+                    + differentiator_arg1
                     + '" [lhead='
                     + '"cluster-'
                     + str(self._find(enode_arg1))
