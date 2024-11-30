@@ -11,8 +11,8 @@ Implementation:
         url: https://doi.org/10.1145/3434304
 
     (DISCLAIMER)
-    The methods '_ematch' and '_substitute' are based on a Google Colab notebook
-    from Zachary DeVito (accessed 2024-11-29):
+    The methods '_ematch', '_substitute', 'apply_rule', 'apply_rules' are based
+    on a Google Colab notebook from Zachary DeVito (accessed 2024-11-29):
         url: https://colab.research.google.com/drive/1tNOQijJqe5tw-Pk9iqd6HHb2abC5aRid?usp=sharing
 
 Visualisation:
@@ -20,11 +20,15 @@ Visualisation:
     It will return a string of the EGraph in DOT notation.
         url: https://graphviz.org/doc/info/lang.html
 """
+
+
 from scipy.cluster.hierarchy import DisjointSet
+import AbstractSyntaxTree
 from EClass import EClass
 from ENode import ENode
 import graphviz
 import pathlib
+import math
 import re
 
 
@@ -59,6 +63,7 @@ class EGraph:
         self.m = {}
         self.h = {}
         self.pending = []
+        self.version = 0
         self.is_saturated = False
 
     def _add(self, enode):
@@ -119,6 +124,7 @@ class EGraph:
         """Merges two EClasses in u via their IDs and returns the new root ID."""
         if self._find(eclass_id1) == self._find(eclass_id2):
             return self._find(eclass_id1)
+        self.version += 1
         self.u.merge(eclass_id1, eclass_id2)
         new_id = self._find(eclass_id1)
         self.pending.append(new_id)
@@ -233,6 +239,27 @@ class EGraph:
                 )
             return self._add(enode)
 
+    def apply_rule(self, rule):
+        """Apply one rule to the egraph."""
+        list_of_matches = []
+        for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
+            list_of_matches.append((rule, eclass_id, environment))
+        for rule, eclass_id, environment in list_of_matches:
+            new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
+            self.merge(eclass_id, new_eclass_id)
+        self.rebuild()
+
+    def apply_rules(self, rules):
+        """Apply multiple rules to the egraph."""
+        list_of_matches = []
+        for rule in rules:
+            for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
+                list_of_matches.append((rule, eclass_id, environment))
+        for rule, eclass_id, environment in list_of_matches:
+            new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
+            self.merge(eclass_id, new_eclass_id)
+        self.rebuild()
+
     def _cost_model(self, key):
         """Returns the cost of a key (integer) based on a simple cost model."""
         costs = {"+": 1, "*": 2, "-": 1, "/": 3, "<": 1, ">": 1}
@@ -240,8 +267,52 @@ class EGraph:
             return 0
         return costs[key]
 
-    def equality_saturation(self):
+    def _calculate_costs(self, eterm_id):
         """"""
+        eclasses = set(self.m.values())
+        has_changed = True
+        costs = {eclass: (math.inf, None) for eclass in eclasses}
+
+        def cost_for_enode(enode):
+            return self._cost_model(enode.key) + sum(costs[eclass_id][0] for eclass_id in enode.arguments)
+
+        while has_changed:
+            has_changed = False
+            for eclass in eclasses:
+                new_cost = min((cost_for_enode(enode), enode) for enode in eclass.nodes)
+                if costs[eclass][0] != new_cost[0]:
+                    has_changed = True
+                costs[eclass] = new_cost
+
+        def extract_best_term(eclass_id):
+            enode = costs[eclass_id][1]
+            node = AbstractSyntaxTree.AbstractSyntaxTreeNode()
+            if len(enode.arguments) == 2:
+                node.key = enode.key
+                node.left = enode.arguments[0]
+                node.right = enode.arguments[1]
+                extract_best_term(node.left)
+                extract_best_term(node.right)
+                return node
+            if len(enode.arguments) == 1:
+                node.left = enode.arguments[0]
+                node.key = enode.key
+                extract_best_term(node.left)
+                return node
+            else:
+                node.key = enode.key
+                return node
+        return extract_best_term(self._find(eterm_id))
+
+    def equality_saturation(self, rules, eclass_id):
+        """Performs equality saturation."""
+        while True:
+            v = self.version
+            best_term = self._calculate_costs(eclass_id)
+            self.apply_rules(rules)
+            if v == self.version:
+                self.is_saturated = True
+                return best_term
 
     def export_egraph_to_file(self, filepath, extension="pdf"):
         """Exports the EGraph into either svg or pdf file format."""
