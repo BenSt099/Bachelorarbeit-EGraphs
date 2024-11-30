@@ -18,10 +18,11 @@
 </script>
 <!--##########################################################################################################################-->
 <!-- HEADER -->
-<div class="container">
+<div class="container" style="max-width: 100%">
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
         <div class="col-md-3 mb-2 mb-md-0">
-            <a href="index.html" class="d-inline-flex link-body-emphasis text-decoration-none">
+            <a href="index.html"
+               class="d-inline-flex link-body-emphasis text-decoration-none">
                 <img src="logo.svg" width="56" height="56" alt="E-Graphs logo">
             </a>
         </div>
@@ -29,7 +30,8 @@
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a href="index.html" class="nav-link px-2">Home</a></li>
             <!--<li><a href="index.html" class="nav-link px-2">Theorie</a></li>-->
-            <li><a href="dokumentation.html" class="nav-link px-2">Dokumentation</a></li>
+            <li><a href="dokumentation.html"
+                   class="nav-link px-2">Dokumentation</a></li>
             <li><a href="about.html" class="nav-link px-2">About</a></li>
         </ul>
 
@@ -46,16 +48,84 @@
 
 <!--##########################################################################################################################-->
 <!-- MAIN -->
-<div class="container text-center">
+<div class="container" style="max-width: 100%;">
     <div class="row">
-        <div class="col">
+        <div class="col-6" style="border-right: 2px solid black">
             <div id="graph" style="text-align: center;"></div>
         </div>
-        <div class="col">
-            Column
+        <div class="col" style="border-right: 2px solid black">
+            <div class="container">
+                <h2 style="margin-bottom: 40px">Rewrite Rules</h2>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control"
+                           placeholder="left term" aria-label="left-term"
+                           aria-describedby="btn_rewrite_rule_create">
+                    <input type="text" class="form-control"
+                           placeholder="right term" aria-label="right-term"
+                           aria-describedby="btn_rewrite_rule_create">
+                    <button class="btn btn-success" type="button"
+                            id="btn_rewrite_rule_create">Create
+                    </button>
+                </div>
+
+                <div class="card" style="max-height: 400px; overflow: scroll">
+                    <div class="container text-center">
+                        <div class="row">
+                            <div class="col-6">
+                                <b>Rule</b>
+                            </div>
+                            <div class="col">
+                                <b>#</b>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col">
-            Column
+            <div class="container">
+                <h2 style="margin-bottom: 40px">Control</h2>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="term"
+                           aria-label="term"
+                           aria-describedby="btn_control_create">
+                    <button class="btn btn-success" type="button"
+                            id="btn_control_create">Create
+                    </button>
+                </div>
+
+
+                <div class="container text-center card"
+                     style="padding-top: 10px; padding-bottom: 10px">
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" class="btn btn-success">
+                                Save
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn btn-success">
+                                Extract
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn btn-success">
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
