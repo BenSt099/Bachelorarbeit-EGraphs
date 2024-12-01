@@ -21,6 +21,7 @@ Visualisation:
         url: https://graphviz.org/doc/info/lang.html
 """
 
+from binascii import a2b_qp
 
 from scipy.cluster.hierarchy import DisjointSet
 import AbstractSyntaxTree
@@ -157,10 +158,10 @@ class EGraph:
 
         (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
-        please see the implementation section in the module's docstring."""
+        please see the implementation section in the module's docstring.
+        """
 
         def _match_in(node_pattern, eid, env):
-
             def enode_matches(node, enode, environment):
                 if enode.key != node.key:
                     return False, environment
@@ -209,17 +210,23 @@ class EGraph:
     def _substitute(self, ast_node, environment):
         """Extends the EGraph with a substitution.
 
-         (DISCLAIMER)
+        (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
-        please see the implementation section in the module's docstring."""
+        please see the implementation section in the module's docstring.
+        """
         if (
             ast_node.left is None
             and ast_node.right is None
-            and not re.match("[0-9]+", ast_node.key)
+            and not re.search("[0-9]+", ast_node.key)
         ):
             return environment[ast_node.key]
         else:
-            if ast_node.left is None:
+            if ast_node.left is None and ast_node.right is None:
+                enode = ENode(
+                    ast_node.key,
+                    [],
+                )
+            elif ast_node.left is None:
                 enode = ENode(
                     ast_node.key,
                     [self._substitute(ast_node.right, environment)],
@@ -240,7 +247,12 @@ class EGraph:
             return self._add(enode)
 
     def apply_rule(self, rule):
-        """Apply one rule to the egraph."""
+        """Apply one rule to the egraph.
+
+        (DISCLAIMER)
+        This method is based on work of Zachary DeVito. For more information,
+        please see the implementation section in the module's docstring.
+        """
         list_of_matches = []
         for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
             list_of_matches.append((rule, eclass_id, environment))
@@ -250,7 +262,12 @@ class EGraph:
         self.rebuild()
 
     def apply_rules(self, rules):
-        """Apply multiple rules to the egraph."""
+        """Apply multiple rules to the egraph.
+
+        (DISCLAIMER)
+        This method is based on work of Zachary DeVito. For more information,
+        please see the implementation section in the module's docstring.
+        """
         list_of_matches = []
         for rule in rules:
             for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
@@ -268,13 +285,20 @@ class EGraph:
         return costs[key]
 
     def _calculate_costs(self, eterm_id):
-        """"""
+        """
+
+        (DISCLAIMER)
+        This method is based on work of Zachary DeVito. For more information,
+        please see the implementation section in the module's docstring.
+        """
         eclasses = set(self.m.values())
         has_changed = True
         costs = {eclass: (math.inf, None) for eclass in eclasses}
 
         def cost_for_enode(enode):
-            return self._cost_model(enode.key) + sum(costs[eclass_id][0] for eclass_id in enode.arguments)
+            return self._cost_model(enode.key) + sum(
+                costs[eclass_id][0] for eclass_id in enode.arguments
+            )
 
         while has_changed:
             has_changed = False
@@ -302,6 +326,7 @@ class EGraph:
             else:
                 node.key = enode.key
                 return node
+
         return extract_best_term(self._find(eterm_id))
 
     def equality_saturation(self, rules, eclass_id):
@@ -316,11 +341,18 @@ class EGraph:
 
     def export_egraph_to_file(self, filepath, extension="pdf"):
         """Exports the EGraph into either svg or pdf file format."""
-        if not pathlib.Path(pathlib.Path(filepath).parents[0]).exists() or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir():
+        if (
+            not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
+            or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
+        ):
             return False, filepath
         egraph = self.egraph_to_dot()
         src = graphviz.Source(egraph)
-        src.render(filename=pathlib.Path(filepath).stem + ".gv", directory=pathlib.Path(filepath).parents[0], format=extension)
+        src.render(
+            filename=pathlib.Path(filepath).stem + ".gv",
+            directory=pathlib.Path(filepath).parents[0],
+            format=extension,
+        )
         return True, filepath
 
     def egraph_to_dot(self, nodesep=0.5, ranksep=0.5):
@@ -375,7 +407,11 @@ class EGraph:
                 enode_arg0, enode_arg1 = enode.arguments
                 if enode.key in ("/", "*", "+", "-", "<", ">"):
                     differentiator = str(node_ident)
-                if next(iter(self.m[enode_arg0].nodes)).key in (
+
+                k0 = next(iter(self.m[enode_arg0].nodes))
+                k1 = next(iter(self.m[enode_arg1].nodes))
+
+                if k0.key in (
                     "/",
                     "*",
                     "+",
@@ -383,10 +419,13 @@ class EGraph:
                     "<",
                     ">",
                 ):
-                    for x, y, z in node_set:
-                        if x == self.m[enode_arg0].id:
-                            differentiator_arg0 = str(y)
-                if next(iter(self.m[enode_arg1].nodes)).key in (
+                    for eid, nodeid, nodeself in node_set:
+                        if k0.key == nodeself.key and eid == str(
+                            self._find(enode_arg0)
+                        ):
+                            differentiator_arg0 = str(nodeid)
+
+                if k1.key in (
                     "/",
                     "*",
                     "+",
@@ -394,9 +433,12 @@ class EGraph:
                     "<",
                     ">",
                 ):
-                    for x, y, z in node_set:
-                        if x == self.m[enode_arg1].id:
-                            differentiator_arg1 = str(y)
+                    for eid, nodeid, nodeself in node_set:
+                        if k1.key == nodeself.key and eid == str(
+                            self._find(enode_arg1)
+                        ):
+                            differentiator_arg1 = str(nodeid)
+
                 dot_commands.append(
                     '"'
                     + enode.key
@@ -404,7 +446,7 @@ class EGraph:
                     + '":'
                     + str(node_ident)
                     + '0 -> "'
-                    + next(iter(self.m[enode_arg0].nodes)).key
+                    + str(k0.key)
                     + differentiator_arg0
                     + '" [lhead='
                     + '"cluster-'
@@ -419,7 +461,7 @@ class EGraph:
                     + '":'
                     + str(node_ident)
                     + '1 -> "'
-                    + next(iter(self.m[enode_arg1].nodes)).key
+                    + str(k1.key)
                     + differentiator_arg1
                     + '" [lhead='
                     + '"cluster-'
