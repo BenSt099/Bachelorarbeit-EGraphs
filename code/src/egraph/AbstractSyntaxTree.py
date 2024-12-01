@@ -93,10 +93,12 @@ class AbstractSyntaxTree:
                 pass
             else:
                 last_ast_node = stack[-1]
-                if last_ast_node.left is None and last_ast_node.right is None:
+                if last_ast_node.left is None and last_ast_node.right is None and not last_ast_node.key == '':
                     ast_node = AbstractSyntaxTreeNode()
                     ast_node.key = character
                     last_ast_node.left = ast_node
+                elif last_ast_node.left is None and last_ast_node.right is None:
+                    last_ast_node.key = character
                 elif last_ast_node.left is None:
                     ast_node = AbstractSyntaxTreeNode()
                     ast_node.key = character
