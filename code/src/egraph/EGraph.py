@@ -21,7 +21,6 @@ Visualisation:
         url: https://graphviz.org/doc/info/lang.html
 """
 
-from binascii import a2b_qp
 
 from scipy.cluster.hierarchy import DisjointSet
 import AbstractSyntaxTree
@@ -69,7 +68,7 @@ class EGraph:
 
     def _add(self, enode):
         """Adds an ENode to the EGraph and returns the corresponding EClass-ID."""
-        enode = self._canonicalize(enode)
+        #enode = self._canonicalize(enode)
         if enode.key not in ("/", "*", "+", "-", "<", ">") and enode.key in [
             key.key for key in self.h.keys()
         ]:
@@ -78,6 +77,11 @@ class EGraph:
                     return self.h[x]
         elif enode in self.h.keys():
             return self.h[enode]
+
+        elif enode.key in [key.key for key in self.h.keys()] and enode.arguments in [x.arguments for x in self.h.keys()]:
+            for en in self.h.keys():
+                if en.key == enode.key and en.arguments == enode.arguments:
+                    return self.h[en]
         else:
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
@@ -140,7 +144,8 @@ class EGraph:
     def _repair(self, eclass_id):
         """Repairs the EGraph."""
         for parent in self.m[eclass_id].parents:
-            self.h.pop(parent[0])
+            if parent[0] in self.h.keys():
+                self.h.pop(parent[0])
             pnode = self._canonicalize(parent[0])
             self.h[pnode] = self._find(parent[1])
         new_parents = []
@@ -153,7 +158,7 @@ class EGraph:
             new_parents.append((pnode, self._find(parent[1])))
         self.m[eclass_id].parents = new_parents
 
-    def _ematch(self, ast_node):
+    def _ematch(self, node_pattern):
         """Takes a pattern and matches it to ENodes in the EGraph.
 
         (DISCLAIMER)
@@ -161,13 +166,13 @@ class EGraph:
         please see the implementation section in the module's docstring.
         """
 
-        def _match_in(node_pattern, eid, env):
-            def enode_matches(node, enode, environment):
-                if enode.key != node.key:
+        def _match_in(node_pattern, eid, environment):
+            def enode_matches(node_pattern, enode, environment):
+                if enode.key != node_pattern.key:
                     return False, environment
                 new_environment = environment
                 for arg_pattern, arg_eclass_id in zip(
-                    [node.left, node.right], enode.arguments
+                    [node_pattern.left, node_pattern.right], enode.arguments
                 ):
                     matched, new_environment = _match_in(
                         arg_pattern, arg_eclass_id, new_environment
@@ -182,27 +187,27 @@ class EGraph:
                 and not re.match("[0-9]+", node_pattern.key)
             ):
                 node_key = node_pattern.key
-                if node_key not in env:
-                    env = {**env}
-                    env[node_key] = eid
-                    return True, env
+                if node_key not in environment:
+                    environment = {**environment}
+                    environment[node_key] = eid
+                    return True, environment
                 else:
-                    return env[node_key] is eid, env
+                    return environment[node_key] is eid, environment
             else:
                 nodes = []
                 for cl in eclasses:
                     if cl.id == eid:
                         nodes = cl.nodes
                 for enode in nodes:
-                    matches, env_new = enode_matches(node_pattern, enode, env)
+                    matches, env_new = enode_matches(node_pattern, enode, environment)
                     if matches:
                         return True, env_new
-                return False, env
+                return False, environment
 
         eclasses = set(self.m.values())
         list_of_matches = []
         for eclass_id in [eclass.id for eclass in eclasses]:
-            is_a_match, environment = _match_in(ast_node, eclass_id, {})
+            is_a_match, environment = _match_in(node_pattern, eclass_id, {})
             if is_a_match:
                 list_of_matches.append((eclass_id, environment))
         return list_of_matches
@@ -272,8 +277,11 @@ class EGraph:
         for rule in rules:
             for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
                 list_of_matches.append((rule, eclass_id, environment))
+        print(f"VERSION {self.version}")
         for rule, eclass_id, environment in list_of_matches:
             new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
+            if eclass_id != new_eclass_id:
+                print(f'{eclass_id} MATCHED {rule} with {environment}')
             self.merge(eclass_id, new_eclass_id)
         self.rebuild()
 
