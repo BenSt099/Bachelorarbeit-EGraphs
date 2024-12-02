@@ -42,11 +42,11 @@ class AbstractSyntaxTree:
         """
         self.root_node = self._process_expression(expression)
         self.string_representation = str()
+        self._preorder(self.root_node)
+        self.string_representation = self.string_representation.strip()
 
     def __str__(self):
         """Returns the string representation of the AST."""
-        self._preorder(self.root_node)
-        self.string_representation = self.string_representation.strip()
         return self.string_representation
 
     def _preorder(self, ast_node):
