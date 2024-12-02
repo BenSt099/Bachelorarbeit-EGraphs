@@ -68,7 +68,7 @@ class EGraph:
 
     def _add(self, enode):
         """Adds an ENode to the EGraph and returns the corresponding EClass-ID."""
-        #enode = self._canonicalize(enode)
+        enode = self._canonicalize(enode)
         if enode.key not in ("/", "*", "+", "-", "<", ">") and enode.key in [
             key.key for key in self.h.keys()
         ]:
@@ -80,6 +80,7 @@ class EGraph:
 
         elif enode.key in [key.key for key in self.h.keys()] and enode.arguments in [x.arguments for x in self.h.keys()]:
             for en in self.h.keys():
+                en.arguments = [self._find(arg) for arg in en.arguments]
                 if en.key == enode.key and en.arguments == enode.arguments:
                     return self.h[en]
         else:
@@ -88,7 +89,7 @@ class EGraph:
                 self.m[child].parents.append((enode, eclass_id))
             self.h[enode] = eclass_id
             self.u.add(eclass_id)
-            return eclass_id
+            return self._find(eclass_id)
 
     def add_node(self, ast_node):
         """Takes an AST, recursively transforms them into
