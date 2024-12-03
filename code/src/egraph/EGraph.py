@@ -21,7 +21,6 @@ Visualisation:
         url: https://graphviz.org/doc/info/lang.html
 """
 
-
 from scipy.cluster.hierarchy import DisjointSet
 import AbstractSyntaxTree
 from EClass import EClass
@@ -78,7 +77,9 @@ class EGraph:
         elif enode in self.h.keys():
             return self.h[enode]
 
-        elif enode.key in [key.key for key in self.h.keys()] and enode.arguments in [x.arguments for x in self.h.keys()]:
+        elif enode.key in [key.key for key in self.h.keys()] and enode.arguments in [
+            x.arguments for x in self.h.keys()
+        ]:
             for en in self.h.keys():
                 en.arguments = [self._find(arg) for arg in en.arguments]
                 if en.key == enode.key and en.arguments == enode.arguments:
@@ -282,7 +283,7 @@ class EGraph:
         for rule, eclass_id, environment in list_of_matches:
             new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
             if eclass_id != new_eclass_id:
-                print(f'{eclass_id} MATCHED {rule} with {environment}')
+                print(f"{eclass_id} MATCHED {rule} with {environment}")
             self.merge(eclass_id, new_eclass_id)
         self.rebuild()
 
@@ -338,15 +339,20 @@ class EGraph:
 
         return extract_best_term(self._find(eterm_id))
 
-    def equality_saturation(self, rules, eclass_id):
+    def extract_term(self):
+        """"""
+        # best_term = self._calculate_costs(eclass_id)
+
+    def equality_saturation(self, rules):
         """Performs equality saturation."""
-        while True:
-            v = self.version
-            best_term = self._calculate_costs(eclass_id)
-            self.apply_rules(rules)
-            if v == self.version:
-                self.is_saturated = True
-                return best_term
+        if not self.is_saturated:
+            while True:
+                v = self.version
+                self.apply_rules(rules)
+                if v == self.version:
+                    self.apply_rules(rules)
+                    self.is_saturated = True
+                    break
 
     def export_egraph_to_file(self, filepath, extension="pdf"):
         """Exports the EGraph into either svg or pdf file format."""
@@ -367,20 +373,15 @@ class EGraph:
     def egraph_to_dot(self, nodesep=0.5, ranksep=0.5):
         """Returns a string of the EGraph in DOT notation."""
         dot_commands = [
-            "digraph parent { graph [compound=true, nodesep="
-            + str(nodesep)
-            + ", ranksep="
-            + str(ranksep)
-            + "]\n"
-            + """node [fillcolor=white fontname=\"Times-Bold\" fontsize=20 
-            shape=record style=\"rounded, filled\"]\n"""
+            "digraph parent { graph [compound=true, nodesep=" + str(nodesep)
+            + ", ranksep=" + str(ranksep) + "]\n" + """node [fillcolor=white 
+            fontname=\"Times-Bold\" fontsize=20 shape=record style=\"rounded, filled\"]\n"""
         ]
         node_set = set()
         node_identifier = 0
         for subset in self.u.subsets():
             dot_commands.append(
-                'subgraph "cluster-'
-                + str(self._find(next(iter(subset))))
+                'subgraph "cluster-' + str(self._find(next(iter(subset))))
                 + '" { graph [compound=true fillcolor=navajowhite '
                 + 'style="dashed, rounded, filled"]\n'
             )
@@ -393,21 +394,13 @@ class EGraph:
                         (str(self._find(next(iter(subset)))), node_identifier, enode)
                     )
                     dot_commands.append(
-                        '"'
-                        + enode.key
-                        + differentiator
-                        + '"'
-                        + '[label="<'
-                        + str(node_identifier)
-                        + "0> | \\"
-                        + enode.key
-                        + " | <"
-                        + str(node_identifier)
-                        + '1>"]\n'
+                        '"' + enode.key + differentiator + '"'
+                        + '[label="<' + str(node_identifier) + "0> | \\"
+                        + enode.key + " | <" + str(node_identifier) + '1>"]\n'
                     )
                     node_identifier += 1
             dot_commands.append("}\n")
-
+        d = 0
         for ecl_id, node_ident, enode in node_set:
             if enode.arguments:
                 differentiator = ""
@@ -420,63 +413,52 @@ class EGraph:
                 k0 = next(iter(self.m[enode_arg0].nodes))
                 k1 = next(iter(self.m[enode_arg1].nodes))
 
-                if k0.key in (
-                    "/",
-                    "*",
-                    "+",
-                    "-",
-                    "<",
-                    ">",
-                ):
+                if k0.key in ("/", "*", "+", "-", "<", ">",):
                     for eid, nodeid, nodeself in node_set:
                         if k0.key == nodeself.key and eid == str(
                             self._find(enode_arg0)
                         ):
                             differentiator_arg0 = str(nodeid)
 
-                if k1.key in (
-                    "/",
-                    "*",
-                    "+",
-                    "-",
-                    "<",
-                    ">",
-                ):
+                if k1.key in ("/", "*", "+", "-", "<", ">",):
                     for eid, nodeid, nodeself in node_set:
                         if k1.key == nodeself.key and eid == str(
                             self._find(enode_arg1)
                         ):
                             differentiator_arg1 = str(nodeid)
 
-                dot_commands.append(
-                    '"'
-                    + enode.key
-                    + differentiator
-                    + '":'
-                    + str(node_ident)
-                    + '0 -> "'
-                    + str(k0.key)
-                    + differentiator_arg0
-                    + '" [lhead='
-                    + '"cluster-'
-                    + str(self._find(enode_arg0))
-                    + '"'
-                    + "]\n"
-                )
-                dot_commands.append(
-                    '"'
-                    + enode.key
-                    + differentiator
-                    + '":'
-                    + str(node_ident)
-                    + '1 -> "'
-                    + str(k1.key)
-                    + differentiator_arg1
-                    + '" [lhead='
-                    + '"cluster-'
-                    + str(self._find(enode_arg1))
-                    + '"'
-                    + "]\n"
-                )
+                if self._find(enode_arg0) == ecl_id:
+                    dot_commands.append(
+                        '"' + str(d) + '" [height=0, width=0, shape=point]'
+                        '"' + enode.key + differentiator + '":' + str(node_ident)
+                        + '0 -> "' + str(d) + '" [dir=none]\n'
+                        + '"' + str(d) + '" -> "'
+                        + str(k0.key) + differentiator_arg0 + '" [lhead='
+                        + '"cluster-' + str(self._find(enode_arg0)) + '"' + "]\n"
+                    )
+                    d += 1
+                else:
+                    dot_commands.append(
+                        '"' + enode.key + differentiator + '":' + str(node_ident)
+                        + '0 -> "' + str(k0.key) + differentiator_arg0 + '" [lhead='
+                        + '"cluster-' + str(self._find(enode_arg0)) + '"' + "]\n"
+                    )
+
+                if self._find(enode_arg1) == ecl_id:
+                    dot_commands.append(
+                        '"' + str(d) + '" [height=0, width=0, shape=point]'
+                        '"' + enode.key + differentiator + '":' + str(node_ident)
+                        + '0 -> "' + str(d) + '" [dir=none]\n'
+                        + '"' + str(d) + '" -> "'
+                        + str(k1.key) + differentiator_arg1 + '" [lhead='
+                        + '"cluster-' + str(self._find(enode_arg1)) + '"' + "]\n"
+                    )
+                    d += 1
+                else:
+                    dot_commands.append(
+                        '"' + enode.key + differentiator + '":' + str(node_ident)
+                        + '1 -> "' + str(k1.key) + differentiator_arg1 + '" [lhead='
+                        + '"cluster-' + str(self._find(enode_arg1)) + '"' + "]\n"
+                    )
         dot_commands.append("}")
         return "".join(dot_commands)
