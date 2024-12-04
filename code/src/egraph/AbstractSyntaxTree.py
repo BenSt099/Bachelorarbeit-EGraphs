@@ -3,9 +3,6 @@
 Classes:
     AbstractSyntaxTree: Class used for generating AST from expression.
     AbstractSyntaxTreeNode: Class used for representing nodes in an AST.
-
-Dependencies:
-    None or component(s) from the Python Standard Library
 """
 
 from collections import deque

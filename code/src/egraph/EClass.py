@@ -11,9 +11,9 @@ class EClass:
     """Class that represents an EClass.
 
     Attributes:
-        id: Unique identifier for this class (EClass-ID).
-        nodes: A list of ENodes
-        parents: List of tuples with: tuple(ENode, EClass-ID).
+        - id: Unique identifier for this class (EClass-ID).
+        - nodes: A list of ENodes
+        - parents: List of tuples with: tuple(ENode, EClass-ID).
     """
 
     def __init__(self):
