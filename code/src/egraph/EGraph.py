@@ -22,7 +22,6 @@ Visualisation:
 """
 
 from scipy.cluster.hierarchy import DisjointSet
-import AbstractSyntaxTree
 from EClass import EClass
 from ENode import ENode
 import graphviz
@@ -63,6 +62,7 @@ class EGraph:
         self.h = {}
         self.pending = []
         self.version = 0
+        self.str_repr = ""
         self.is_saturated = False
 
     def _add(self, enode):
@@ -129,8 +129,10 @@ class EGraph:
 
     def merge(self, eclass_id1, eclass_id2):
         """Merges two EClasses in u via their IDs and returns the new root ID."""
-        if self._find(eclass_id1) == self._find(eclass_id2):
-            return self._find(eclass_id1)
+        eclass_id1 = self._find(eclass_id1)
+        eclass_id2 = self._find(eclass_id2)
+        if eclass_id1 == eclass_id2:
+            return eclass_id1
         self.version += 1
         self.u.merge(eclass_id1, eclass_id2)
         new_id = self._find(eclass_id1)
@@ -294,16 +296,18 @@ class EGraph:
             return 0
         return costs[key]
 
-    def _calculate_costs(self, eterm_id):
+    def extract_term(self, eterm_id):
         """
+        Extracts the best term from the egraph based on a simple cost model.
 
         (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
         please see the implementation section in the module's docstring.
         """
-        eclasses = set(self.m.values())
+
+        eclasses = {eclass.id: eclass.nodes for eclass in self.m.values()}
         has_changed = True
-        costs = {eclass: (math.inf, None) for eclass in eclasses}
+        costs = {eclass: (math.inf, None) for eclass in eclasses.keys()}
 
         def cost_for_enode(enode):
             return self._cost_model(enode.key) + sum(
@@ -312,45 +316,40 @@ class EGraph:
 
         while has_changed:
             has_changed = False
-            for eclass in eclasses:
-                new_cost = min((cost_for_enode(enode), enode) for enode in eclass.nodes)
+            for eclass, enodes in eclasses.items():
+                new_cost = min((cost_for_enode(enode), enode) for enode in enodes)
                 if costs[eclass][0] != new_cost[0]:
                     has_changed = True
                 costs[eclass] = new_cost
 
         def extract_best_term(eclass_id):
             enode = costs[eclass_id][1]
-            node = AbstractSyntaxTree.AbstractSyntaxTreeNode()
-            if len(enode.arguments) == 2:
-                node.key = enode.key
-                node.left = enode.arguments[0]
-                node.right = enode.arguments[1]
-                extract_best_term(node.left)
-                extract_best_term(node.right)
-                return node
-            if len(enode.arguments) == 1:
-                node.left = enode.arguments[0]
-                node.key = enode.key
-                extract_best_term(node.left)
-                return node
-            else:
-                node.key = enode.key
-                return node
+            return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
+        print(costs)
+        self.str_repr = ""
+        self.preorder(extract_best_term(self._find(eterm_id)))
+        return self.str_repr
 
-        return extract_best_term(self._find(eterm_id))
-
-    def extract_term(self):
+    def preorder(self, ast_node):
         """"""
-        # best_term = self._calculate_costs(eclass_id)
+        if len(ast_node.arguments) == 2:
+            self.str_repr += str(ast_node.key) + " "
+            self.preorder(ast_node.arguments[0])
+            self.preorder(ast_node.arguments[1])
+        else:
+            self.str_repr += ast_node.key + " "
 
-    def equality_saturation(self, rules):
+    def equality_saturation(self, rules, etermid):
         """Performs equality saturation."""
         if not self.is_saturated:
             while True:
                 v = self.version
+                print('BEST ', self.extract_term(etermid))
                 self.apply_rules(rules)
                 if v == self.version:
+                    print('BEST ', self.extract_term(etermid))
                     self.apply_rules(rules)
+                    print('BEST ', self.extract_term(etermid))
                     self.is_saturated = True
                     break
 
@@ -429,7 +428,7 @@ class EGraph:
 
                 if self._find(enode_arg0) == ecl_id:
                     dot_commands.append(
-                        '"' + str(d) + '" [height=0, width=0, shape=point]'
+                        '"' + str(d) + '" [height=0, width=0, shape=point]\n'
                         '"' + enode.key + differentiator + '":' + str(node_ident)
                         + '0 -> "' + str(d) + '" [dir=none]\n'
                         + '"' + str(d) + '" -> "'
@@ -446,7 +445,7 @@ class EGraph:
 
                 if self._find(enode_arg1) == ecl_id:
                     dot_commands.append(
-                        '"' + str(d) + '" [height=0, width=0, shape=point]'
+                        '"' + str(d) + '" [height=0, width=0, shape=point]\n'
                         '"' + enode.key + differentiator + '":' + str(node_ident)
                         + '0 -> "' + str(d) + '" [dir=none]\n'
                         + '"' + str(d) + '" -> "'
