@@ -2,7 +2,10 @@
 
 Classes:
     AbstractSyntaxTree: Class used for generating AST from expression.
-    AbstractSyntaxTreeNode: Class used for representing nodes in AST.
+    AbstractSyntaxTreeNode: Class used for representing nodes in an AST.
+
+Dependencies:
+    None or component(s) from the Python Standard Library
 """
 
 from collections import deque
@@ -14,9 +17,9 @@ class AbstractSyntaxTreeNode:
     Please also see class 'AbstractSyntaxTree'.
 
     Attributes:
-        left: Another ASTNode.
-        key: A string to store information
-        right: Another ASTNode.
+        - left: Another ASTNode.
+        - key: A string to store information
+        - right: Another ASTNode.
     """
 
     def __init__(self):
@@ -27,44 +30,66 @@ class AbstractSyntaxTreeNode:
 
 
 class AbstractSyntaxTree:
-    """Turns expression in an AST.
+    """This class represents an abstract syntax tree by processing an expression
+    in prefix-notation in an AST.
 
     Attributes:
-        root_node: Another ASTNode.
-        string_representation: A string to store information
+        - root_node: The root ASTNode of the tree.
+
+    Example:
+
+        expr = "(/ (* a 2) 2)"  # in prefix-notation (original: (a*2) / 2)
+
+        ast = AbstractSyntaxTree(expr)
+
+        ast.root_node   # get root node in tree for traversing
+
+        str(ast)        # Returns string representation (equals the input expression)
     """
 
     def __init__(self, expression):
         """Initializes class. Takes one argument.
 
-        Arguments:
-          expression: A string representing an expression in prefix-notation.
+        :param expression: A string representing an expression in prefix-notation.
+        :returns: None.
         """
         self.root_node = self._process_expression(expression)
-        self.string_representation = str()
+        self._string_representation = str()
         self._preorder(self.root_node)
-        self.string_representation = self.string_representation.strip()
+        self._string_representation = self._string_representation.strip()
+        if not self._string_representation.startswith("("):
+            self._string_representation = "(" + self._string_representation + ")"
 
     def __str__(self):
         """Returns the string representation of the AST."""
-        return self.string_representation
+        return self._string_representation
 
     def _preorder(self, ast_node):
-        """Traverse the AST (preorder) and write to 'representation'."""
+        """Traverses the AST (preorder) and writes result to '_string_representation'.
+
+        :param ast_node: The root ASTNode of the tree.
+        :returns: None.
+        """
         if ast_node is not None:
-            self.string_representation += str(ast_node.key) + " "
+            if ast_node.key in ("/", "*", "+", "-", "<", ">"):
+                self._string_representation += "(" + str(ast_node.key) + " "
+            else:
+                self._string_representation += str(ast_node.key) + " "
             self._preorder(ast_node.left)
             self._preorder(ast_node.right)
+            if ast_node.key in ("/", "*", "+", "-", "<", ">"):
+                self._string_representation = self._string_representation.strip()
+                self._string_representation += ") "
 
     def _process_expression(self, expression):
-        """Turn given expression into AST.
+        """Turns given expression into AST thereby returning AST's root node.
 
         Loops over expression, thereby processing one character at a time.
         Character can be: '+', '*', '-', '/', '<', '>', '(', ')', ' ' or
-        a variable.
+        a variable (one character from [a-z] or [A-Z]).
 
-        Arguments:
-            expression -- an expression in prefix-notation
+        :param expression: A string representing an expression in prefix-notation.
+        :returns: Instance of ASTNode which servers as root node of created AST.
         """
         root_ast_node = None
         stack = deque()
@@ -93,7 +118,11 @@ class AbstractSyntaxTree:
                 pass
             else:
                 last_ast_node = stack[-1]
-                if last_ast_node.left is None and last_ast_node.right is None and not last_ast_node.key == '':
+                if (
+                    last_ast_node.left is None
+                    and last_ast_node.right is None
+                    and not last_ast_node.key == ""
+                ):
                     ast_node = AbstractSyntaxTreeNode()
                     ast_node.key = character
                     last_ast_node.left = ast_node
