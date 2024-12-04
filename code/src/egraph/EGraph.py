@@ -91,12 +91,12 @@ class EGraph:
                 if en.key == enode.key and en.arguments == enode.arguments:
                     return self.h[en]
         else:
+            self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
                 self.m[child].parents.append((enode, eclass_id))
             self.h[enode] = eclass_id
-            self.u.add(eclass_id)
-            return self._find(eclass_id)
+            return eclass_id
 
     def add_node(self, ast_node):
         """Takes an AST, recursively transforms them into
@@ -135,10 +135,8 @@ class EGraph:
 
     def merge(self, eclass_id1, eclass_id2):
         """Merges two EClasses in u via their IDs and returns the new root ID."""
-        eclass_id1 = self._find(eclass_id1)
-        eclass_id2 = self._find(eclass_id2)
-        if eclass_id1 == eclass_id2:
-            return eclass_id1
+        if self._find(eclass_id1) == self._find(eclass_id2):
+            return self._find(eclass_id1)
         self.version += 1
         self.u.merge(eclass_id1, eclass_id2)
         new_id = self._find(eclass_id1)
@@ -147,26 +145,26 @@ class EGraph:
 
     def rebuild(self):
         """Rebuilds the EGraph by processing the pending-list."""
-        for eclass in [self._find(eclass) for eclass in self.pending]:
+        for eclass in set([self._find(eclass) for eclass in self.pending]):
             self._repair(eclass)
         self.pending = []
 
     def _repair(self, eclass_id):
         """Repairs the EGraph."""
-        for parent in self.m[eclass_id].parents:
-            if parent[0] in self.h.keys():
-                self.h.pop(parent[0])
-            pnode = self._canonicalize(parent[0])
-            self.h[pnode] = self._find(parent[1])
+        for p_node, p_eclass in self.m[eclass_id].parents:
+            if p_node in self.h.keys():
+                self.h.pop(p_node)
+            p_node = self._canonicalize(p_node)
+            self.h[p_node] = self._find(p_eclass)
         new_parents = []
-        for parent in self.m[eclass_id].parents:
-            pnode = self._canonicalize(parent[0])
-            if pnode.key in [new_parent[0].key for new_parent in new_parents]:
+        for p_node, p_eclass in self.m[eclass_id].parents:
+            p_node = self._canonicalize(p_node)
+            if p_node.key in [new_parent[0].key for new_parent in new_parents]:
                 for new_parent in new_parents:
-                    if new_parent[0].key == pnode.key:
-                        self.merge(parent[1], new_parent[1])
-            new_parents.append((pnode, self._find(parent[1])))
-        self.m[eclass_id].parents = new_parents
+                    if new_parent[0].key == p_node.key:
+                        self.merge(p_eclass, new_parent[1])
+            new_parents.append((p_node, self._find(p_eclass)))
+        self.m[self._find(eclass_id)].parents = new_parents
 
     def _ematch(self, node_pattern):
         """Takes a pattern and matches it to ENodes in the EGraph.
@@ -206,17 +204,16 @@ class EGraph:
             else:
                 nodes = []
                 for cl in eclasses:
-                    if cl.id == eid:
+                    if self._find(cl.id) == eid:
                         nodes = cl.nodes
                 for enode in nodes:
                     matches, env_new = enode_matches(node_pattern, enode, environment)
                     if matches:
                         return True, env_new
                 return False, environment
-
         eclasses = set(self.m.values())
         list_of_matches = []
-        for eclass_id in [eclass.id for eclass in eclasses]:
+        for eclass_id in [self._find(eclass.id) for eclass in eclasses]:
             is_a_match, environment = _match_in(node_pattern, eclass_id, {})
             if is_a_match:
                 list_of_matches.append((eclass_id, environment))
@@ -287,11 +284,11 @@ class EGraph:
         for rule in rules:
             for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
                 list_of_matches.append((rule, eclass_id, environment))
-        #print(f"VERSION {self.version}")
+        print(f"VERSION {self.version}")
         for rule, eclass_id, environment in list_of_matches:
             new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
-            #if eclass_id != new_eclass_id:
-                #print(f"{eclass_id} MATCHED {rule} with {environment}")
+            if eclass_id != new_eclass_id:
+                print(f"{eclass_id} MATCHED {rule} with {environment}")
             self.merge(eclass_id, new_eclass_id)
         self.rebuild()
 
@@ -331,9 +328,8 @@ class EGraph:
         def extract_best_term(eclass_id):
             enode = costs[eclass_id][1]
             return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
-        # print(costs)
         self.str_repr = ""
-        self._preorder(extract_best_term(self._find(eterm_id)))
+        self._preorder(extract_best_term(eterm_id))
         self.str_repr = self.str_repr.strip()
         return self.str_repr
 
@@ -353,12 +349,10 @@ class EGraph:
         if not self.is_saturated:
             while True:
                 v = self.version
-                # print('BEST ', self._extract_term(etermid))
+                print('BEST ', self._extract_term(etermid))
                 self.apply_rules(rules)
                 if v == self.version:
-                    # print('BEST ', self._extract_term(etermid))
-                    self.apply_rules(rules)
-                    # print('BEST ', self._extract_term(etermid))
+                    print('BEST ', self._extract_term(etermid))
                     self.is_saturated = True
                     break
 
