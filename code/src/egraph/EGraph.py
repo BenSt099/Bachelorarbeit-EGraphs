@@ -34,25 +34,32 @@ class EGraph:
     """Class that represents an EGraph.
 
     Attributes:
-        u: Union-find datastructure with EClass-IDs (See EClass.py).
-        m: Dictionary with the following mapping: EClass-ID -> EClass.
-        h: Dictionary with the following mapping: ENode -> E-Class-ID.
-        pending: List of EClass-IDs that need to be fixed.
-        is_saturated: Boolean that specifies if the EGraph is saturated or not.
+        - u: Union-find datastructure with EClass-IDs (See EClass.py).
+        - m: Dictionary with the following mapping: EClass-ID -> EClass.
+        - h: Dictionary with the following mapping: ENode -> E-Class-ID.
+        - pending: List of EClass-IDs that need to be fixed.
+        - is_saturated: Boolean that specifies if the EGraph is saturated or not.
 
     Methods:
-        add_node()
-        merge()
+        add_node(ast_node)
+        merge(eclass_id1, eclass_id2)
         rebuild()
-        egraph_to_dot()
+        apply_rule(rules)
+        apply_rules(rules)
+        equality_saturation(rules, etermid)
+        export_egraph_to_file(filepath, extension="pdf")
+        egraph_to_dot(nodesep=0.5, ranksep=0.5)
 
         _add(enode)
+        _new_singleton_eclass(enode)
         _canonicalize(enode)
-        _ematch(ast_node)
-        _substitute()
         _find(eclass_id)
         _repair(eclass_id)
-        _new_singleton_eclass(enode)
+        _ematch(node_pattern)
+        _substitute(ast_node, environment)
+        _cost_model(key)
+        _extract_term(eterm_id)
+        _preorder(ast_node)
     """
 
     def __init__(self):
@@ -76,7 +83,6 @@ class EGraph:
                     return self.h[x]
         elif enode in self.h.keys():
             return self.h[enode]
-
         elif enode.key in [key.key for key in self.h.keys()] and enode.arguments in [
             x.arguments for x in self.h.keys()
         ]:
@@ -281,11 +287,11 @@ class EGraph:
         for rule in rules:
             for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
                 list_of_matches.append((rule, eclass_id, environment))
-        print(f"VERSION {self.version}")
+        #print(f"VERSION {self.version}")
         for rule, eclass_id, environment in list_of_matches:
             new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
-            if eclass_id != new_eclass_id:
-                print(f"{eclass_id} MATCHED {rule} with {environment}")
+            #if eclass_id != new_eclass_id:
+                #print(f"{eclass_id} MATCHED {rule} with {environment}")
             self.merge(eclass_id, new_eclass_id)
         self.rebuild()
 
@@ -296,7 +302,7 @@ class EGraph:
             return 0
         return costs[key]
 
-    def extract_term(self, eterm_id):
+    def _extract_term(self, eterm_id):
         """
         Extracts the best term from the egraph based on a simple cost model.
 
@@ -325,17 +331,20 @@ class EGraph:
         def extract_best_term(eclass_id):
             enode = costs[eclass_id][1]
             return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
-        print(costs)
+        # print(costs)
         self.str_repr = ""
-        self.preorder(extract_best_term(self._find(eterm_id)))
+        self._preorder(extract_best_term(self._find(eterm_id)))
+        self.str_repr = self.str_repr.strip()
         return self.str_repr
 
-    def preorder(self, ast_node):
-        """"""
+    def _preorder(self, ast_node):
+        """Traverses the tree (preorder) to create string representation."""
         if len(ast_node.arguments) == 2:
-            self.str_repr += str(ast_node.key) + " "
-            self.preorder(ast_node.arguments[0])
-            self.preorder(ast_node.arguments[1])
+            self.str_repr += "(" + str(ast_node.key) + " "
+            self._preorder(ast_node.arguments[0])
+            self._preorder(ast_node.arguments[1])
+            self.str_repr = self.str_repr.strip()
+            self.str_repr += ") "
         else:
             self.str_repr += ast_node.key + " "
 
@@ -344,12 +353,12 @@ class EGraph:
         if not self.is_saturated:
             while True:
                 v = self.version
-                print('BEST ', self.extract_term(etermid))
+                # print('BEST ', self._extract_term(etermid))
                 self.apply_rules(rules)
                 if v == self.version:
-                    print('BEST ', self.extract_term(etermid))
+                    # print('BEST ', self._extract_term(etermid))
                     self.apply_rules(rules)
-                    print('BEST ', self.extract_term(etermid))
+                    # print('BEST ', self._extract_term(etermid))
                     self.is_saturated = True
                     break
 
