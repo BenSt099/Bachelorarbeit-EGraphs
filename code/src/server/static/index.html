@@ -15,6 +15,17 @@
     function render_egraph() {
         d3.select("#graph").graphviz().renderDot(String.raw``);
     }
+
+    function upload() {
+        let upload_input_form = document.createElement('input');
+        upload_input_form.type = 'file';
+        upload_input_form.onchange = _this => {
+            let files = Array.from(upload_input_form.files);
+            let s = Array.from(files.filter(s => (s.type.endsWith(".js"))));
+            //console.log(s)
+        };
+        upload_input_form.click();
+    }
 </script>
 <!--##########################################################################################################################-->
 <!-- HEADER -->
@@ -101,6 +112,12 @@
                 <div class="container text-center card"
                      style="padding-top: 10px; padding-bottom: 10px">
                     <div class="row">
+                        <div class="col">
+                            <button type="button" onclick="upload()"
+                                    class="btn btn-success">
+                                Upload
+                            </button>
+                        </div>
                         <div class="col">
                             <button type="button" class="btn btn-success">
                                 Save
