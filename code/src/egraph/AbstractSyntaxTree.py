@@ -83,7 +83,7 @@ class AbstractSyntaxTree:
 
         Loops over expression, thereby processing one character at a time.
         Character can be: '+', '*', '-', '/', '<', '>', '(', ')', ' ' or
-        a variable (one character from [a-z] or [A-Z]).
+        a variable (one character from [a-z] or [A-Z]) or a number ([0-9]).
 
         :param expression: A string representing an expression in prefix-notation.
         :returns: Instance of ASTNode which servers as root node of created AST.
