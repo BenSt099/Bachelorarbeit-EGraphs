@@ -166,7 +166,7 @@ class EGraph:
             new_parents.append((p_node, self._find(p_eclass)))
         self.m[self._find(eclass_id)].parents = new_parents
 
-    def _ematch(self, node_pattern):
+    def _ematch(self, eclasses, node_pattern):
         """Takes a pattern and matches it to ENodes in the EGraph.
 
         (DISCLAIMER)
@@ -202,18 +202,14 @@ class EGraph:
                 else:
                     return environment[node_key] is eid, environment
             else:
-                nodes = []
-                for cl in eclasses:
-                    if self._find(cl.id) == eid:
-                        nodes = cl.nodes
-                for enode in nodes:
+                for enode in eclasses[eid]:
                     matches, env_new = enode_matches(node_pattern, enode, environment)
                     if matches:
                         return True, env_new
                 return False, environment
-        eclasses = set(self.m.values())
+
         list_of_matches = []
-        for eclass_id in [self._find(eclass.id) for eclass in eclasses]:
+        for eclass_id in eclasses.keys():
             is_a_match, environment = _match_in(node_pattern, eclass_id, {})
             if is_a_match:
                 list_of_matches.append((eclass_id, environment))
@@ -258,39 +254,17 @@ class EGraph:
                 )
             return self._add(enode)
 
-    def apply_rule(self, rule):
-        """Apply one rule to the egraph.
-
-        (DISCLAIMER)
-        This method is based on work of Zachary DeVito. For more information,
-        please see the implementation section in the module's docstring.
-        """
-        list_of_matches = []
-        for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
-            list_of_matches.append((rule, eclass_id, environment))
-        for rule, eclass_id, environment in list_of_matches:
-            new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
-            self.merge(eclass_id, new_eclass_id)
-        self.rebuild()
-
-    def apply_rules(self, rules):
-        """Apply multiple rules to the egraph.
-
-        (DISCLAIMER)
-        This method is based on work of Zachary DeVito. For more information,
-        please see the implementation section in the module's docstring.
-        """
-        list_of_matches = []
-        for rule in rules:
-            for eclass_id, environment in self._ematch(rule.expr_lhs.root_node):
-                list_of_matches.append((rule, eclass_id, environment))
-        print(f"VERSION {self.version}")
-        for rule, eclass_id, environment in list_of_matches:
-            new_eclass_id = self._substitute(rule.expr_rhs.root_node, environment)
-            if eclass_id != new_eclass_id:
-                print(f"{eclass_id} MATCHED {rule} with {environment}")
-            self.merge(eclass_id, new_eclass_id)
-        self.rebuild()
+    def get_eclasses(self):
+        """"""
+        eclasses = {}
+        eclasses_raw = set(self.m.values())
+        for cl in eclasses_raw:
+            eid = self._find(cl.id)
+            if eid not in eclasses:
+                eclasses[eid] = cl.nodes
+            else:
+                eclasses[eid].extend(cl.nodes)
+        return eclasses
 
     def _cost_model(self, key):
         """Returns the cost of a key (integer) based on a simple cost model."""
@@ -298,40 +272,6 @@ class EGraph:
         if key not in costs.keys():
             return 0
         return costs[key]
-
-    def _extract_term(self, eterm_id):
-        """
-        Extracts the best term from the egraph based on a simple cost model.
-
-        (DISCLAIMER)
-        This method is based on work of Zachary DeVito. For more information,
-        please see the implementation section in the module's docstring.
-        """
-
-        eclasses = {eclass.id: eclass.nodes for eclass in self.m.values()}
-        has_changed = True
-        costs = {eclass: (math.inf, None) for eclass in eclasses.keys()}
-
-        def cost_for_enode(enode):
-            return self._cost_model(enode.key) + sum(
-                costs[eclass_id][0] for eclass_id in enode.arguments
-            )
-
-        while has_changed:
-            has_changed = False
-            for eclass, enodes in eclasses.items():
-                new_cost = min((cost_for_enode(enode), enode) for enode in enodes)
-                if costs[eclass][0] != new_cost[0]:
-                    has_changed = True
-                costs[eclass] = new_cost
-
-        def extract_best_term(eclass_id):
-            enode = costs[eclass_id][1]
-            return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
-        self.str_repr = ""
-        self._preorder(extract_best_term(eterm_id))
-        self.str_repr = self.str_repr.strip()
-        return self.str_repr
 
     def _preorder(self, ast_node):
         """Traverses the tree (preorder) to create string representation."""
@@ -343,18 +283,6 @@ class EGraph:
             self.str_repr += ") "
         else:
             self.str_repr += ast_node.key + " "
-
-    def equality_saturation(self, rules, etermid):
-        """Performs equality saturation."""
-        if not self.is_saturated:
-            while True:
-                v = self.version
-                print('BEST ', self._extract_term(etermid))
-                self.apply_rules(rules)
-                if v == self.version:
-                    print('BEST ', self._extract_term(etermid))
-                    self.is_saturated = True
-                    break
 
     def export_egraph_to_file(self, filepath, extension="pdf"):
         """Exports the EGraph into either svg or pdf file format."""
@@ -464,3 +392,79 @@ class EGraph:
                     )
         dot_commands.append("}")
         return "".join(dot_commands)
+
+def equality_saturation(rules, etermid, egraph):
+    """Performs equality saturation.
+
+    (DISCLAIMER)
+    This method is based on work of Zachary DeVito. For more information,
+    please see the implementation section in the module's docstring.
+    """
+    if not egraph.is_saturated:
+        while True:
+            v = egraph.version
+            print('BEST ', _extract_term(etermid, egraph))
+            apply_rules(rules, egraph)
+            if v == egraph.version:
+                break
+    return egraph
+
+
+def apply_rules(rules, egraph):
+    """Apply multiple rules to the egraph.
+
+    (DISCLAIMER)
+    This method is based on work of Zachary DeVito. For more information,
+    please see the implementation section in the module's docstring.
+    """
+    eclasses = egraph.get_eclasses()
+    list_of_matches = []
+    for rule in rules:
+        for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
+            list_of_matches.append((rule, eclass_id, environment))
+    print(f"VERSION {egraph.version}")
+    for rule, eclass_id, environment in list_of_matches:
+        new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
+        if eclass_id != new_eclass_id:
+            print(f"{eclass_id} MATCHED {rule} with {environment}")
+        egraph.merge(eclass_id, new_eclass_id)
+    egraph.rebuild()
+    # print(egraph.egraph_to_dot())
+    return egraph
+
+def _extract_term(eterm_id, egraph):
+    """
+    Extracts the best term from the egraph based on a simple cost model.
+
+    (DISCLAIMER)
+    This method is based on work of Zachary DeVito. For more information,
+    please see the implementation section in the module's docstring.
+    """
+    eterm_id = egraph._find(eterm_id)
+    eclasses = egraph.get_eclasses()
+    has_changed = True
+    costs = {eclass: (math.inf, None) for eclass in eclasses.keys()}
+
+    def cost_for_enode(enode):
+        return egraph._cost_model(enode.key) + sum(
+            costs[egraph._find(eclass_id)][0] for eclass_id in enode.arguments
+        )
+
+    while has_changed:
+        has_changed = False
+        for eclass, enodes in eclasses.items():
+            x = [(cost_for_enode(enode), enode) for enode in enodes]
+            x.sort(key=lambda student: student[0])
+            new_cost = min(x, key=lambda st: st[0])
+
+            if costs[eclass][0] != new_cost[0]:
+                has_changed = True
+            costs[eclass] = new_cost
+
+    def extract_best_term(eclass_id):
+        enode = costs[eclass_id][1]
+        return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
+    egraph.str_repr = ""
+    egraph._preorder(extract_best_term(eterm_id))
+    egraph.str_repr = egraph.str_repr.strip()
+    return egraph.str_repr
