@@ -78,63 +78,6 @@ class AbstractSyntaxTree:
                 self._string_representation = self._string_representation.strip()
                 self._string_representation += ") "
 
-    def _process_expression_old(self, expression):
-        """Turns given expression into AST thereby returning AST's root node.
-
-        Loops over expression, thereby processing one character at a time.
-        Character can be: '+', '*', '-', '/', '<<', '>>', '(', ')', ' ' or
-        a variable (one character from [a-z] or [A-Z]) or a number ([0-9]).
-
-        :param expression: A string representing an expression in prefix-notation.
-        :returns: Instance of ASTNode which servers as root node of created AST.
-        """
-        root_ast_node = None
-        stack = deque()
-        for character in expression:
-            if character == "(":
-                if not stack:
-                    ast_node = AbstractSyntaxTreeNode()
-                    stack.append(ast_node)
-                    root_ast_node = ast_node
-                else:
-                    last_ast_node = stack[-1]
-                    ast_node = AbstractSyntaxTreeNode()
-                    if last_ast_node.left is None and last_ast_node.right is None:
-                        last_ast_node.left = ast_node
-                    elif last_ast_node.left is None:
-                        last_ast_node.left = ast_node
-                    else:
-                        last_ast_node.right = ast_node
-                    stack.append(ast_node)
-            elif character == ")":
-                stack.pop()
-            elif character in ("/", "*", "+", "-", "<", ">"):
-                last_ast_node = stack[-1]
-                last_ast_node.key = character
-            elif character == " ":
-                pass
-            else:
-                last_ast_node = stack[-1]
-                if (
-                    last_ast_node.left is None
-                    and last_ast_node.right is None
-                    and not last_ast_node.key == ""
-                ):
-                    ast_node = AbstractSyntaxTreeNode()
-                    ast_node.key = character
-                    last_ast_node.left = ast_node
-                elif last_ast_node.left is None and last_ast_node.right is None:
-                    last_ast_node.key = character
-                elif last_ast_node.left is None:
-                    ast_node = AbstractSyntaxTreeNode()
-                    ast_node.key = character
-                    last_ast_node.left = ast_node
-                else:
-                    ast_node = AbstractSyntaxTreeNode()
-                    ast_node.key = character
-                    last_ast_node.right = ast_node
-        return root_ast_node
-
     def _process_expression(self, expression):
         """Turns given expression into AST thereby returning AST's root node.
 
