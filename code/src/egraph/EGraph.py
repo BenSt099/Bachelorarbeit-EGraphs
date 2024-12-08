@@ -27,6 +27,7 @@ from ENode import ENode
 import graphviz
 import pathlib
 import math
+import uuid
 import re
 
 
@@ -94,7 +95,7 @@ class EGraph:
             self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
-                self.m[child].parents.append((enode, eclass_id))
+                self.m[child].parents.add((enode, eclass_id))
             self.h[enode] = eclass_id
             return eclass_id
 
@@ -120,7 +121,7 @@ class EGraph:
     def _new_singleton_eclass(self, enode):
         """Creates a new EClass."""
         new_eclass = EClass()
-        new_eclass.nodes.append(enode)
+        new_eclass.nodes.add(enode)
         self.u.add(new_eclass.id)
         self.m[new_eclass.id] = new_eclass
         return new_eclass.id
@@ -152,18 +153,18 @@ class EGraph:
     def _repair(self, eclass_id):
         """Repairs the EGraph."""
         for p_node, p_eclass in self.m[eclass_id].parents:
-            if p_node in self.h.keys():
-                self.h.pop(p_node)
+            #if p_node in self.h.keys():
+            self.h.pop(p_node)
             p_node = self._canonicalize(p_node)
             self.h[p_node] = self._find(p_eclass)
-        new_parents = []
+        new_parents = set()
         for p_node, p_eclass in self.m[eclass_id].parents:
             p_node = self._canonicalize(p_node)
             if p_node.key in [new_parent[0].key for new_parent in new_parents]:
                 for new_parent in new_parents:
                     if new_parent[0].key == p_node.key:
                         self.merge(p_eclass, new_parent[1])
-            new_parents.append((p_node, self._find(p_eclass)))
+            new_parents.add((p_node, self._find(p_eclass)))
         self.m[self._find(eclass_id)].parents = new_parents
 
     def _ematch(self, eclasses, node_pattern):
@@ -263,7 +264,9 @@ class EGraph:
             if eid not in eclasses:
                 eclasses[eid] = cl.nodes
             else:
-                eclasses[eid].extend(cl.nodes)
+                for xx in cl.nodes:
+                    eclasses[eid].add(xx)
+                # eclasses[eid].append(cl.nodes)
         return eclasses
 
     def _cost_model(self, key):
@@ -315,42 +318,53 @@ class EGraph:
                 + '" { graph [compound=true fillcolor=navajowhite '
                 + 'style="dashed, rounded, filled"]\n'
             )
+            nodes_in_subset = set()
+
             for eclass_id in subset:
-                for enode in self.m[eclass_id].nodes:
-                    differentiator = ""
-                    if enode.key in ("/", "*", "+", "-", "<", ">"):
-                        differentiator = str(node_identifier)
-                    node_set.add(
-                        (str(self._find(next(iter(subset)))), node_identifier, enode)
-                    )
-                    dot_commands.append(
-                        '"' + enode.key + differentiator + '"'
-                        + '[label="<' + str(node_identifier) + "0> | \\"
-                        + enode.key + " | <" + str(node_identifier) + '1>"]\n'
-                    )
-                    node_identifier += 1
+                for n in self.m[eclass_id].nodes:
+                    nodes_in_subset.add(n)
+
+            # for eclass_id in subset:
+            #     for enode in self.m[eclass_id].nodes:
+            for enode in nodes_in_subset:
+                differentiator = ""
+                if enode.key in ("/", "*", "+", "-", "<<", ">>"):
+                    differentiator = str(node_identifier)
+                node_set.add(
+                    (str(self._find(next(iter(subset)))), node_identifier, enode)
+                )
+                second_diff = enode.key
+                if enode.key in ('<<', '>>'):
+                    second_diff = enode.key[0] + '\\' + enode.key[1]
+                dot_commands.append(
+                    '"' + enode.key + differentiator + '"'
+                    + '[label="<' + str(node_identifier) + "0> | \\"
+                    + second_diff + " | <" + str(node_identifier) + '1>"]\n'
+                )
+                node_identifier += 1
             dot_commands.append("}\n")
-        d = 0
+
+        d = str(uuid.uuid4())
         for ecl_id, node_ident, enode in node_set:
             if enode.arguments:
                 differentiator = ""
                 differentiator_arg0 = ""
                 differentiator_arg1 = ""
                 enode_arg0, enode_arg1 = enode.arguments
-                if enode.key in ("/", "*", "+", "-", "<", ">"):
+                if enode.key in ("/", "*", "+", "-", "<<", ">>"):
                     differentiator = str(node_ident)
 
                 k0 = next(iter(self.m[enode_arg0].nodes))
                 k1 = next(iter(self.m[enode_arg1].nodes))
 
-                if k0.key in ("/", "*", "+", "-", "<", ">",):
+                if k0.key in ("/", "*", "+", "-", "<<", ">>",):
                     for eid, nodeid, nodeself in node_set:
                         if k0.key == nodeself.key and eid == str(
                             self._find(enode_arg0)
                         ):
                             differentiator_arg0 = str(nodeid)
 
-                if k1.key in ("/", "*", "+", "-", "<", ">",):
+                if k1.key in ("/", "*", "+", "-", "<<", ">>",):
                     for eid, nodeid, nodeself in node_set:
                         if k1.key == nodeself.key and eid == str(
                             self._find(enode_arg1)
@@ -359,14 +373,14 @@ class EGraph:
 
                 if self._find(enode_arg0) == ecl_id:
                     dot_commands.append(
-                        '"' + str(d) + '" [height=0, width=0, shape=point]\n'
+                        '"' + d + '" [height=0, width=0, shape=point]\n'
                         '"' + enode.key + differentiator + '":' + str(node_ident)
-                        + '0 -> "' + str(d) + '" [dir=none]\n'
-                        + '"' + str(d) + '" -> "'
+                        + '0 -> "' + d + '" [dir=none]\n'
+                        + '"' + d + '" -> "'
                         + str(k0.key) + differentiator_arg0 + '" [lhead='
                         + '"cluster-' + str(self._find(enode_arg0)) + '"' + "]\n"
                     )
-                    d += 1
+                    d = str(uuid.uuid4())
                 else:
                     dot_commands.append(
                         '"' + enode.key + differentiator + '":' + str(node_ident)
@@ -376,14 +390,14 @@ class EGraph:
 
                 if self._find(enode_arg1) == ecl_id:
                     dot_commands.append(
-                        '"' + str(d) + '" [height=0, width=0, shape=point]\n'
+                        '"' + d + '" [height=0, width=0, shape=point]\n'
                         '"' + enode.key + differentiator + '":' + str(node_ident)
-                        + '0 -> "' + str(d) + '" [dir=none]\n'
-                        + '"' + str(d) + '" -> "'
+                        + '0 -> "' + d + '" [dir=none]\n'
+                        + '"' + d + '" -> "'
                         + str(k1.key) + differentiator_arg1 + '" [lhead='
                         + '"cluster-' + str(self._find(enode_arg1)) + '"' + "]\n"
                     )
-                    d += 1
+                    d = str(uuid.uuid4())
                 else:
                     dot_commands.append(
                         '"' + enode.key + differentiator + '":' + str(node_ident)
