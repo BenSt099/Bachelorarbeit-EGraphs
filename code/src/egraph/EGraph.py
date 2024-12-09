@@ -76,7 +76,7 @@ class EGraph:
     def _add(self, enode):
         """Adds an ENode to the EGraph and returns the corresponding EClass-ID."""
         enode = self._canonicalize(enode)
-        if enode.key not in ("/", "*", "+", "-", "<", ">") and enode.key in [
+        if enode.key not in ("/", "*", "+", "-", "<<", ">>") and enode.key in [
             key.key for key in self.h.keys()
         ]:
             for x in self.h.keys():
@@ -92,6 +92,10 @@ class EGraph:
                 if en.key == enode.key and en.arguments == enode.arguments:
                     return self.h[en]
         else:
+            if enode.key == '*':
+                print(enode.key, enode.arguments)
+                for x in self.h.keys():
+                    print(x.key, x.arguments)
             self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
@@ -262,16 +266,17 @@ class EGraph:
         for cl in eclasses_raw:
             eid = self._find(cl.id)
             if eid not in eclasses:
-                eclasses[eid] = cl.nodes
+                eclasses[eid] = set(cl.nodes)
             else:
-                for xx in cl.nodes:
+                for xx in set(cl.nodes):
+                    xx.arguments = [self._find(arg) for arg in xx.arguments]
                     eclasses[eid].add(xx)
-                # eclasses[eid].append(cl.nodes)
+
         return eclasses
 
     def _cost_model(self, key):
         """Returns the cost of a key (integer) based on a simple cost model."""
-        costs = {"+": 1, "*": 2, "-": 1, "/": 3, "<": 1, ">": 1}
+        costs = {"+": 1, "*": 2, "-": 1, "/": 3, "<<": 1, ">>": 1}
         if key not in costs.keys():
             return 0
         return costs[key]
