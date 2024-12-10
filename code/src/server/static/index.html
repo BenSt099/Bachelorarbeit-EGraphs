@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>E-Graphs</title>
+    <link rel="icon" type="image/x-icon" href="logo.svg">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
@@ -108,37 +109,94 @@
                     </button>
                 </div>
 
-
                 <div class="container text-center card"
-                     style="padding-top: 10px; padding-bottom: 10px">
+                     style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
                     <div class="row">
-                        <div class="col">
-                            <button type="button" onclick="upload()"
-                                    class="btn btn-success">
-                                Upload
-                            </button>
+                        <div class="col"
+                             style="margin-left: 20px; margin-right: 20px">
+                            <h5>Mode</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="mode"
+                                       id="mode_standard" checked>
+                                <label class="form-check-label"
+                                       for="mode_standard">
+                                    <b>Standard</b>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="mode"
+                                       id="mode_debug">
+                                <label class="form-check-label"
+                                       for="mode_debug">
+                                    <b>Debug</b>
+                                </label>
+                            </div>
                         </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-success">
-                                Save
-                            </button>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-success">
-                                Extract
-                            </button>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-success">
-                                Export
-                            </button>
+                        <div class="col"
+                             style="margin-left: 20px; margin-right: 20px">
+                            <h5>Export</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="export"
+                                       id="export_pdf" checked>
+                                <label class="form-check-label"
+                                       for="export_pdf">
+                                    <b>PDF</b>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="export"
+                                       id="export_svg">
+                                <label class="form-check-label"
+                                       for="export_svg">
+                                    <b>SVG</b>
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col">
-                            <p></p>
-                        </div>
+                </div>
+
+                <div class="container text-center card"
+                     style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
+                    <div class="btn-group" role="group"
+                         aria-label="Basic example">
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&lt;&lt;</b>
+                        </button>
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&lt;</b>
+                        </button>
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&gt;</b>
+                        </button>
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&gt;&gt;</b>
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="container text-center card"
+                     style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
+                        Status
+                </div>
+
+                <div class="container text-center card"
+                     style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
+                        Extracted Term
+                </div>
+
+                <div class="container text-center card"
+                     style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
+
+                    <div class="btn-group" role="group"
+                         aria-label="Basic example">
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;" onclick="upload()"> Upload
+                        </button>
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> Save
+                        </button>
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> Extract
+                        </button>
+                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> Export
+                        </button>
                     </div>
                 </div>
 
