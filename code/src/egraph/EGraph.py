@@ -11,12 +11,22 @@ Implementation:
         url: https://doi.org/10.1145/3434304
 
     (DISCLAIMER)
-    The methods '_ematch', '_substitute', 'apply_rule', 'apply_rules' are based
-    on a Google Colab notebook from Zachary DeVito (accessed 2024-11-29):
+
+    The methods
+
+    - ``_ematch``
+    - ``_substitute``
+    - ``apply_rules``
+    - ``get_eclasses``
+    - ``equality_saturation``
+    - ``_extract_term``
+
+    are based on a Google Colab notebook from Zachary DeVito (accessed 2024-11-29):
         url: https://colab.research.google.com/drive/1tNOQijJqe5tw-Pk9iqd6HHb2abC5aRid?usp=sharing
 
 Visualisation:
-    Visualising an EGraph can be done by calling egraph_to_dot() on the instance.
+    Visualising an EGraph can be done by calling
+    ``egraph_to_dot(self,nodesep=0.5,ranksep=0.5)``.
     It will return a string of the EGraph in DOT notation.
         url: https://graphviz.org/doc/info/lang.html
 """
@@ -78,10 +88,10 @@ class EGraph:
         enode = self._canonicalize(enode)
         enode_args = [self._find(arg) for arg in enode.arguments]
 
-        aa = []
+        canonical_eclass_ids = []
         for x in self.h.keys():
             x.arguments = [self._find(arg) for arg in x.arguments]
-            aa.append(x.arguments)
+            canonical_eclass_ids.append(x.arguments)
         if enode.key not in ("/", "*", "+", "-", "<<", ">>") and enode.key in [
             key.key for key in self.h.keys()
         ]:
@@ -90,7 +100,7 @@ class EGraph:
                     return self.h[x]
         elif enode in self.h.keys():
             return self.h[enode]
-        elif enode.key in [key.key for key in self.h.keys()] and enode_args in aa:
+        elif enode.key in [key.key for key in self.h.keys()] and enode_args in canonical_eclass_ids:
             for en in self.h.keys():
                 en.arguments = [self._find(arg) for arg in en.arguments]
                 if en.key == enode.key and en.arguments == enode.arguments:
@@ -260,7 +270,14 @@ class EGraph:
             return self._add(enode)
 
     def get_eclasses(self):
-        """"""
+        """
+        Returns a dictionary with a mapping of eclasses to their enodes.
+
+        (DISCLAIMER)
+        This method is based on work of Zachary DeVito. For more information,
+        please see the implementation section in the module's docstring.
+        :return: dict with {eclass -> set(enode, ...)}
+        """
         eclasses = {}
         eclasses_raw = set(self.m.values())
         for cl in eclasses_raw:
@@ -411,6 +428,7 @@ class EGraph:
                     )
         dot_commands.append("}")
         return "".join(dot_commands)
+
 
 def equality_saturation(rules, etermid, egraph):
     """Performs equality saturation.
