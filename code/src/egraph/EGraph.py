@@ -76,6 +76,12 @@ class EGraph:
     def _add(self, enode):
         """Adds an ENode to the EGraph and returns the corresponding EClass-ID."""
         enode = self._canonicalize(enode)
+        enode_args = [self._find(arg) for arg in enode.arguments]
+
+        aa = []
+        for x in self.h.keys():
+            x.arguments = [self._find(arg) for arg in x.arguments]
+            aa.append(x.arguments)
         if enode.key not in ("/", "*", "+", "-", "<<", ">>") and enode.key in [
             key.key for key in self.h.keys()
         ]:
@@ -84,18 +90,12 @@ class EGraph:
                     return self.h[x]
         elif enode in self.h.keys():
             return self.h[enode]
-        elif enode.key in [key.key for key in self.h.keys()] and enode.arguments in [
-            x.arguments for x in self.h.keys()
-        ]:
+        elif enode.key in [key.key for key in self.h.keys()] and enode_args in aa:
             for en in self.h.keys():
                 en.arguments = [self._find(arg) for arg in en.arguments]
                 if en.key == enode.key and en.arguments == enode.arguments:
                     return self.h[en]
         else:
-            if enode.key == '*':
-                print(enode.key, enode.arguments)
-                for x in self.h.keys():
-                    print(x.key, x.arguments)
             self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
