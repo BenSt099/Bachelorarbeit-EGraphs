@@ -1,0 +1,16 @@
+digraph {
+    graph [nodesep=0.5, ranksep=0.5]
+    node [fillcolor=white fontname="Times-Bold" fontsize=20 shape=rect style="rounded"]
+    div [label="/"]
+    mul [label="*"]
+    a [label="a"]
+    two1 [label="2"]
+    two2 [label="2"]
+    
+    div -> mul;
+    div -> two1;
+    mul -> a;
+    mul-> two2;
+
+    // dot -Tsvg ast.dot -o outfile.svg
+}

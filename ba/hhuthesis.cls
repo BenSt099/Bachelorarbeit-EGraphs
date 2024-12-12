@@ -321,7 +321,7 @@
   die vorliegende \@degree{}arbeit selbstst\"andig verfasst und keine anderen
   als die angegebenen Quellen und Hilfsmittel benutzt zu haben.
   Alle Stellen, die aus den Quellen entnommen wurden,
-  sind als solche kenntlich gemacht worden.
+  sind als solche kenntlich gemacht worden. Bei der Erstellung wurde auf den Einsatz von generativer Künstlicher Intelligenz verzichtet.
   Diese Arbeit hat in gleicher oder \"ahnlicher Form
   noch keiner Pr\"ufungsbeh\"orde vorgelegen.
 
