@@ -1,0 +1,32 @@
+digraph parent { graph [compound=true, nodesep=0.5, ranksep=0.5]
+node [fillcolor=white 
+            fontname="Times-Bold" fontsize=20 shape=record style="rounded, filled"]
+subgraph "cluster-b1a66791-36d1-484a-8b4a-1ac3464e5f31" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"*0"[label="<00> | \* | <01>"]
+"/1"[label="<10> | \/ | <11>"]
+"a"[label="<20> | \a | <21>"]
+}
+subgraph "cluster-93f5d43a-d25f-4f8a-88a2-74f7f0c178c6" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"2"[label="<30> | \2 | <31>"]
+}
+subgraph "cluster-cd9118a3-4fbe-4a71-99ff-d3f75353cc00" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"*4"[label="<40> | \* | <41>"]
+"<<5"[label="<50> | \<\< | <51>"]
+}
+subgraph "cluster-3c3b9e22-6ffe-464f-9267-efd722e4a11d" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"/6"[label="<60> | \/ | <61>"]
+"1"[label="<70> | \1 | <71>"]
+}
+"*4":40 -> "/1" [lhead="cluster-b1a66791-36d1-484a-8b4a-1ac3464e5f31"]
+"*4":41 -> "2" [lhead="cluster-93f5d43a-d25f-4f8a-88a2-74f7f0c178c6"]
+"/1":10 -> "*4" [lhead="cluster-cd9118a3-4fbe-4a71-99ff-d3f75353cc00"]
+"/1":11 -> "2" [lhead="cluster-93f5d43a-d25f-4f8a-88a2-74f7f0c178c6"]
+"<<5":50 -> "/1" [lhead="cluster-b1a66791-36d1-484a-8b4a-1ac3464e5f31"]
+"<<5":51 -> "/6" [lhead="cluster-3c3b9e22-6ffe-464f-9267-efd722e4a11d"]
+"403a446b-e24b-4976-81c6-bc55983bec54" [height=0, width=0, shape=point]
+"*0":00 -> "403a446b-e24b-4976-81c6-bc55983bec54" [dir=none]
+"403a446b-e24b-4976-81c6-bc55983bec54" -> "a" [lhead="cluster-b1a66791-36d1-484a-8b4a-1ac3464e5f31"]
+"*0":01 -> "/6" [lhead="cluster-3c3b9e22-6ffe-464f-9267-efd722e4a11d"]
+"/6":60 -> "2" [lhead="cluster-93f5d43a-d25f-4f8a-88a2-74f7f0c178c6"]
+"/6":61 -> "2" [lhead="cluster-93f5d43a-d25f-4f8a-88a2-74f7f0c178c6"]
+}

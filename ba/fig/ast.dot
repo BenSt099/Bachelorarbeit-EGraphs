@@ -1,6 +1,6 @@
 digraph {
     graph [nodesep=0.5, ranksep=0.5]
-    node [fillcolor=white fontname="Times-Bold" fontsize=20 shape=rect style="rounded"]
+    node [fillcolor=white fontname="Times-Bold" fontsize=20 shape=rect]
     div [label="/"]
     mul [label="*"]
     a [label="a"]

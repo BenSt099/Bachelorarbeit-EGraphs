@@ -1,0 +1,20 @@
+digraph parent { graph [compound=true, nodesep=0.5, ranksep=0.5]
+node [fillcolor=white 
+            fontname="Times-Bold" fontsize=20 shape=record style="rounded, filled"]
+subgraph "cluster-53d8df00-35fb-477d-a4b4-f1b2578d5aea" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"a"[label="<00> | \a | <01>"]
+}
+subgraph "cluster-4291ce1d-e101-4ca8-aae9-8678da5fb8cc" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"2"[label="<10> | \2 | <11>"]
+}
+subgraph "cluster-7bb28e8e-978a-4c58-a8d9-96037ac8bf7a" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"*2"[label="<20> | \* | <21>"]
+}
+subgraph "cluster-a7644fbe-caf2-4155-9bc3-b057ca040507" { graph [compound=true fillcolor=navajowhite style="dashed, rounded, filled"]
+"/3"[label="<30> | \/ | <31>"]
+}
+"/3":30 -> "*2" [lhead="cluster-7bb28e8e-978a-4c58-a8d9-96037ac8bf7a"]
+"/3":31 -> "2" [lhead="cluster-4291ce1d-e101-4ca8-aae9-8678da5fb8cc"]
+"*2":20 -> "a" [lhead="cluster-53d8df00-35fb-477d-a4b4-f1b2578d5aea"]
+"*2":21 -> "2" [lhead="cluster-4291ce1d-e101-4ca8-aae9-8678da5fb8cc"]
+}
