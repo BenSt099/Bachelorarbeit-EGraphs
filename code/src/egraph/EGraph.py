@@ -32,8 +32,10 @@ Visualisation:
 """
 
 from scipy.cluster.hierarchy import DisjointSet
-from EClass import EClass
-from ENode import ENode
+# from EClass import EClass
+from egraph.EClass import *
+from egraph.ENode import *
+# from ENode import ENode
 import graphviz
 import pathlib
 import math
