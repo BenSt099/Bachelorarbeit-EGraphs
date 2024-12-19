@@ -16,6 +16,8 @@ Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgan
 
 1. Bitte installieren Sie die [Dependencies](##Dependencies).
 2. Laden Sie sich den Code herunter.
+3. Führen Sie den Befehl ``fastapi run`` im _src_ Ordner aus.
+4. Falls sich der Browser nicht automatisch öffnet, öffnen Sie ihn manuell unter der Adresse http://127.0.0.1:8000.
 
 ## Dependencies
 

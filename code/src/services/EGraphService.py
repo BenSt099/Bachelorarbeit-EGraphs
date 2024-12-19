@@ -1,6 +1,21 @@
 from egraph.EGraph import EGraph
 from egraph.AbstractSyntaxTree import AbstractSyntaxTree
 
+
+def is_valid_expression(expression):
+    """Returns True if the expression is valid, False otherwise.
+
+    :param expression: A string in prefix-notation
+    :return: Boolean
+    """
+    try:
+        ast = AbstractSyntaxTree(expression)
+    except IndexError:
+        return False
+
+    return expression == str(ast)
+
+
 class EGraphService:
     def __init__(self):
         """"""
@@ -9,12 +24,22 @@ class EGraphService:
         self.dict_of_rules = {}
         self.egraphs = []
 
+    def set_service(self, mode, rrc, dict_of_rules):
+        """"""
+        self.mode = mode
+        self.rrc = rrc
+        self.dict_of_rules = dict_of_rules
+
     def set_mode(self, mode):
         self.mode = mode
 
     def add_rule(self, rule):
         self.dict_of_rules[self.rrc] = rule
         self.rrc += 1
+
+    def get_all_rules(self):
+        """"""
+        return self.dict_of_rules
 
     def delete_rule(self, rule):
         self.dict_of_rules.pop(rule)
@@ -27,4 +52,7 @@ class EGraphService:
 
     def get_egraph(self):
         """"""
-        return self.egraphs[-1][0].egraph_to_dot()
+        if len(self.egraphs) != 0:
+            return self.egraphs[-1][0].egraph_to_dot()
+        else:
+            return None

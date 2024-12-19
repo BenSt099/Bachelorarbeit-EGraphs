@@ -57,17 +57,20 @@
                 <div class="input-group mb-3">
                     <input type="text" class="form-control"
                            placeholder="left term" aria-label="left-term"
-                           aria-describedby="btn_rewrite_rule_create">
+                           aria-describedby="btn_rewrite_rule_create"
+                           id="rewrite_rule_create_left">
                     <input type="text" class="form-control"
                            placeholder="right term" aria-label="right-term"
-                           aria-describedby="btn_rewrite_rule_create">
+                           aria-describedby="btn_rewrite_rule_create"
+                           id="rewrite_rule_create_right">
                     <button class="btn btn-success" type="button"
-                            id="btn_rewrite_rule_create">Create
+                            id="btn_rewrite_rule_create" onclick="createrule()">
+                        Create
                     </button>
                 </div>
 
                 <div class="card" style="max-height: 400px; overflow: scroll">
-                    <div class="container text-center">
+                    <div class="container text-center" id="rr_table">
                         <div class="row">
                             <div class="col-6">
                                 <b>Rule</b>
@@ -76,6 +79,17 @@
                                 <b>#</b>
                             </div>
                         </div>
+
+                        <!--                        <div class="row" style="margin-bottom: 10px">-->
+                        <!--                            <div class="col-6">-->
+                        <!--                                (+ a 2) => (+ 2 a)-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col">-->
+                        <!--                                <p>1</p>-->
+                        <!--                                <button type="submit" class="btn btn-success">Apply</button>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+
 
                     </div>
                 </div>
@@ -88,9 +102,11 @@
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="term"
                            aria-label="term"
-                           aria-describedby="btn_control_create" id="control_create_input">
+                           aria-describedby="btn_control_create"
+                           id="control_create_input">
                     <button class="btn btn-success" type="button"
-                            id="btn_control_create" onclick="create_egraph()">Create
+                            id="btn_control_create" onclick="create_egraph()">
+                        Create
                     </button>
                 </div>
 
@@ -148,25 +164,29 @@
                      style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
                     <div class="btn-group" role="group"
                          aria-label="Basic example">
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&lt;&lt;</b>
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"><b>&lt;&lt;</b>
                         </button>
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&lt;</b>
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"><b>&lt;</b>
                         </button>
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&gt;</b>
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"><b>&gt;</b>
                         </button>
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> <b>&gt;&gt;</b>
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"><b>&gt;&gt;</b>
                         </button>
                     </div>
                 </div>
 
-                 <div class="container text-center card" id="status_div"
+                <div class="container text-center card" id="status_div"
                      style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
-                        Status
+                    Status
                 </div>
 
                 <div class="container text-center card"
                      style="padding-top: 10px; padding-bottom: 10px; margin-top: 20px">
-                        Extracted Term
+                    Extracted Term
                 </div>
 
                 <div class="container text-center card"
@@ -174,13 +194,18 @@
 
                     <div class="btn-group" role="group"
                          aria-label="Basic example">
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;" onclick="upload()"> Upload
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"
+                                onclick="upload()"> Upload
                         </button>
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> Save
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"> Save
                         </button>
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> Extract
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"> Extract
                         </button>
-                        <button type="button" class="btn btn-success" style="border: 1px solid black;"> Export
+                        <button type="button" class="btn btn-success"
+                                style="border: 1px solid black;"> Export
                         </button>
                     </div>
                 </div>
