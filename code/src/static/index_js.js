@@ -1,6 +1,77 @@
-function render_egraph(egraph_dot) {
-    d3.select("#graph").graphviz().renderDot(egraph_dot);
+async function contact_server(path, payload, http_method) {
+    let request;
+    if (payload == null) {
+        request = new Request("http://127.0.0.1:8000" + path, {
+            method: http_method
+        });
+    } else {
+        request = new Request("http://127.0.0.1:8000" + path, {
+            method: http_method,
+            body: payload
+        });
+    }
+    return (await fetch(request)).json();
 }
+//https://www.w3schools.com/js/js_async.asp
+//// body: JSON.stringify({"payload": payload}),
+// const response = await fetch(request);
+// return await response.json();
+// if (s['response'] === "false") {
+//     document.getElementById("status_div").innerHTML = "ERROR: Could not contact server.";
+// }
+// ss = s['response'];
+
+function render_egraph(egraph_in_dot) {
+    d3.select("#graph").graphviz().renderDot(egraph_in_dot);
+}
+
+function add_to_status(status, msg) {
+    let row = document.createElement("div");
+    let status_p = document.createElement("div");
+    let msg_p = document.createElement("div");
+    row.className = "row";
+    status_p.style.fontWeight = "bold";
+    status_p.className = "col-3";
+    msg_p.style.fontWeight = "bold";
+    msg_p.className = "col-7";
+    if (status === "[ERROR]: ") {
+        status_p.style.color = "#730101";
+    } else {
+        status_p.style.color = "#1b4808";
+    }
+    status_p.innerHTML = status;
+    msg_p.innerHTML = msg;
+    msg_p.style.paddingRight = "0px";
+    row.appendChild(status_p);
+    row.appendChild(msg_p);
+    document.getElementById("status_msg").appendChild(row);
+    document.getElementById("status_msg").scrollTop = document.getElementById("status_msg").scrollHeight;
+}
+
+function create_egraph() {
+    const resp = contact_server("/createegraph",
+        JSON.stringify({"payload": String(document.getElementById("control_create_input").value)}),
+        "POST").then(
+        function () {
+            add_to_status("EGraph created.")
+        },
+        function () {
+            add_to_status("ERROR: EGraph NOT created.")
+        }
+    );
+
+    const resp2 = contact_server("/loadegraph", null, "GET").then(
+        function () {
+            add_to_status("EGraph created.")
+        },
+        function () {
+            add_to_status("ERROR: EGraph NOT created.")
+        }
+    );
+
+    render_egraph(ss)
+}
+
 
 function upload() {
     let upload_input_form = document.createElement('input');
@@ -13,54 +84,8 @@ function upload() {
     upload_input_form.click();
 }
 
-let ss = String();
 
-async function contact_server(path, payload, http_method) {
-    const url = "http://127.0.0.1:8000/" + path;
-    //https://www.w3schools.com/js/js_async.asp
-
-    const request = new Request(url, {
-        method: http_method,
-        body: JSON.stringify({"payload": payload}),
-    });
-    const response = await fetch(request);
-    const s = await response.json();
-    if (s['response'] === "false") {
-        document.getElementById("status_div").innerHTML = "ERROR: Could not contact server.";
-    }
-    ss = s['response'];
-}
-
-function setStatus(status) {
-    document.getElementById("status_div").innerHTML = status;
-}
-
-function create_egraph() {
-    const input_text = String(document.getElementById("control_create_input").value);
-    const path = "createegraph";
-
-    contact_server(path, input_text, "POST").then(
-        function () {
-            setStatus("EGraph created.")
-        },
-        function () {
-            setStatus("ERROR: EGraph NOT created.")
-        }
-    );
-
-    contact_server("loadegraph", input_text, "POST").then(
-        function () {
-            setStatus("EGraph created.")
-        },
-        function () {
-            setStatus("ERROR: EGraph NOT created.")
-        }
-    );
-
-    render_egraph(ss) //request: Request
-}
-
-function createrule() {
+function create_rule() {
     const input_text1 = String(document.getElementById("rewrite_rule_create_left").value);
     const input_text2 = String(document.getElementById("rewrite_rule_create_right").value);
 
