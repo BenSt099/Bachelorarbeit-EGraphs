@@ -28,7 +28,7 @@ async def create_egraph(request: Request):
 
 
 @app.get("/loadegraph")
-async def load_egraph():
+def load_egraph():
     a = egraphservice.get_egraph()
     if a is not None:
         return {"response": a}

@@ -12,6 +12,7 @@ async function contact_server(path, payload, http_method) {
     }
     return (await fetch(request)).json();
 }
+
 //https://www.w3schools.com/js/js_async.asp
 //// body: JSON.stringify({"payload": payload}),
 // const response = await fetch(request);
@@ -34,10 +35,12 @@ function add_to_status(status, msg) {
     status_p.className = "col-3";
     msg_p.style.fontWeight = "bold";
     msg_p.className = "col-7";
-    if (status === "[ERROR]: ") {
-        status_p.style.color = "#730101";
+    if (status === "[ERROR]") {
+        status_p.style.color = "#b40808";
+    } else if (status === "[INFO]") {
+        status_p.style.color = "#077c7c";
     } else {
-        status_p.style.color = "#1b4808";
+        status_p.style.color = "#c47011";
     }
     status_p.innerHTML = status;
     msg_p.innerHTML = msg;
@@ -48,28 +51,38 @@ function add_to_status(status, msg) {
     document.getElementById("status_msg").scrollTop = document.getElementById("status_msg").scrollHeight;
 }
 
+function set_extracted_term(term) {
+    document.getElementById("term").innerHTML = term;
+}
+
 function create_egraph() {
-    const resp = contact_server("/createegraph",
+    contact_server("/createegraph",
         JSON.stringify({"payload": String(document.getElementById("control_create_input").value)}),
         "POST").then(
-        function () {
-            add_to_status("EGraph created.")
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT create EGraph.");
+            } else {
+                add_to_status("[INFO]", "EGraph created.");
+            }
         },
-        function () {
-            add_to_status("ERROR: EGraph NOT created.")
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
         }
     );
-
-    const resp2 = contact_server("/loadegraph", null, "GET").then(
-        function () {
-            add_to_status("EGraph created.")
+    contact_server("/loadegraph", null, "GET").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT load EGraph.");
+            } else {
+                render_egraph(value['response'])
+                add_to_status("[INFO]", "EGraph loaded.");
+            }
         },
-        function () {
-            add_to_status("ERROR: EGraph NOT created.")
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.")
         }
     );
-
-    render_egraph(ss)
 }
 
 
