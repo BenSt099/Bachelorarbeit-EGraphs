@@ -13,14 +13,6 @@ async function contact_server(path, payload, http_method) {
     return (await fetch(request)).json();
 }
 
-//https://www.w3schools.com/js/js_async.asp
-//// body: JSON.stringify({"payload": payload}),
-// const response = await fetch(request);
-// return await response.json();
-// if (s['response'] === "false") {
-//     document.getElementById("status_div").innerHTML = "ERROR: Could not contact server.";
-// }
-// ss = s['response'];
 
 function render_egraph(egraph_in_dot) {
     d3.select("#graph").graphviz().renderDot(egraph_in_dot);
@@ -64,6 +56,7 @@ function create_egraph() {
                 add_to_status("[WARN]", "Could NOT create EGraph.");
             } else {
                 add_to_status("[INFO]", "EGraph created.");
+                document.getElementById("control_create_input").value = "";
             }
         },
         function (error) {
@@ -99,51 +92,45 @@ function upload() {
 
 
 function create_rule() {
-    const input_text1 = String(document.getElementById("rewrite_rule_create_left").value);
-    const input_text2 = String(document.getElementById("rewrite_rule_create_right").value);
-
-    contact_server2("addrule", input_text1, input_text2).then(
-        function () {
-            setStatus("Rule added.")
+    contact_server("/addrule",
+        JSON.stringify({
+            "payload": "rule",
+            "lhs": String(document.getElementById("rewrite_rule_create_left").value),
+            "rhs": String(document.getElementById("rewrite_rule_create_right").value)
+        }),
+        "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT create Rule.");
+            } else {
+                add_to_status("[INFO]", "Rule created.");
+                render_rule(String(document.getElementById("rewrite_rule_create_left").value),
+                    String(document.getElementById("rewrite_rule_create_right").value));
+            }
         },
-        function () {
-            setStatus("ERROR: Rule NOT added.")
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
         }
     );
-
 }
 
-async function contact_server2(path, payload1, payload2) {
-    const url = "http://127.0.0.1:8000/" + path;
-    //https://www.w3schools.com/js/js_async.asp
 
-    const request = new Request(url, {
-        method: "POST",
-        body: JSON.stringify({"payload1": payload1, "payload2": payload2}),
-    });
-    const response = await fetch(request);
-    const s = await response.json();
-    if (s['response'] === "false") {
-        document.getElementById("status_div").innerHTML = "ERROR: Could not contact server.";
-    }
-}
-
-function render_rules() {
-    // contact server, get all rules
-
-    // const heading = document.createElement("div");
-    // heading.classList.add("row");
-    // const a1 = document.createElement("div");
-    // const a2 = document.createElement("div");
-    // a1.classList.add("col-6");
-    // a2.classList.add("col");
-    // const b1 = document.createElement("b");
-    // const b2 = document.createElement("b");
-    // b1.innerHTML = "Rule";
-    // b2.innerHTML = "#";
-    // a1.appendChild(b1)
-    // a2.appendChild(b2)
-    // heading.appendChild(a1);
-    // heading.appendChild(a2);
-    // document.getElementById("rr_table").appendChild(heading);
+function render_rule(lhs, rhs) {
+    const heading = document.createElement("div");
+    heading.classList.add("row");
+    const a1 = document.createElement("div");
+    const a2 = document.createElement("div");
+    a1.classList.add("col-6");
+    a2.classList.add("col");
+    const b1 = document.createElement("b");
+    const b2 = document.createElement("b");
+    b1.innerHTML = lhs + " => " + rhs;
+    b2.innerHTML = "";
+    a1.appendChild(b1)
+    a2.appendChild(b2)
+    heading.appendChild(a1);
+    heading.appendChild(a2);
+    document.getElementById("rr_table").appendChild(heading);
+    document.getElementById("rewrite_rule_create_left").value = "";
+    document.getElementById("rewrite_rule_create_right").value = "";
 }

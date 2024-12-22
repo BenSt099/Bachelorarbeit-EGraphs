@@ -3,7 +3,7 @@ from webbrowser import open_new
 from fastapi import FastAPI
 from fastapi import Request
 from starlette.staticfiles import StaticFiles
-from services.EGraphService import *
+from EGraphService import *
 from contextlib import asynccontextmanager
 
 
@@ -40,11 +40,10 @@ def load_egraph():
 async def add_rule(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
-    # print(pp)
-    print(pp["payload1"])
-    print(pp["payload2"])
-    # egraphservice.add_rule()
-    return {"response": "true"}
+    if egraphservice.add_rule(pp["lhs"], pp["rhs"]):
+        return {"response": "true"}
+    else:
+        return {"response": "false"}
 
 
 @app.get("/getrules")

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>E-Graphs</title>
+    <link rel="icon" type="image/x-icon" href="logo.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="index_js.js"></script>
@@ -73,13 +74,13 @@
                            aria-describedby="btn_rewrite_rule_create"
                            id="rewrite_rule_create_right">
                     <button class="btn btn-success" type="button"
-                            id="btn_rewrite_rule_create" onclick="createrule()">
+                            id="btn_rewrite_rule_create" onclick="create_rule()">
                         Create
                     </button>
                 </div>
 
-                <div class="card" style="max-height: 400px; overflow: scroll">
-                    <div class="container text-center" id="rr_table">
+                <div class="card" style="max-height: 400px">
+                    <div class="container text-center">
                         <div class="row">
                             <div class="col-6">
                                 <b>Rule</b>
@@ -88,17 +89,8 @@
                                 <b>#</b>
                             </div>
                         </div>
-
-                        <!--                        <div class="row" style="margin-bottom: 10px">-->
-                        <!--                            <div class="col-6">-->
-                        <!--                                (+ a 2) => (+ 2 a)-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col">-->
-                        <!--                                <p>1</p>-->
-                        <!--                                <button type="submit" class="btn btn-success">Apply</button>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-
+                    </div>
+                    <div class="container text-center" id="rr_table" style="overflow: scroll">
 
                     </div>
                 </div>
