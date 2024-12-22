@@ -1,5 +1,6 @@
-from egraph.EGraph import EGraph
-from egraph.AbstractSyntaxTree import AbstractSyntaxTree
+from EGraph import EGraph
+from RewriteRule import RewriteRule
+from AbstractSyntaxTree import AbstractSyntaxTree
 
 
 def is_valid_expression(expression):
@@ -33,9 +34,14 @@ class EGraphService:
     def set_mode(self, mode):
         self.mode = mode
 
-    def add_rule(self, rule):
-        self.dict_of_rules[self.rrc] = rule
-        self.rrc += 1
+    def add_rule(self, lhs, rhs):
+        if is_valid_expression(lhs) and is_valid_expression(rhs):
+            self.dict_of_rules[self.rrc] = RewriteRule(
+                str(self.rrc), lhs, rhs
+            )
+            self.rrc += 1
+            return True
+        return False
 
     def get_all_rules(self):
         """"""
