@@ -29,7 +29,9 @@ async def create_egraph(request: Request):
 
 @app.get("/loadegraph")
 def load_egraph():
-    a = egraphservice.get_egraph()
+    if egraphservice.egraph is None:
+        return {"response": "false"}
+    a = egraphservice.egraph[0].egraph_to_dot()
     if a is not None:
         return {"response": a}
     else:
@@ -40,17 +42,11 @@ def load_egraph():
 async def add_rule(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
-    if egraphservice.add_rule(pp["lhs"], pp["rhs"]):
-        return {"response": "true"}
-    else:
+    c = egraphservice.add_rule(pp["lhs"], pp["rhs"])
+    if c is False:
         return {"response": "false"}
-
-
-@app.get("/getrules")
-async def getrules():
-    """"""
-    # egraphservice.get_rules()
-    return ""
+    else:
+        return {"response": str(c)}
 
 
 @app.post("/exportegraph")
@@ -72,6 +68,16 @@ async def loadfromfile(request: Request):
     """"""
 
     return ""
+
+
+@app.post("/applyrule")
+async def apply_rule(request: Request):
+    """"""
+    payload = await request.body()
+    pp = json.loads(payload)
+    if int(pp["payload"]) in egraphservice.dict_of_rules.keys():
+        return {"response": "true"}
+    return {"response": "false"}
 
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

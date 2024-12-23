@@ -23,6 +23,7 @@ class EGraphService:
         self.mode = 0  # 0 = normal,  1 = debug
         self.rrc = 0  # rewrite rule counter
         self.dict_of_rules = {}
+        self.egraph = None
         self.egraphs = []
 
     def set_service(self, mode, rrc, dict_of_rules):
@@ -36,11 +37,9 @@ class EGraphService:
 
     def add_rule(self, lhs, rhs):
         if is_valid_expression(lhs) and is_valid_expression(rhs):
-            self.dict_of_rules[self.rrc] = RewriteRule(
-                str(self.rrc), lhs, rhs
-            )
+            self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), lhs, rhs)
             self.rrc += 1
-            return True
+            return self.rrc - 1
         return False
 
     def get_all_rules(self):
@@ -54,7 +53,11 @@ class EGraphService:
         """"""
         eg = EGraph()
         eterm_id = eg.add_node(AbstractSyntaxTree(expr).root_node)
-        self.egraphs.append((eg, eterm_id))
+        self.egraph = (eg, eterm_id)
+        self.egraphs = []
+        self.rrc = 0
+        self.mode = 0
+        self.dict_of_rules = {}
 
     def get_egraph(self):
         """"""

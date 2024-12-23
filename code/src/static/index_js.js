@@ -18,6 +18,7 @@ function render_egraph(egraph_in_dot) {
     d3.select("#graph").graphviz().renderDot(egraph_in_dot);
 }
 
+
 function add_to_status(status, msg) {
     let row = document.createElement("div");
     let status_p = document.createElement("div");
@@ -43,9 +44,32 @@ function add_to_status(status, msg) {
     document.getElementById("status_msg").scrollTop = document.getElementById("status_msg").scrollHeight;
 }
 
+
 function set_extracted_term(term) {
     document.getElementById("term").innerHTML = term;
 }
+
+
+function create() {
+    contact_server("/loadegraph", null, "GET").then(
+        function (value) {
+            if (value['response'] !== "false") {
+                if (confirm("There is already an EGraph. Do you want to replace it and all data attached to it?") === true) {
+                    add_to_status("[INFO]", "Creating new EGraph...");
+                    create_egraph();
+                } else {
+                    add_to_status("[INFO]", "Action aborted.");
+                }
+            } else {
+                create_egraph();
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.")
+        }
+    );
+}
+
 
 function create_egraph() {
     contact_server("/createegraph",
@@ -76,6 +100,7 @@ function create_egraph() {
             add_to_status("[ERROR]", "Could NOT contact server.")
         }
     );
+    document.getElementById("control_create_input").value = "";
 }
 
 
@@ -105,7 +130,8 @@ function create_rule() {
             } else {
                 add_to_status("[INFO]", "Rule created.");
                 render_rule(String(document.getElementById("rewrite_rule_create_left").value),
-                    String(document.getElementById("rewrite_rule_create_right").value));
+                    String(document.getElementById("rewrite_rule_create_right").value),
+                    value['response']);
             }
         },
         function (error) {
@@ -115,9 +141,16 @@ function create_rule() {
 }
 
 
-function render_rule(lhs, rhs) {
+function render_rule(lhs, rhs, num) {
     const heading = document.createElement("div");
+    const button = document.createElement("button");
+    button.innerHTML = "Apply";
+    button.type = "button";
+    button.classList.add("btn", "btn-success", "btn-sm");
+    button.style.marginLeft = "10px";
+    button.setAttribute("onclick", "apply_rule(" + num + ")");
     heading.classList.add("row");
+    heading.style.marginBottom = "5px";
     const a1 = document.createElement("div");
     const a2 = document.createElement("div");
     a1.classList.add("col-6");
@@ -125,12 +158,31 @@ function render_rule(lhs, rhs) {
     const b1 = document.createElement("b");
     const b2 = document.createElement("b");
     b1.innerHTML = lhs + " => " + rhs;
-    b2.innerHTML = "";
-    a1.appendChild(b1)
-    a2.appendChild(b2)
+    b2.innerHTML = num;
+    a1.appendChild(b1);
+    a2.appendChild(b2);
+    a2.appendChild(button);
     heading.appendChild(a1);
     heading.appendChild(a2);
     document.getElementById("rr_table").appendChild(heading);
     document.getElementById("rewrite_rule_create_left").value = "";
     document.getElementById("rewrite_rule_create_right").value = "";
+}
+
+
+function apply_rule(number) {
+    contact_server("/applyrule",
+        JSON.stringify({"payload": number}),
+        "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT apply rule to EGraph.");
+            } else {
+                add_to_status("[INFO]", "Applied rule.");
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
+        }
+    );
 }
