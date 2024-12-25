@@ -1,7 +1,41 @@
 \section{Entscheidungen und Probleme}\label{sec:entscheidungenundprobleme}
 
-\subsection{DOT-Format}
+\subsection{Python}
+
+Die Wahl einer Programmiersprache entscheidet über die Möglichkeiten sowie Einschränkungen in einem Projekt, da Programmiersprachen
+unterschiedliche Herangehensweisen an Probleme bieten und meistens für einen spezifischen Zweck entworfen wurden.
+Für dieses Projekt wurde die Allzweck-Programmiersprache \textit{Python} in der Version \textit{3.12} gewählt.
+Dafür gibt es mehrere Gründe. 
+
+\noindent Erstens liegt der Hauptfokus der Anwendung nicht auf Speichereffizienz oder Schnelligkeit, sondern vor allem auf Plattformunabhängigkeit.
+Zweitens wird während der Implementierung Zeit gespart, wodurch mehr Zeit für das übergeordnete Ziel zur Verfügung steht, nämlich eine Anwendung
+für die Lehre zu bauen.
+Drittens ist die Programmiersprache \textit{Python} sehr bekannt und weit verbreitet. Dadurch gibt es bereits zahlreiche Bibliotheken sowie eine große
+Standardbibliothek.
+
+\subsection{DOT-Sprache}
+
+Um einen EGraph visuell darstellen zu können, benötigt man ein Format, in dem man derartige Graphen darstellen kann. 
+\textit{Graphviz} erlaubt das Exportieren von Graphen in \textit{DOT}-Sprache in mehrere Formate, wie z.B. SVG, PDF oder PNG. 
+Damit kann es auch im Browser angezeigt werden.
+Es gibt bereits ein Python-Packet, was den nativen Anschluss an \textit{Graphviz} ermöglicht. Damit muss man nicht über Prozesse o.ä. mit den CLI-Tools
+von \textit{Graphviz} interagieren.
+\textins{Graphviz} ist platformunabhängig und weitreichend getestet.
+
+\subsection{JSON-Format}
+
+Für die Kommunikation zwischen Server und Benutzeroberfläche wurde das \textit{JSON}-Format ausgewählt. Nicht nur ist es für Menschen lesbar und kann im Browser dargestellt werden,
+was das Debugging einfacher macht, sondern es wird sowohl von JavaScript als auch von Python nativ unterstützt. Auch \textit{FastAPI} unterstützt dieses Format.
 
 \subsection{FastAPI}
 
+Für die Interaktion mit dem Benutzer wurde der Browser als Hauptkomponente ausgewählt. Dadurch verzichtet man auf etwaige GUI-Bibliotheken, die zum Teil
+platformspezifische Probleme und Eigenschaften mit sich bringen. Für den Server im Backend gibt es viele Frameworks, darunter Flask, Django und FastAPI.
+\textit{Django} ist ein umfassendes Framework, das ein breites Spektrum an Anwendungsfällen abdeckt. Im Gegensatz dazu bietet \textit{FastAPI}~\cite{fastapi}
+nur essenzielle Funktionen, die für die Entwicklung benötigt werden. Da der Server in diesem Fall nur wenige, standardmäßige Aufgaben erfüllen muss, wurde
+\textit{FastAPI} als Framework ausgewählt, da es für den Nutzen ausreicht.
+
 \subsection{Bootstrap-Framework}
+
+Für die Benutzeroberfläche im Browser wurde auf das CSS-Framework \textit{Bootstrap}~\cite{bootstrap} in der Version 5.3.3 gesetzt. Das Framework ist nicht so JavaScript-lastig
+wie andere Frameworks und enthält eine Standardpalette an nützlichen und optimierten UI-Bausteinen. 
