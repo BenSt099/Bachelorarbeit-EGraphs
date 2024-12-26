@@ -20,20 +20,17 @@ def is_valid_expression(expression):
 class EGraphService:
     def __init__(self):
         """"""
-        self.mode = 0  # 0 = normal,  1 = debug
         self.rrc = 0  # rewrite rule counter
         self.dict_of_rules = {}
         self.egraph = None
         self.egraphs = []
+        self.current_major = 0
+        self.current_minor = 0
 
-    def set_service(self, mode, rrc, dict_of_rules):
+    def set_service(self, rrc, dict_of_rules):
         """"""
-        self.mode = mode
         self.rrc = rrc
         self.dict_of_rules = dict_of_rules
-
-    def set_mode(self, mode):
-        self.mode = mode
 
     def add_rule(self, lhs, rhs):
         if is_valid_expression(lhs) and is_valid_expression(rhs):
@@ -55,13 +52,47 @@ class EGraphService:
         eterm_id = eg.add_node(AbstractSyntaxTree(expr).root_node)
         self.egraph = (eg, eterm_id)
         self.egraphs = []
+        self.egraphs.append(["EGraph created.", eg.egraph_to_dot()])
         self.rrc = 0
-        self.mode = 0
         self.dict_of_rules = {}
 
-    def get_egraph(self):
+    def move_backward(self, mode):
         """"""
-        if len(self.egraphs) != 0:
-            return self.egraphs[-1][0].egraph_to_dot()
+        if mode == "false":
+            return False
         else:
+            if self.current_minor == 0:
+                return False
+            self.current_minor -= 1
+            return True
+
+    def move_forward(self, mode):
+        """"""
+        if mode == "false":
+            return False
+        else:
+            if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
+                return False
+            self.current_minor += 1
+            return True
+
+    def move_fastbackward(self):
+        """"""
+        if self.current_major == 0:
+            return False
+        self.current_major -= 1
+        return True
+
+    def move_fastforward(self):
+        """"""
+        if self.current_major == len(self.egraphs) - 1:
+            return False
+        self.current_major += 1
+        return True
+
+    def get_current_egraph(self):
+        """"""
+        if len(self.egraphs) == 0:
             return None
+        else:
+            return self.egraphs[self.current_major][self.current_minor]

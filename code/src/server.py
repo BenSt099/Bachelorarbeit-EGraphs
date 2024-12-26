@@ -29,13 +29,11 @@ async def create_egraph(request: Request):
 
 @app.get("/loadegraph")
 def load_egraph():
-    if egraphservice.egraph is None:
+    a = egraphservice.get_current_egraph()
+    if a is None:
         return {"response": "false"}
-    a = egraphservice.egraph[0].egraph_to_dot()
-    if a is not None:
-        return {"response": a}
     else:
-        return {"response": "false"}
+        return {"response": "true", "p1": a[0], "p2": a[1]}
 
 
 @app.post("/addrule")
@@ -47,6 +45,24 @@ async def add_rule(request: Request):
         return {"response": "false"}
     else:
         return {"response": str(c)}
+
+
+@app.post("/move")
+async def move(request: Request):
+    """"""
+    payload = await request.body()
+    pp = json.loads(payload)
+    if pp["payload"] == "backward":
+        egraphservice.move_backward(pp['p1'])
+    elif pp["payload"] == "forward":
+        egraphservice.move_forward(pp['p1'])
+    elif pp["payload"] == "fastbackward":
+        egraphservice.move_fastbackward()
+    elif pp["payload"] == "fastforward":
+        egraphservice.move_fastforward()
+    else:
+        return {"response": "false"}
+    return {"response": "true"}
 
 
 @app.post("/exportegraph")

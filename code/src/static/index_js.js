@@ -87,19 +87,7 @@ function create_egraph() {
             add_to_status("[ERROR]", "Could NOT contact server.");
         }
     );
-    contact_server("/loadegraph", null, "GET").then(
-        function (value) {
-            if (value['response'] === "false") {
-                add_to_status("[WARN]", "Could NOT load EGraph.");
-            } else {
-                render_egraph(value['response'])
-                add_to_status("[INFO]", "EGraph loaded.");
-            }
-        },
-        function (error) {
-            add_to_status("[ERROR]", "Could NOT contact server.")
-        }
-    );
+    loadegraph();
     document.getElementById("control_create_input").value = "";
 }
 
@@ -183,6 +171,46 @@ function apply_rule(number) {
         },
         function (error) {
             add_to_status("[ERROR]", "Could NOT contact server.");
+        }
+    );
+}
+
+
+function move_in_debug_info(way) {
+    contact_server("/move",
+        JSON.stringify({
+            "payload": way,
+            "p1": String(document.getElementById("mode_debug").checked)
+        }),
+        "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT move in debug information.");
+            } else {
+                add_to_status("[INFO]", way + ".");
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
+        }
+    );
+    loadegraph();
+}
+
+
+function loadegraph() {
+    contact_server("/loadegraph", null, "GET").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT load EGraph.");
+            } else {
+                render_egraph(value['p2'])
+                add_to_status("[INFO]", "EGraph loaded.");
+                add_to_status("[INFO]", value['p1'])
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.")
         }
     );
 }

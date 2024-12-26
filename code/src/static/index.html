@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- (DISCLAIMER) -->
+    <!-- Dieses Projekt, insbesondere die UI, nutzt Teile vom CSS-Framework Bootstrap v5.3.3 (LINK: https://getbootstrap.com/) -->
     <meta charset="UTF-8">
     <title>E-Graphs</title>
     <link rel="icon" type="image/x-icon" href="logo.png">
@@ -175,20 +177,24 @@
                              style="height: 100%; width: 100%">
                             <button type="button" class="btn btn-success"
                                     style="border: 1px solid black;"
-                                    id="leftleft_btn">
+                                    id="leftleft_btn"
+                                    onclick="move_in_debug_info('fastbackward')">
                                 <b>&lt;&lt;</b>
                             </button>
                             <button type="button" class="btn btn-success"
                                     style="border: 1px solid black;"
-                                    id="left_btn"><b>&lt;</b>
+                                    id="left_btn"
+                                    onclick="move_in_debug_info('backward')"><b>&lt;</b>
                             </button>
                             <button type="button" class="btn btn-success"
                                     style="border: 1px solid black;"
-                                    id="right_btn"><b>&gt;</b>
+                                    id="right_btn"
+                                    onclick="move_in_debug_info('forward')"><b>&gt;</b>
                             </button>
                             <button type="button" class="btn btn-success"
                                     style="border: 1px solid black;"
-                                    id="rightright_btn">
+                                    id="rightright_btn"
+                                    onclick="move_in_debug_info('fastforward')">
                                 <b>&gt;&gt;</b>
                             </button>
                         </div>
