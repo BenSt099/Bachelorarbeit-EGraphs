@@ -92,6 +92,7 @@ async def apply_rule(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
     if int(pp["payload"]) in egraphservice.dict_of_rules.keys():
+        egraphservice.apply(int(pp['payload']))
         return {"response": "true"}
     return {"response": "false"}
 

@@ -325,7 +325,7 @@ class EGraph:
         )
         return True, filepath
 
-    def egraph_to_dot(self, nodesep=0.5, ranksep=0.5):
+    def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_nodes = [], marked_eclasses = []):
         """Returns a string of the EGraph in DOT notation."""
         dot_commands = [
             "digraph parent { graph [compound=true, nodesep=" + str(nodesep)
@@ -334,11 +334,15 @@ class EGraph:
         ]
         node_set = set()
         node_identifier = 0
+        fillcolor = 'fillcolor=navajowhite'
         for subset in self.u.subsets():
+            if str(self._find(next(iter(subset)))) in marked_eclasses:
+                fillcolor = 'fillcolor=red'
             dot_commands.append(
                 'subgraph "cluster-' + str(self._find(next(iter(subset))))
-                + '" { graph [compound=true fillcolor=navajowhite '
-                + 'style="dashed, rounded, filled"]\n'
+                + '" { graph [compound=true '
+                + fillcolor
+                + ' style="dashed, rounded, filled"]\n'
             )
             nodes_in_subset = set()
 
@@ -349,6 +353,7 @@ class EGraph:
             # for eclass_id in subset:
             #     for enode in self.m[eclass_id].nodes:
             for enode in nodes_in_subset:
+                fillcol = ', fillcolor=white'
                 differentiator = ""
                 if enode.key in ("/", "*", "+", "-", "<<", ">>"):
                     differentiator = str(node_identifier)
@@ -358,10 +363,13 @@ class EGraph:
                 second_diff = enode.key
                 if enode.key in ('<<', '>>'):
                     second_diff = enode.key[0] + '\\' + enode.key[1]
+                if enode in marked_nodes:
+                    fillcol = ', fillcolor=red'
                 dot_commands.append(
                     '"' + enode.key + differentiator + '"'
                     + '[label="<' + str(node_identifier) + "0> | \\"
-                    + second_diff + " | <" + str(node_identifier) + '1>"]\n'
+                    + second_diff + " | <" + str(node_identifier) + '1>" '
+                    + fillcol + '"]\n'
                 )
                 node_identifier += 1
             dot_commands.append("}\n")
@@ -454,20 +462,27 @@ def apply_rules(rules, egraph):
     This method is based on work of Zachary DeVito. For more information,
     please see the implementation section in the module's docstring.
     """
+    debug_info = []
     eclasses = egraph.get_eclasses()
     list_of_matches = []
     for rule in rules:
         for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
             list_of_matches.append((rule, eclass_id, environment))
+            debug_info.append(("MATCHED EClass with " + str(environment) + ".", egraph.egraph_to_dot(marked_eclasses=[eclass_id])))
+
     print(f"VERSION {egraph.version}")
     for rule, eclass_id, environment in list_of_matches:
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
         if eclass_id != new_eclass_id:
             print(f"{eclass_id} MATCHED {rule} with {environment}")
+
+        debug_info.append(("MERGE colored eclasses.", egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id])))
         egraph.merge(eclass_id, new_eclass_id)
+    debug_info.append(("REBUILD colored eclasses.", egraph.egraph_to_dot(marked_eclasses=egraph.pending)))
     egraph.rebuild()
+    debug_info.append(("EGraph was rebuilt. Done.", egraph.egraph_to_dot()))
     # print(egraph.egraph_to_dot())
-    return egraph
+    return egraph, debug_info
 
 def _extract_term(eterm_id, egraph):
     """

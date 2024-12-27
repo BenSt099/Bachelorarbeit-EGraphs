@@ -1,4 +1,4 @@
-from EGraph import EGraph
+from EGraph import EGraph, apply_rules
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
 
@@ -38,6 +38,12 @@ class EGraphService:
             self.rrc += 1
             return self.rrc - 1
         return False
+
+    def apply(self, rule):
+        """Apply a rewrite rule to the egraph."""
+        eg, dbg = apply_rules(self.egraph[0], [self.dict_of_rules[rule]])
+        self.egraph = (eg, self.egraph[1])
+        self.egraphs.append(dbg)
 
     def get_all_rules(self):
         """"""
