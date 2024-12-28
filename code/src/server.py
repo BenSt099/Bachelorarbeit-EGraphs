@@ -52,10 +52,14 @@ async def move(request: Request):
     """"""
     payload = await request.body()
     pp = json.loads(payload)
-    if pp["payload"] == "backward":
-        egraphservice.move_backward(pp['p1'])
-    elif pp["payload"] == "forward":
-        egraphservice.move_forward(pp['p1'])
+    if pp["payload"] == "backward" and pp['p1'] == "false":
+        return {"response": "false"}
+    elif pp["payload"] == "backward" and pp['p1'] != "false":
+        egraphservice.move_backward()
+    elif pp["payload"] == "forward" and pp['p1'] == "false":
+        return {"response": "false"}
+    elif pp["payload"] == "forward" and pp['p1'] != "false":
+        egraphservice.move_forward()
     elif pp["payload"] == "fastbackward":
         egraphservice.move_fastbackward()
     elif pp["payload"] == "fastforward":

@@ -62,39 +62,39 @@ class EGraphService:
         self.rrc = 0
         self.dict_of_rules = {}
 
-    def move_backward(self, mode):
+    def move_backward(self):
         """"""
-        if mode == "false":
-            return False
+        if self.current_minor == 0:
+            if self.current_major == 0:
+                pass
+            else:
+                self.current_major -= 1
+                self.current_minor = len(self.egraphs[self.current_major]) - 1
         else:
-            if self.current_minor == 0:
-                return False
             self.current_minor -= 1
-            return True
 
-    def move_forward(self, mode):
+    def move_forward(self):
         """"""
-        if mode == "false":
-            return False
+        if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
+            if self.current_major == len(self.egraphs) - 1:
+                pass
+            else:
+                self.current_minor = 0
+                self.current_major += 1
         else:
-            if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
-                return False
             self.current_minor += 1
-            return True
 
     def move_fastbackward(self):
         """"""
-        if self.current_major == 0:
-            return False
-        self.current_major -= 1
-        return True
+        if self.current_major != 0:
+            self.current_major -= 1
+            self.current_minor = len(self.egraphs[self.current_major]) - 1
 
     def move_fastforward(self):
         """"""
-        if self.current_major == len(self.egraphs) - 1:
-            return False
-        self.current_major += 1
-        return True
+        if self.current_major != len(self.egraphs) - 1:
+            self.current_major += 1
+            self.current_minor = len(self.egraphs[self.current_major]) - 1
 
     def get_current_egraph(self):
         """"""
