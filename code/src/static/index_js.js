@@ -56,6 +56,9 @@ function create() {
             if (value['response'] !== "false") {
                 if (confirm("There is already an EGraph. Do you want to replace it and all data attached to it?") === true) {
                     add_to_status("[INFO]", "Creating new EGraph...");
+                    for (const child of document.getElementById("rr_table").children) {
+                        document.getElementById("rr_table").removeChild(child);
+                    }
                     create_egraph();
                 } else {
                     add_to_status("[INFO]", "Action aborted.");
@@ -135,6 +138,7 @@ function render_rule(lhs, rhs, num) {
     button.innerHTML = "Apply";
     button.type = "button";
     button.classList.add("btn", "btn-success", "btn-sm");
+    button.id = "ar" + String(num);
     button.style.marginLeft = "10px";
     button.setAttribute("onclick", "apply_rule(" + num + ")");
     heading.classList.add("row");
@@ -167,6 +171,7 @@ function apply_rule(number) {
                 add_to_status("[WARN]", "Could NOT apply rule to EGraph.");
             } else {
                 add_to_status("[INFO]", "Applied rule.");
+                document.getElementById("ar" + String(number)).innerHTML = "Applied";
             }
         },
         function (error) {

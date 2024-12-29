@@ -43,8 +43,7 @@ class EGraphService:
         """Apply a rewrite rule to the egraph."""
         eg, dbg = apply_rules([self.dict_of_rules[rule]], self.egraph[0])
         self.egraph = (eg, self.egraph[1])
-        for x in dbg:
-            self.egraphs[self.current_major].append(x)
+        self.egraphs.append(dbg)
 
     def get_all_rules(self):
         """"""
