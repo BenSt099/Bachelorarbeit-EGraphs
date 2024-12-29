@@ -23,7 +23,7 @@ class EGraphService:
         self.rrc = 0  # rewrite rule counter
         self.dict_of_rules = {}
         self.egraph = None
-        self.egraphs = []
+        self.egraphs = [[]]
         self.current_major = 0
         self.current_minor = 0
 
@@ -41,9 +41,10 @@ class EGraphService:
 
     def apply(self, rule):
         """Apply a rewrite rule to the egraph."""
-        eg, dbg = apply_rules(self.egraph[0], [self.dict_of_rules[rule]])
+        eg, dbg = apply_rules([self.dict_of_rules[rule]], self.egraph[0])
         self.egraph = (eg, self.egraph[1])
-        self.egraphs.append(dbg)
+        for x in dbg:
+            self.egraphs[self.current_major].append(x)
 
     def get_all_rules(self):
         """"""
@@ -57,8 +58,10 @@ class EGraphService:
         eg = EGraph()
         eterm_id = eg.add_node(AbstractSyntaxTree(expr).root_node)
         self.egraph = (eg, eterm_id)
-        self.egraphs = []
-        self.egraphs.append(["EGraph created.", eg.egraph_to_dot()])
+        self.egraphs = [[]]
+        self.current_major = 0
+        self.current_minor = 0
+        self.egraphs[self.current_major].append(["EGraph created.", eg.egraph_to_dot()])
         self.rrc = 0
         self.dict_of_rules = {}
 
@@ -98,7 +101,7 @@ class EGraphService:
 
     def get_current_egraph(self):
         """"""
-        if len(self.egraphs) == 0:
+        if self.egraphs == [[]]:
             return None
         else:
             return self.egraphs[self.current_major][self.current_minor]
