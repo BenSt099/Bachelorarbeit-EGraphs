@@ -1,10 +1,12 @@
 import json
+from contextlib import asynccontextmanager
 from webbrowser import open_new
+
 from fastapi import FastAPI
 from fastapi import Request
 from starlette.staticfiles import StaticFiles
+
 from EGraphService import *
-from contextlib import asynccontextmanager
 
 
 @asynccontextmanager
@@ -52,13 +54,13 @@ async def move(request: Request):
     """"""
     payload = await request.body()
     pp = json.loads(payload)
-    if pp["payload"] == "backward" and pp['p1'] == "false":
+    if pp["payload"] == "backward" and pp["p1"] == "false":
         return {"response": "false"}
-    elif pp["payload"] == "backward" and pp['p1'] != "false":
+    elif pp["payload"] == "backward" and pp["p1"] != "false":
         egraphservice.move_backward()
-    elif pp["payload"] == "forward" and pp['p1'] == "false":
+    elif pp["payload"] == "forward" and pp["p1"] == "false":
         return {"response": "false"}
-    elif pp["payload"] == "forward" and pp['p1'] != "false":
+    elif pp["payload"] == "forward" and pp["p1"] != "false":
         egraphservice.move_forward()
     elif pp["payload"] == "fastbackward":
         egraphservice.move_fastbackward()
@@ -80,14 +82,19 @@ async def export_egraph(request: Request):
 async def save_egraph(request: Request):
     """"""
 
-    return ""
+    # egraphservice.get_snapshot()
+
+    return {"response": "true"}
 
 
 @app.post("/loadfromfile")
 async def loadfromfile(request: Request):
     """"""
-
-    return ""
+    payload = await request.body()
+    pp = json.loads(payload)
+    if egraphservice.set_service(json.loads(pp["p1"])):
+        return {"response": "true"}
+    return {"response": "false"}
 
 
 @app.post("/applyrule")
@@ -96,7 +103,7 @@ async def apply_rule(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
     if int(pp["payload"]) in egraphservice.dict_of_rules.keys():
-        egraphservice.apply(int(pp['payload']))
+        egraphservice.apply(int(pp["payload"]))
         return {"response": "true"}
     return {"response": "false"}
 

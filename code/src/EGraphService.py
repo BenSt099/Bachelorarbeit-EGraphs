@@ -23,14 +23,19 @@ class EGraphService:
         self.rrc = 0  # rewrite rule counter
         self.dict_of_rules = {}
         self.egraph = None
+        self.expr = None
         self.egraphs = [[]]
         self.current_major = 0
         self.current_minor = 0
 
-    def set_service(self, rrc, dict_of_rules):
+    def get_snapshot(self):
         """"""
-        self.rrc = rrc
-        self.dict_of_rules = dict_of_rules
+        return {'rrc': self.rrc, 'dor': self.dict_of_rules, 'graph': self.expr}
+
+    def set_service(self, data):
+        """"""
+        # TODO
+        return True
 
     def add_rule(self, lhs, rhs):
         if is_valid_expression(lhs) and is_valid_expression(rhs):
@@ -57,6 +62,7 @@ class EGraphService:
         eg = EGraph()
         eterm_id = eg.add_node(AbstractSyntaxTree(expr).root_node)
         self.egraph = (eg, eterm_id)
+        self.expr = expr
         self.egraphs = [[]]
         self.current_major = 0
         self.current_minor = 0

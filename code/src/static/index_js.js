@@ -94,14 +94,65 @@ function create_egraph() {
     document.getElementById("control_create_input").value = "";
 }
 
+function export_egraph() {
+
+
+    contact_server("/exportegraph",
+        JSON.stringify({
+            "payload": "rule"
+        }),
+        "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT create Rule.");
+            } else {
+                add_to_status("[INFO]", "Rule created.");
+
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
+        }
+    );
+}
+
 
 function upload() {
     let upload_input_form = document.createElement('input');
     upload_input_form.type = 'file';
     upload_input_form.onchange = _this => {
         let files = Array.from(upload_input_form.files);
-        let s = Array.from(files.filter(s => (s.type.endsWith(".json"))));
-        //console.log(s)
+        let s = Array.from(files.filter(s => (s.type === "application/json")));
+        let t = s.at(0);
+        let reader = new FileReader();
+        reader.readAsText(t);
+        reader.onload = function () {
+            try {
+                let k = reader.result
+                const obj = JSON.parse(k);
+                // console.log(k);
+                // console.log(obj);
+                contact_server("/loadfromfile",
+                    JSON.stringify({
+                        "payload": "rule",
+                        "p1": reader.result.trim()
+                    }),
+                    "POST").then(
+                    function (value) {
+                        if (value['response'] === "false") {
+                            add_to_status("[WARN]", "Could NOT upload file.");
+                        } else {
+                            add_to_status("[INFO]", "Uploaded file. Loaded EGraph.");
+                        }
+                    },
+                    function (error) {
+                        add_to_status("[ERROR]", "Could NOT contact server.");
+                    }
+                );
+            } catch (error) {
+                add_to_status("[ERROR]", "File could not be parsed.");
+            }
+        };
     };
     upload_input_form.click();
 }
