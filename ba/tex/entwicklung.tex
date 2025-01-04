@@ -2,7 +2,26 @@
 
 \subsection{E-Graphs}
 
+Die Erstellung eines EGraphs erfolgt in mehreren Schritten. 
+
 \subsubsection{AST}
+
+Um die Erstellung eines EGraphs aus einem gegebenen mathematischen Ausdruck zu vereinfachen, wird zuerst ein äquivalenter \textit{Abstract Syntax Tree} (AST)
+erstellt. Dafür werden die Klassen \textit{AbstractSyntaxTreeNode} und \textit{AbstractSyntaxTree} benötigt.
+Die Klasse \textit{AbstractSyntaxTreeNode} stellt einen Knoten im AST dar und hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
+Der Schlüssel speichert die jeweilige Information ab, während die beiden Zeiger auf einen weiteren Teilbaum zeigen oder leer sind.
+
+Die Klasse \textit{AbstractSyntaxTree} wird mit einem Asudruck initialisiert. Der Asdruck wird sogleich durch die Methode \textit{\_process\_expression(expression)} 
+in einen AST umgewandelt und im Attribut \textit{root\_node} gespeichert, welches den obersten Knoten des AST beinhaltet. 
+Die Methode \textit{\_process\_expression(expression)} funktioniert wie folgt:
+
+
+
+
+Das zweite Attribut, \textit{string\_representation}, enthält den AST im String-Format. Dies dient primär Debug-Zwecken.
+Eine String-Repräsentation kann erreicht werden, indem man den erstellten AST in Preorder-Traversierung durchgeht und dabei die Schlüssel der Knoten an einen String anhängt.
+Zusätzlich wird eine öffnende Klammer angehängt, wenn der Knoten zwei Kinder hat (also eine arithmetische Operation repräsentiert) und eine schließende Klammer,
+wenn beide Kinder abgearbeitet wurden. Somit erhält man den eingegebenen Ausdruck exakt zurück, falls dieser korrekt eingegeben wurde.
 
 \subsubsection{egg-Implementierung}
 
