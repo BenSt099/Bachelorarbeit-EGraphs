@@ -334,12 +334,13 @@ class EGraph:
         ]
         node_set = set()
         node_identifier = 0
-        fillcolor = 'fillcolor=\"navajowhite\"'
         for subset in self.u.subsets():
-            if str(self._find(next(iter(subset)))) in marked_eclasses:
+            fillcolor = 'fillcolor=\"navajowhite\"'
+            ss = str(self._find(next(iter(subset))))
+            if ss in marked_eclasses:
                 fillcolor = 'fillcolor=\"red\"'
             dot_commands.append(
-                'subgraph \"cluster-' + str(self._find(next(iter(subset))))
+                'subgraph \"cluster-' + ss
                 + '\" { graph [compound=true '
                 + fillcolor
                 + ' style="dashed, rounded, filled"]\n'
@@ -478,6 +479,7 @@ def apply_rules(rules, egraph):
 
         debug_info.append(["MERGE colored eclasses.", egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id])])
         egraph.merge(eclass_id, new_eclass_id)
+    debug_info.append(["MERGED.", egraph.egraph_to_dot()])
     debug_info.append(["REBUILD colored eclasses.", egraph.egraph_to_dot(marked_eclasses=egraph.pending)])
     egraph.rebuild()
     debug_info.append(["EGraph was rebuilt. Done.", egraph.egraph_to_dot()])
