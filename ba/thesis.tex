@@ -92,9 +92,31 @@
 %% \languagename um dynamisch zwischen ngerman oder english zu wechseln.
 \usepackage[\languagename,capitalize]{cleveref}
 
+\usepackage{lcep}
 \usepackage{float}
-
+% \usepackage{fancyvrb}
 \graphicspath{ {./fig/} }
+
+\lstdefinestyle{codestyleBA}{
+    backgroundcolor=\color{white},   
+    commentstyle=\color{black},
+    keywordstyle=\color{black},
+    numberstyle=\tiny\color{black},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=codestyleBA}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% (Ende) LaTeX Packages in Nutzung                                           %%
@@ -145,6 +167,7 @@
 \backmatter
 \listoffigures
 \listoftables
+\lstlistoflistings
 
 \clearpage
 \bibliography{references}

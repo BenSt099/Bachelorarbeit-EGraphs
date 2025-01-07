@@ -2,7 +2,8 @@
 
 \subsection{E-Graphs}
 
-Die Erstellung eines EGraphs erfolgt in mehreren Schritten. 
+Die Erstellung eines EGraphs erfolgt in mehreren Schritten. Aus einem eingegebenen mathematischen Ausdruck wird im ersten Schritt ein Abstract Syntax Tree erstellt.
+Im zweiten Schritt wird dieser in einen EGraph umgewandelt.
 
 \subsubsection{AST}
 
@@ -11,17 +12,155 @@ erstellt. Dafür werden die Klassen \textit{AbstractSyntaxTreeNode} und \textit{
 Die Klasse \textit{AbstractSyntaxTreeNode} stellt einen Knoten im AST dar und hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
 Der Schlüssel speichert die jeweilige Information ab, während die beiden Zeiger auf einen weiteren Teilbaum zeigen oder leer sind.
 
-Die Klasse \textit{AbstractSyntaxTree} wird mit einem Asudruck initialisiert. Der Asdruck wird sogleich durch die Methode \textit{\_process\_expression(expression)} 
-in einen AST umgewandelt und im Attribut \textit{root\_node} gespeichert, welches den obersten Knoten des AST beinhaltet. 
+\begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTreeNode}]
+class AbstractSyntaxTreeNode:
+    def __init__(self):
+        self.left = None
+        self.key = str()
+        self.right = None
+\end{lstlisting}
+
+
+Die Klasse \textit{AbstractSyntaxTree} wird mit einem Asudruck initialisiert. Der Asdruck wird sogleich durch die Methode \textit{\_process\_expression(expression)}
+in einen AST umgewandelt und im Attribut \textit{root\_node} gespeichert, welches den obersten Knoten des AST beinhaltet.
 Die Methode \textit{\_process\_expression(expression)} funktioniert wie folgt:
 
+\begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTree}]
+class AbstractSyntaxTree:
 
+    ... # __init__ und __str__ weggelassen 
 
+    def _preorder(self, ast_node):
+        if ast_node is not None:
+            if ast_node.key in ("/", "*", "+", "-", "<<", ">>"):
+                self.str_representation += "(" + str(ast_node.key) + " "
+            else:
+                self.str_representation += str(ast_node.key) + " "
+            self._preorder(ast_node.left)
+            self._preorder(ast_node.right)
+            if ast_node.key in ("/", "*", "+", "-", "<<", ">>"):
+                self.str_representation = self.str_representation.strip()
+                self.str_representation += ") "
+
+    def _process_expression(self, expression):
+        root_ast_node = None
+        stack = deque()
+        word = ""
+
+        for character in expression:
+            if character == "(":
+                if not stack:
+                    ast_node = AbstractSyntaxTreeNode()
+                    stack.append(ast_node)
+                    root_ast_node = ast_node
+                else:
+                    last_ast_node = stack[-1]
+                    ast_node = AbstractSyntaxTreeNode()
+                    if last_ast_node.left is None and last_ast_node.right is None:
+                        last_ast_node.left = ast_node
+                    elif last_ast_node.left is None:
+                        last_ast_node.left = ast_node
+                    else:
+                        last_ast_node.right = ast_node
+                    stack.append(ast_node)
+            elif character == ")" and word == "":
+                stack.pop()
+            elif character in ("/", "*", "+", "-"):
+                last_ast_node = stack[-1]
+                last_ast_node.key = character
+            elif (word == "<" or word == ">") and (character == "<" or character == ">"):
+                word += character
+                last_ast_node = stack[-1]
+                last_ast_node.key = word
+                word = ""
+            elif (character == " " or character == ')') and word != "":
+                last_ast_node = stack[-1]
+                if last_ast_node.left is None and last_ast_node.right is None and not last_ast_node.key == "":
+                    ast_node = AbstractSyntaxTreeNode()
+                    ast_node.key = word
+                    last_ast_node.left = ast_node
+                elif last_ast_node.left is None and last_ast_node.right is None:
+                    last_ast_node.key = word
+                elif last_ast_node.left is None:
+                    ast_node = AbstractSyntaxTreeNode()
+                    ast_node.key = word
+                    last_ast_node.left = ast_node
+                else:
+                    ast_node = AbstractSyntaxTreeNode()
+                    ast_node.key = word
+                    last_ast_node.right = ast_node
+                if character == ")":
+                    stack.pop()
+                word = ""
+            elif character == " ":
+                pass
+            else:
+                word += character
+        return root_ast_node
+\end{lstlisting}
+
+Der Ausdruck wird von links nach rechts verarbeitet. Dabei wird der momentane Knoten auf einem Stack verwaltet.
+Durch öffnende Klammern wird ein neuer Knoten erstellt, der, wenn eine schließende Klammer auftritt, wieder vom Stack genommen wird.
+Arithmetische Operationen werden als Schlüssel vom letzten Knoten auf dem Stack gesetzt.
+Leerzeichen werden dabei ignoriert.
 
 Das zweite Attribut, \textit{string\_representation}, enthält den AST im String-Format. Dies dient primär Debug-Zwecken.
 Eine String-Repräsentation kann erreicht werden, indem man den erstellten AST in Preorder-Traversierung durchgeht und dabei die Schlüssel der Knoten an einen String anhängt.
 Zusätzlich wird eine öffnende Klammer angehängt, wenn der Knoten zwei Kinder hat (also eine arithmetische Operation repräsentiert) und eine schließende Klammer,
 wenn beide Kinder abgearbeitet wurden. Somit erhält man den eingegebenen Ausdruck exakt zurück, falls dieser korrekt eingegeben wurde.
+
+\subsubsection{EGraph}
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{ENode}]
+class ENode:
+    def __init__(self, key, arguments):
+        self.key = key
+        self.arguments = arguments
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}]
+import uuid
+
+class EClass:
+    def __init__(self):
+        self.id = str(uuid.uuid4())
+        self.nodes = set()
+        self.parents = set()
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}]
+import AbstractSyntaxTree
+
+class RewriteRule:
+    def __init__(self, name, expr_lhs, expr_rhs):
+        self.name = name
+        self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
+        self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
+
+    def __str__(self):
+        return f"[{self.name}: {self.expr_lhs} => {self.expr_rhs}]"
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{EGraph}]
+from scipy.cluster.hierarchy import DisjointSet
+from EClass import EClass
+from ENode import ENode
+import graphviz
+import pathlib
+import math
+import uuid
+import re
+
+class EGraph:
+    def __init__(self):
+        self.u = DisjointSet()
+        self.m = {}
+        self.h = {}
+        self.pending = []
+        self.version = 0
+        self.str_repr = ""
+        self.is_saturated = False
+\end{lstlisting}
 
 \subsubsection{egg-Implementierung}
 
@@ -32,3 +171,14 @@ wenn beide Kinder abgearbeitet wurden. Somit erhält man den eingegebenen Ausdru
 \subsection{Frontend}
 
 \subsubsection{Design}
+
+\subsection{Starten der Anwendung}
+
+Die Anwendung kann gestartet werden, indem im \textit{src}-Ordner folgender Befehl ausgeführt wird. 
+
+\begin{verbatim}
+    fastapi run server.py
+\end{verbatim}
+
+Falls sich der Browser nicht automatisch öffnet, kann die Anwendung unter folgender Adresse erreicht werden:
+\url{http://127.0.0.1:8000}
