@@ -1,13 +1,25 @@
+"""This module contains the EGraphService and a function to check expressions.
+
+Classes:
+    EGraphService
+
+Functions:
+    is_valid_expression
+"""
+
 from EGraph import EGraph, apply_rules
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
 
 
 def is_valid_expression(expression):
-    """Returns True if the expression is valid, False otherwise.
+    """This function checks if the given expression is a valid expression.
+    This is done by trying to create an AST. If it works, the expression could
+    still be invalid. Therefore, the string representation is compared to the
+    original expression.
 
     :param expression: A string in prefix-notation
-    :return: Boolean
+    :return: Returns True if the expression is valid, False otherwise.
     """
     try:
         ast = AbstractSyntaxTree(expression)
@@ -18,9 +30,24 @@ def is_valid_expression(expression):
 
 
 class EGraphService:
+    """Class that represents the EGraphService.
+
+    Attributes:
+        - rrc: rewrite rule counter
+        - dict_of_rules: Dictionary of rules
+        - egraph:
+        - expr: The expression to the corresponding EGraph
+        - egraphs: List with debug strings
+        - current_major: pointer
+        - current_minor: pointer
+    """
+
     def __init__(self):
-        """"""
-        self.rrc = 0  # rewrite rule counter
+        """Initialises class. Takes no arguments.
+
+        :returns: None.
+        """
+        self.rrc = 0
         self.dict_of_rules = {}
         self.egraph = None
         self.expr = None
@@ -30,7 +57,7 @@ class EGraphService:
 
     def get_snapshot(self):
         """"""
-        return {'rrc': self.rrc, 'dor': self.dict_of_rules, 'graph': self.expr}
+        return {"rrc": self.rrc, "dor": self.dict_of_rules, "graph": self.expr}
 
     def set_service(self, data):
         """"""
@@ -105,7 +132,11 @@ class EGraphService:
             self.current_minor = len(self.egraphs[self.current_major]) - 1
 
     def get_current_egraph(self):
-        """"""
+        """Returns the egraph that is currently selected by the minor and
+        major pointers.
+
+        :return: String representation of the egraph in DOT format.
+        """
         if self.egraphs == [[]]:
             return None
         else:

@@ -1,3 +1,19 @@
+"""This file implements a FastAPI server.
+
+Paths:
+    - ``/createegraph``: POST
+    - ``/loadegraph``: GET
+    - ``/addrule``: POST
+    - ``/move``: POST
+    - ``/applyrule``: POST
+
+Documentation:
+    The API documentation is available at: ``http://127.0.0.1:8000/dokumentation.html``
+
+FastAPI:
+    FastAPI is used as Backend Server (url: https://fastapi.tiangolo.com/)
+"""
+
 import json
 from contextlib import asynccontextmanager
 from webbrowser import open_new
@@ -11,6 +27,9 @@ from EGraphService import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """This function is needed for FastAPI to open a browser tab with the corresponding
+    address. It is executed before anything else.
+    """
     open_new(r"http://127.0.0.1:8000")
     yield
 
@@ -21,6 +40,11 @@ egraphservice = EGraphService()
 
 @app.post("/createegraph")
 async def create_egraph(request: Request):
+    """
+
+    :param request:
+    :return: Success of EGraph creation in JSON format
+    """
     payload = await request.body()
     pp = json.loads(payload)
     if is_valid_expression(pp["payload"]):
