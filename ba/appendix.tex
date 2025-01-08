@@ -1,19 +1,21 @@
-\section{Zusätzliche Informationen}
+\section{Installation der Anwendung}
 
-Hier können Sie Ihren Anhang definieren.
+\begin{enumerate}
+  \item Das Repository des Projektes kann auf \textbf{GitHub} unter folgender Adresse erreicht werden: \url{https://github.com/BenSt099/Bachelorarbeit-EGraphs}.
+  \item Unter der Sektion \textbf{Releases} die aktuelle Version herunterladen.
+  \item Nach dem Entpacken bitte die notwendigen Dependencies mit folgendem Befehl installieren:
+  
+  \begin{verbatim}
+    pip install -r requirements.txt
+  \end{verbatim}
 
-Achten Sie darauf, dass der Anhang in Ihrer \texttt{thesis.tex}
-initial auskommentiert ist.
-Der entsprechende Part befindet sich nahe dem Ende der Datei.
-Entfernen Sie bei Bedarf die Kommentierung um den Anhang nutzen zu können.
+  \item Zum Starten der Anwendung ein Terminal im \textit{src}-Ordner öffnen und folgenden Befehl ausführen:
 
-
-\section{Nutzung}
-
-Der Anhang wird wie die Abschnitte des Hauptteils der Arbeit gestaltet,
-also mit \texttt{\textbackslash section} Befehlen.
-
-  \subsection{Unterabschnitte}
-  Die Verwendung von Unterabschnitten im Anhang
-  mittels \texttt{\textbackslash subsection}
-  funktioniert ebenfalls!
+  \begin{verbatim}
+      fastapi run server.py
+  \end{verbatim}
+  
+  \item Falls sich der Browser nicht automatisch öffnet, kann die Anwendung unter folgender Adresse erreicht werden:
+  \url{http://127.0.0.1:8000}
+  \item Die Dokumentation kann im Browser in der Navigationsleiste oder unter der Adresse \url{http://127.0.0.1:8000/dokumentation.html} gefunden werden.
+\end{enumerate}

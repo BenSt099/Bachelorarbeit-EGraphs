@@ -7,10 +7,8 @@ Im zweiten Schritt wird dieser in einen EGraph umgewandelt.
 
 \subsubsection{AST}
 
-Um die Erstellung eines EGraphs aus einem gegebenen mathematischen Ausdruck zu vereinfachen, wird zuerst ein äquivalenter \textit{Abstract Syntax Tree} (AST)
+Um die Erstellung eines EGraphs aus einem gegebenen mathematischen Ausdruck zu vereinfachen, wird zuerst ein äquivalenter Abstract Syntax Tree (AST)
 erstellt. Dafür werden die Klassen \textit{AbstractSyntaxTreeNode} und \textit{AbstractSyntaxTree} benötigt.
-Die Klasse \textit{AbstractSyntaxTreeNode} stellt einen Knoten im AST dar und hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
-Der Schlüssel speichert die jeweilige Information ab, während die beiden Zeiger auf einen weiteren Teilbaum zeigen oder leer sind.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTreeNode}]
 class AbstractSyntaxTreeNode:
@@ -20,27 +18,22 @@ class AbstractSyntaxTreeNode:
         self.right = None
 \end{lstlisting}
 
+Die Klasse \textit{AbstractSyntaxTreeNode} stellt einen Knoten im AST dar und hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
+Der Schlüssel speichert die jeweilige Information ab, während die beiden Zeiger jeweils auf einen weiteren Teilbaum, also auf einen weiteren Knoten zeigen oder None sind.
 
-Die Klasse \textit{AbstractSyntaxTree} wird mit einem Asudruck initialisiert. Der Asdruck wird sogleich durch die Methode \textit{\_process\_expression(expression)}
+
+Die Klasse \textit{AbstractSyntaxTree} wird mit einem Asudruck initialisiert. 
+
+Der Asdruck wird sogleich durch die Methode \textit{\_process\_expression(expression)}
 in einen AST umgewandelt und im Attribut \textit{root\_node} gespeichert, welches den obersten Knoten des AST beinhaltet.
+
+
 Die Methode \textit{\_process\_expression(expression)} funktioniert wie folgt:
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTree}]
 class AbstractSyntaxTree:
 
-    ... # __init__ und __str__ weggelassen 
-
-    def _preorder(self, ast_node):
-        if ast_node is not None:
-            if ast_node.key in ("/", "*", "+", "-", "<<", ">>"):
-                self.str_representation += "(" + str(ast_node.key) + " "
-            else:
-                self.str_representation += str(ast_node.key) + " "
-            self._preorder(ast_node.left)
-            self._preorder(ast_node.right)
-            if ast_node.key in ("/", "*", "+", "-", "<<", ">>"):
-                self.str_representation = self.str_representation.strip()
-                self.str_representation += ") "
+    ... # __init__, __str__, _preorder weggelassen 
 
     def _process_expression(self, expression):
         root_ast_node = None
@@ -142,15 +135,6 @@ class RewriteRule:
 \end{lstlisting}
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EGraph}]
-from scipy.cluster.hierarchy import DisjointSet
-from EClass import EClass
-from ENode import ENode
-import graphviz
-import pathlib
-import math
-import uuid
-import re
-
 class EGraph:
     def __init__(self):
         self.u = DisjointSet()
@@ -171,14 +155,3 @@ class EGraph:
 \subsection{Frontend}
 
 \subsubsection{Design}
-
-\subsection{Starten der Anwendung}
-
-Die Anwendung kann gestartet werden, indem im \textit{src}-Ordner folgender Befehl ausgeführt wird. 
-
-\begin{verbatim}
-    fastapi run server.py
-\end{verbatim}
-
-Falls sich der Browser nicht automatisch öffnet, kann die Anwendung unter folgender Adresse erreicht werden:
-\url{http://127.0.0.1:8000}

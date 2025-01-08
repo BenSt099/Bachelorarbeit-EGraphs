@@ -3,37 +3,52 @@
 \subsection{Python}
 
 Die Wahl einer Programmiersprache entscheidet über die Möglichkeiten sowie Einschränkungen in einem Projekt.
-Jede Programmiersprache bietet unterschiedliche Herangehensweisen an Probleme an und wurde teilweise für einen spezifischen Zweck entworfen.
+Zudem bietet jede Programmiersprache unterschiedliche Herangehensweisen an Probleme an und wurde teilweise für einen spezifischen Zweck entworfen.
 Für dieses Projekt wurde die Allzweck-Programmiersprache \textit{Python} in der Version \textit{3.12} gewählt.
-Dafür gibt es mehrere Gründe. 
+Dafür gibt es zwei Hauptgründe. 
 
-\noindent Erstens liegt der Hauptfokus der Anwendung nicht auf Speichereffizienz oder Schnelligkeit, sondern vor allem auf Plattformunabhängigkeit.
-Zweitens wird während der Implementierung Zeit gespart, wodurch mehr Zeit für das übergeordnete Ziel zur Verfügung steht, nämlich eine Anwendung
-für die Lehre zu bauen.
-Drittens ist die Programmiersprache \textit{Python} sehr bekannt und weit verbreitet. Dadurch gibt es bereits zahlreiche Bibliotheken sowie eine große
-Standardbibliothek.
+\noindent Erstens gilt die Programmiersprache \textit{Python} allgemein als sehr einfach. 
+Das erlaubt einerseits das schnelle Konstruieren und Testen von Prototypen. 
+Andererseits erlaubt es eine Fokusierung auf das übergeordnete Ziel, eine Lernanwendung zu entwickeln. Dabei müssen Implementierungsdetails, wie zum Beispiel
+die Garbage Collection, nicht beachtet werden.
 
-\subsection{DOT-Sprache}
+Zweitens ist \textit{Python} eine sehr bekannte und weit verbreitete Programmiersprache. 
+Die Standardbibliothek bietet großen Umfang und es gibt zahlreiche Bibliotheken, die eine Reihe von verschiedenen Themengebieten behandeln.
+Außerdem wurde \textit{Python} auf allen gängigen Betriebssystemen bereits getestet, wodurch die Platformunabhängigkeit garantiert ist.
 
-Um einen EGraph visuell darstellen zu können, benötigt man ein Format, in dem man derartige Graphen darstellen kann. 
-\textit{Graphviz} erlaubt das Exportieren von Graphen in \textit{DOT}-Sprache in mehrere Formate, wie z.B. SVG, PDF oder PNG. 
-Damit kann es auch im Browser angezeigt werden.
-Es gibt bereits ein Python-Packet, was den nativen Anschluss an \textit{Graphviz} ermöglicht. Damit muss man nicht über Prozesse o.ä. mit den CLI-Tools
-von \textit{Graphviz} interagieren.
-\textit{Graphviz} ist platformunabhängig und weitreichend getestet.
+\subsection{Graphviz}
+
+Jeder EGraph besteht aus drei Datenstrukturen. Um diese visuell darstellen zu können, wird eine Software benötigt, die Graphen erzeugen kann.
+Dazu wurde die Software \textit{Graphviz}~\cite{graphviz} ausgewählt. Folgende Gründe waren dabei ausschlaggebend.
+
+\begin{itemize}
+    \item \textit{Graphviz} ist auf allen gängigen Plattformen verfügbar und weitreichend getestet.
+    \item \textit{Graphviz} bietet eine allgemeine, abstrakte Grammatik an, die sogenannte \textit{Dot}-Sprache, mit deren Hilfe verschiedene Typen von Graphen erstellt werden können.
+    \item Die \textit{Dot}-Sprache ist, ähnlich zu anderen Formaten wie JSON oder YAML, zu einem Standard geworden, der auch von anderen Werkzeugen und Software verarbeitet werden kann.
+    \item Ein in der \textit{Dot}-Sprache beschriebener EGraph kann mit \textit{Graphviz} in gängige Formate wie SVG, PNG oder PDF exportiert werden.
+    \item Es gibt bereits ein Python-Paket, was nativen Anschluss an \textit{Graphviz} ermöglicht. Damit kann auf das Interagieren mit \textit{Graphviz} über ein CLI verzichtet werden.
+    \item Durch die JavaScript-Bibliothek \textit{D3} und einer entsprechenden Bibliothek~\cite{d3-graphviz}, kann ein EGraph auch im Browser als SVG-Datei angezeigt werden.
+\end{itemize}
+
+\subsection{FastAPI}
+
+Die Interaktion mit einem Benutzer kann auf verschiedenen Wegen erfolgen, zum Beispiel durch eine CLI, über eine Website im Browser oder durch ein Anwendungsfenster.
+In dieser Arbeit stellt eine Website, die lokal im Browser läuft zum Einsatz. Diese Entscheidung ist mit folgenden Argumenten zustande gekommen. 
+
+\begin{itemize}
+    \item Es gibt umfangreiche GUI-Bibliotheken, wie zum Beispiel PyQt, PySide oder TKinter. Diese bringen jedoch plattformspezifische Probleme und Einschränkungen mit sich.
+    Außerdem ist die dynamische Generierung von Inhalten im Browser mit JavaScript (oder darauf basierenden Bibliotheken) deutlich einfacher.
+    \item Für einen Server im Backend gibt es ebenfalls zahlreiche Frameworks, darunter Flask, Django und FastAPI.
+    Gerade \textit{Django} ist zwar sehr beliebt und weit verbreitet, hat aber auch Performance-Schwierigkeiten.
+    Das liegt unter anderem daran, dass \textit{Django} ein umfangreiches Angebot anbietet und für viele Anwendungsfälle entwickelt wurde.
+    Für dieses Projekt werden die meisten Features jedoch nicht benötigt.
+    \item Im Gegensatz zu \textit{Django} bietet \textit{FastAPI}~\cite{fastapi} nur essenzielle Funktionen an, was das Aufsetzen eines Servers deutlich vereinfacht.
+\end{itemize}
 
 \subsection{JSON-Format}
 
 Für die Kommunikation zwischen Server und Benutzeroberfläche wurde das \textit{JSON}-Format ausgewählt. Nicht nur ist es für Menschen lesbar und kann im Browser dargestellt werden,
 was das Debugging einfacher macht, sondern es wird sowohl von JavaScript als auch von Python nativ unterstützt. Auch \textit{FastAPI} unterstützt dieses Format.
-
-\subsection{FastAPI}
-
-Für die Interaktion mit dem Benutzer wurde der Browser als Hauptkomponente ausgewählt. Dadurch verzichtet man auf etwaige GUI-Bibliotheken, die zum Teil
-platformspezifische Probleme und Eigenschaften mit sich bringen. Für den Server im Backend gibt es viele Frameworks, darunter Flask, Django und FastAPI.
-\textit{Django} ist ein umfassendes Framework, das ein breites Spektrum an Anwendungsfällen abdeckt. Im Gegensatz dazu bietet \textit{FastAPI}~\cite{fastapi}
-nur essenzielle Funktionen, die für die Entwicklung benötigt werden. Da der Server in diesem Fall nur wenige, standardmäßige Aufgaben erfüllen muss, wurde
-\textit{FastAPI} als Framework ausgewählt, da es für den Nutzen ausreicht.
 
 \subsection{Bootstrap-Framework}
 
