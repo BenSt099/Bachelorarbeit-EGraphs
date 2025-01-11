@@ -107,6 +107,7 @@ Daher behandelt Fall zwei~(Z. \ref{ast1}) die vier Operationen ($+, *, -, /$), i
 als Schlüssel zugewiesen wird. Da Shift-Operationen ($<<, >>$) zwei Zeichen lang sind, werden sie in Fall drei~(Z. \ref{ast2}) behandelt.
 Zu Fall drei kommt es, wenn in \textit{word} bereits eines der Shift-Zeichen ($<, >$) eingelesen wurde und nun das nächste eingelesen wird.
 Das Zeichen wird \textit{word} hinzugefügt und dem TOS-Knoten als Schlüssel übergeben.
+
 Im vierten Fall~(Z. \ref{ast3}) werden Variablen und Zahlen verarbeitet und eventuell auch Knoten vom Stack genommen.
 Zur Trennung von Variablen und Zahlen wird ein Leerzeichen erwartet und ein nichtleeres \textit{word}.
 Dabei werden nochmal vier Fälle unterschieden, je nach Zustand des aktuellen TOS-Knotens. Dementsprechend wird entweder ein neuer Knoten mit dem Inhalt von \textit{word} als Schlüssel
@@ -118,12 +119,19 @@ Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Da
 
 \subsubsection{EGraph}
 
+Aus dem Ausdruck wurde im letzten Abschnitt ein AST erzeugt. Nun soll dieser in einen EGraph umgewandelt werden. Ein EGraph besteht aus EClasses und ENodes.
+Die Klasse \textit{ENode} repräsentiert später einen Knoten aus dem AST. Daher enthält sie auch einen Schlüssel sowie eine Liste mit Argumenten. Die Argumente werden 
+EClass-IDs sein.
+
 \begin{lstlisting}[language=Python, caption=Klasse \textit{ENode}]
 class ENode:
     def __init__(self, key, arguments):
         self.key = key
         self.arguments = arguments
 \end{lstlisting}
+
+Die Klasse \textit{EClass} bekommt bei der Initialisierung eine individuelle \textbf{EClass-ID} sowie ein Set der Knoten, die in dieser EClass vorhanden sind. Außerdem
+wird ein \textit{parent}-Set für die Elternklassen dieser EClass benötigt.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}]
 import uuid
@@ -134,6 +142,26 @@ class EClass:
         self.nodes = set()
         self.parents = set()
 \end{lstlisting}
+
+Mit diesen beiden Hauptbestandteilen kann jetzt ein \textbf{EGraph} implementiert werden. 
+Die zugehörigen Methoden werden in den Abschnitten \ref{subsub:egg} und \ref{subsub:colab} vorgestellt.
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{EGraph}]
+# ... 
+
+class EGraph:
+    def __init__(self):
+        self.u = DisjointSet()
+        self.m = {}
+        self.h = {}
+        self.pending = []
+        self.version = 0
+        self.str_repr = ""
+        self.is_saturated = False
+
+    # ...
+\end{lstlisting} 
+
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}]
 import AbstractSyntaxTree
@@ -148,21 +176,11 @@ class RewriteRule:
         return f"[{self.name}: {self.expr_lhs} => {self.expr_rhs}]"
 \end{lstlisting}
 
-\begin{lstlisting}[language=Python, caption=Klasse \textit{EGraph}]
-class EGraph:
-    def __init__(self):
-        self.u = DisjointSet()
-        self.m = {}
-        self.h = {}
-        self.pending = []
-        self.version = 0
-        self.str_repr = ""
-        self.is_saturated = False
-\end{lstlisting}
 
-\subsubsection{egg-Implementierung}
 
-\subsubsection{Colab-Implementierung}
+\subsubsection{egg-Implementierung}\label{subsub:egg}
+
+\subsubsection{Colab-Implementierung}\label{subsub:colab}
 
 \subsection{Services \& Server}
 
