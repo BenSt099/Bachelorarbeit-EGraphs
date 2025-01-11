@@ -16,6 +16,7 @@ FastAPI:
 
 import json
 from contextlib import asynccontextmanager
+from os.path import realpath
 from webbrowser import open_new
 
 from fastapi import FastAPI
@@ -132,4 +133,9 @@ async def apply_rule(request: Request):
     return {"response": "false"}
 
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+### FIX | https://github.com/fastapi/fastapi/issues/3550
+app.mount(
+    "/",
+    StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True),
+    name="static",
+)

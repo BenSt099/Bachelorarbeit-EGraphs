@@ -36,8 +36,8 @@ pip install -r requirements.txt
 
 ## Tests
 
-Wenn Sie die Tests ausführen möchten, fügen sie entweder Folgendes zu ``requirements.txt`` hinzu: ``pytest==8.3.3`` oder
-installieren Sie das Paket händisch: ```pip install pytest==8.3.3```.
+Wenn Sie die Tests ausführen möchten, fügen sie entweder Folgendes zu ``requirements.txt`` hinzu: ``pytest==8.3.3`` und ``httpx==0.27.2`` oder
+installieren Sie die Pakete händisch: ```pip install pytest==8.3.3``` ```pip install httpx==0.27.2```.
 
 ## License
 

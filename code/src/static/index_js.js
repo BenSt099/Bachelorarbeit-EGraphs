@@ -92,6 +92,8 @@ function create_egraph() {
     );
     loadegraph();
     document.getElementById("control_create_input").value = "";
+    create_rule("(* x 2)", "(<< x 1)");
+    create_rule("(/ x x)", "(1)");
 }
 
 function export_egraph() {
@@ -158,12 +160,21 @@ function upload() {
 }
 
 
-function create_rule() {
+function create_rule(lhs, rhs) {
+    let left;
+    let right;
+    if (lhs === "" && rhs === "") {
+        left = String(document.getElementById("rewrite_rule_create_left").value)
+        right = String(document.getElementById("rewrite_rule_create_right").value)
+    } else {
+        left = String(lhs);
+        right = String(rhs);
+    }
     contact_server("/addrule",
         JSON.stringify({
             "payload": "rule",
-            "lhs": String(document.getElementById("rewrite_rule_create_left").value),
-            "rhs": String(document.getElementById("rewrite_rule_create_right").value)
+            "lhs": left,
+            "rhs": right
         }),
         "POST").then(
         function (value) {
@@ -171,9 +182,7 @@ function create_rule() {
                 add_to_status("[WARN]", "Could NOT create Rule.");
             } else {
                 add_to_status("[INFO]", "Rule created.");
-                render_rule(String(document.getElementById("rewrite_rule_create_left").value),
-                    String(document.getElementById("rewrite_rule_create_right").value),
-                    value['response']);
+                render_rule(left, right, value['response']);
             }
         },
         function (error) {
