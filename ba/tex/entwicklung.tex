@@ -2,15 +2,26 @@
 
 \subsection{E-Graphs}
 
-Die Erstellung eines EGraphs erfolgt in mehreren Schritten. Aus einem eingegebenen mathematischen Ausdruck wird im ersten Schritt ein Abstract Syntax Tree erstellt.
-Im zweiten Schritt wird dieser in einen EGraph umgewandelt.
+Um die Erstellung von EGraphs zu vereinfachen, erfolgt der Aufbau in mehreren Schritten.
+Im ersten Schritt wird ein gegebenener mathematischer Ausdruck in einen \textbf{Abstract Syntax Tree} (AST) umgewandelt.
+Im zweiten Schritt wird der EGraph erstellt, indem der AST rekursiv traversiert und jeder Knoten dem EGraph hinzugefügt wird. 
 
 \subsubsection{AST}
 
-Um die Erstellung eines EGraphs aus einem gegebenen mathematischen Ausdruck zu vereinfachen, wird zuerst ein äquivalenter Abstract Syntax Tree (AST)
-erstellt. Dafür werden die Klassen \textit{AbstractSyntaxTreeNode} und \textit{AbstractSyntaxTree} benötigt.
+Für einen \textbf{Abstract Syntax Tree} werden die Klassen \textit{AbstractSyntaxTreeNode} (siehe Listing~\ref{lst:astnode}) und 
+\textit{AbstractSyntaxTree} (siehe Listing~\ref{lst:ast}) benötigt.
 
-\begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTreeNode}]
+% \begin{lstlisting}[language=Python, escapechar=|, caption=Klasse \textit{AbstractSyntaxTreeNode}, label={lst:astnode}]
+% class AbstractSyntaxTreeNode:
+%     def __init__(self):
+%         self.left = None |\label{line:sp}|
+%         self.key = str()
+%         self.right = None
+% \end{lstlisting}
+
+% einen linken Zeiger (Zeile~\ref{line:sp}),
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTreeNode}, label={lst:astnode}]
 class AbstractSyntaxTreeNode:
     def __init__(self):
         self.left = None
@@ -18,30 +29,39 @@ class AbstractSyntaxTreeNode:
         self.right = None
 \end{lstlisting}
 
-Die Klasse \textit{AbstractSyntaxTreeNode} stellt einen Knoten im AST dar und hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
-Der Schlüssel speichert die jeweilige Information ab, während die beiden Zeiger jeweils auf einen weiteren Teilbaum, also auf einen weiteren Knoten zeigen oder None sind.
+Die Klasse \textit{AbstractSyntaxTreeNode} repräsentiert einen Knoten im AST. Sie hat drei Attribute: einen linken Zeiger, einen rechten Zeiger
+und einen Schlüssel. Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl sein. Die Zeiger können auf einen weiteren Teilbaum zeigen, auf einen einzelnen Knoten
+oder auf None. Mithilfe dieser Klasse kann nachher ein ganzer Baum dargestellt werden. Dazu braucht man nur den Wurzelknoten des Baumes abspeichern, denn damit
+kann auf den gesamten Baum zugegriffen werden. 
 
+Die Klasse \textit{AbstractSyntaxTree} ist für das Erstellen des AST aus einem Ausdruck zuständig. 
+Daher wird die Klasse mit einem Ausdruck initialisiert, der sogleich durch die 
+Methode \textit{\_process\_expression(expression)} in einen AST umgewandelt wird. Der AST wird dann im Attribut \textit{root\_node} abgespeichert.
 
-Die Klasse \textit{AbstractSyntaxTree} wird mit einem Asudruck initialisiert. 
+Das zweite Attribut, \textit{string\_representation}, enthält den AST im String-Format. Dies dient primär Debug-Zwecken.
+Eine String-Repräsentation kann durch die erste Methode~(Z. \ref{astpreorder}) \textit{\_preorder(self, ast\_node)} erreicht werden,
+indem man den erstellten AST in Preorder-Traversierung durchgeht und dabei die Schlüssel der Knoten an einen String anhängt.
+Zusätzlich wird eine öffnende Klammer angehängt, wenn der Knoten zwei Kinder hat (also eine arithmetische Operation repräsentiert) und eine schließende Klammer,
+wenn beide Kinder abgearbeitet wurden. Somit erhält man den eingegebenen Ausdruck exakt zurück, falls dieser korrekt eingegeben wurde.
 
-Der Asdruck wird sogleich durch die Methode \textit{\_process\_expression(expression)}
-in einen AST umgewandelt und im Attribut \textit{root\_node} gespeichert, welches den obersten Knoten des AST beinhaltet.
-
-
-Die Methode \textit{\_process\_expression(expression)} funktioniert wie folgt:
-
-\begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTree}]
+\begin{lstlisting}[language=Python, escapechar=|, caption=Klasse \textit{AbstractSyntaxTree}, label={lst:ast}]
 class AbstractSyntaxTree:
 
-    ... # __init__, __str__, _preorder weggelassen 
+    # ... __init__ und __str__  weggelassen 
 
-    def _process_expression(self, expression):
+    def _preorder(self, ast_node): |\label{astpreorder}|
+        # ...
+        self._preorder(ast_node.left)
+        self._preorder(ast_node.right)
+        # ...
+
+    def _process_expression(self, expression): |\label{astprocess}|
         root_ast_node = None
         stack = deque()
         word = ""
 
         for character in expression:
-            if character == "(":
+            if character == "(": |\label{ast0}|
                 if not stack:
                     ast_node = AbstractSyntaxTreeNode()
                     stack.append(ast_node)
@@ -49,58 +69,52 @@ class AbstractSyntaxTree:
                 else:
                     last_ast_node = stack[-1]
                     ast_node = AbstractSyntaxTreeNode()
-                    if last_ast_node.left is None and last_ast_node.right is None:
-                        last_ast_node.left = ast_node
-                    elif last_ast_node.left is None:
-                        last_ast_node.left = ast_node
-                    else:
-                        last_ast_node.right = ast_node
+                    # ...
                     stack.append(ast_node)
-            elif character == ")" and word == "":
-                stack.pop()
-            elif character in ("/", "*", "+", "-"):
+            elif character in ("/", "*", "+", "-"): |\label{ast1}|
                 last_ast_node = stack[-1]
                 last_ast_node.key = character
-            elif (word == "<" or word == ">") and (character == "<" or character == ">"):
+            elif (word == "<" or word == ">") and (character == "<" or character == ">"): |\label{ast2}|
                 word += character
                 last_ast_node = stack[-1]
                 last_ast_node.key = word
                 word = ""
-            elif (character == " " or character == ')') and word != "":
+            elif (character == " " or character == ')') and word != "": |\label{ast3}|
                 last_ast_node = stack[-1]
-                if last_ast_node.left is None and last_ast_node.right is None and not last_ast_node.key == "":
-                    ast_node = AbstractSyntaxTreeNode()
-                    ast_node.key = word
-                    last_ast_node.left = ast_node
-                elif last_ast_node.left is None and last_ast_node.right is None:
-                    last_ast_node.key = word
-                elif last_ast_node.left is None:
-                    ast_node = AbstractSyntaxTreeNode()
-                    ast_node.key = word
-                    last_ast_node.left = ast_node
-                else:
-                    ast_node = AbstractSyntaxTreeNode()
-                    ast_node.key = word
-                    last_ast_node.right = ast_node
+                # ...
                 if character == ")":
                     stack.pop()
                 word = ""
-            elif character == " ":
+            elif character == ")" and word == "": |\label{ast4}|
+                stack.pop()
+            elif character == " ": |\label{ast5}|
                 pass
-            else:
+            else: |\label{ast6}|
                 word += character
         return root_ast_node
 \end{lstlisting}
 
-Der Ausdruck wird von links nach rechts verarbeitet. Dabei wird der momentane Knoten auf einem Stack verwaltet.
-Durch öffnende Klammern wird ein neuer Knoten erstellt, der, wenn eine schließende Klammer auftritt, wieder vom Stack genommen wird.
-Arithmetische Operationen werden als Schlüssel vom letzten Knoten auf dem Stack gesetzt.
-Leerzeichen werden dabei ignoriert.
+Die zweite Methode~(Z. \ref{astprocess}) \textit{\_process\_expression(expression)} bekommt einen mathematischen Ausdruck als String übergeben und initialisiert drei lokale Variablen.
+Die erste Variable \textit{root\_ast\_node} speichert den Wurzelknoten des Baumes, den die Methode später zurückgibt. Die zweite Variable \textit{stack} speichert an der 
+Position \textbf{Top of Stack} (TOS) den aktuell zu bearbeitenden Knoten. Die dritte Variable \textit{word} ist ein leerer String, der als kurzzeitiger Zwischenspeicher verwendet wird,
+wenn Variablen, Zahlen oder Operationen mehrere Zeichen lang sind.
+Der String wird Zeichen für Zeichen von links nach rechts durchgegangen, wobei sieben Fälle unterschieden werden.
 
-Das zweite Attribut, \textit{string\_representation}, enthält den AST im String-Format. Dies dient primär Debug-Zwecken.
-Eine String-Repräsentation kann erreicht werden, indem man den erstellten AST in Preorder-Traversierung durchgeht und dabei die Schlüssel der Knoten an einen String anhängt.
-Zusätzlich wird eine öffnende Klammer angehängt, wenn der Knoten zwei Kinder hat (also eine arithmetische Operation repräsentiert) und eine schließende Klammer,
-wenn beide Kinder abgearbeitet wurden. Somit erhält man den eingegebenen Ausdruck exakt zurück, falls dieser korrekt eingegeben wurde.
+Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
+dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
+Nach einer öffnenden Klammer wird normalerweise eine arithmetische Operation erwartet. 
+Daher behandelt Fall zwei~(Z. \ref{ast1}) die vier Operationen ($+, *, -, /$), indem die jeweilige Operation dem Knoten, der gerade TOS ist,
+als Schlüssel zugewiesen wird. Da Shift-Operationen ($<<, >>$) zwei Zeichen lang sind, werden sie in Fall drei~(Z. \ref{ast2}) behandelt.
+Zu Fall drei kommt es, wenn in \textit{word} bereits eines der Shift-Zeichen ($<, >$) eingelesen wurde und nun das nächste eingelesen wird.
+Das Zeichen wird \textit{word} hinzugefügt und dem TOS-Knoten als Schlüssel übergeben.
+Im vierten Fall~(Z. \ref{ast3}) werden Variablen und Zahlen verarbeitet und eventuell auch Knoten vom Stack genommen.
+Zur Trennung von Variablen und Zahlen wird ein Leerzeichen erwartet und ein nichtleeres \textit{word}.
+Dabei werden nochmal vier Fälle unterschieden, je nach Zustand des aktuellen TOS-Knotens. Dementsprechend wird entweder ein neuer Knoten mit dem Inhalt von \textit{word} als Schlüssel
+erzeugt und links oder rechts angehängt oder der aktuelle TOS-Knoten hat noch kein Schlüssel und bekommt entsprechend einen. 
+Wenn jedoch das Zeichen ein schließende Klammer ist, wird \textit{word} geleert und der TOS-Knoten vom Stack genommen.
+Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{word} jedoch leer. Der TOS-Knoten wird ebenfalls vom Stack genommen.
+Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
+Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
 
 \subsubsection{EGraph}
 

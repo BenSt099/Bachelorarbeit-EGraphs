@@ -47,10 +47,13 @@ In dieser Arbeit stellt eine Website, die lokal im Browser läuft zum Einsatz. D
 
 \subsection{JSON-Format}
 
-Für die Kommunikation zwischen Server und Benutzeroberfläche wurde das \textit{JSON}-Format ausgewählt. Nicht nur ist es für Menschen lesbar und kann im Browser dargestellt werden,
-was das Debugging einfacher macht, sondern es wird sowohl von JavaScript als auch von Python nativ unterstützt. Auch \textit{FastAPI} unterstützt dieses Format.
+Für die Kommunikation zwischen Server und Benutzeroberfläche stehen verschiedene Formate zur Verfügung. Die Entscheidung für das \textit{JSON}-Format wurde getroffen, 
+da es sowohl von JavaScript als auch von Python nativ unterstützt wird. Außerdem ist es eines der am häufigsten verwendeten Formate in Browsern.
+Zudem können die in diesem Format kodierten Daten im Browser dargestellt werden, unter anderem
+zum Beispiel durch die Developer Tools von Firefox. Dieses Feature macht das Debugging deutlich einfacher. 
 
 \subsection{Bootstrap-Framework}
 
-Für die Benutzeroberfläche im Browser wurde auf das CSS-Framework \textit{Bootstrap}~\cite{bootstrap} in der Version 5.3.3 gesetzt. Das Framework ist nicht so JavaScript-lastig
-wie andere Frameworks und enthält eine Standardpalette an nützlichen und optimierten UI-Bausteinen. 
+Für die Gestaltung der Benutzeroberfläche wurde auf das CSS-Framework \textit{Bootstrap}~\cite{bootstrap} in der Version 5.3.3 zurückgegriffen.
+\textit{Bootstrap} kam bereits auf zahlreichen Websiten zum Einsatz und ist daher vielfach erprobt worden.
+Zudem enthält es viele bereits fertige und optimierte Bausteine, die nicht nur für Konsistenz sorgen, sondern auch für Accessibility ausgelegt sind. 
