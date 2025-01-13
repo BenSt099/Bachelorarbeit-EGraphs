@@ -1,4 +1,4 @@
-\section{Installation der Anwendung}
+\section{Installation der Anwendung}\label{sec:installation}
 
 \begin{enumerate}
   \item Das Repository des Projektes kann auf \textbf{GitHub} unter folgender Adresse erreicht werden: \url{https://github.com/BenSt099/Bachelorarbeit-EGraphs}.
@@ -12,10 +12,34 @@
   \item Zum Starten der Anwendung ein Terminal im \textit{src}-Ordner öffnen und folgenden Befehl ausführen:
 
   \begin{verbatim}
-      fastapi run server.py
+    fastapi run server.py
   \end{verbatim}
   
   \item Falls sich der Browser nicht automatisch öffnet, kann die Anwendung unter folgender Adresse erreicht werden:
   \url{http://127.0.0.1:8000}
   \item Die Dokumentation kann im Browser in der Navigationsleiste oder unter der Adresse \url{http://127.0.0.1:8000/dokumentation.html} gefunden werden.
+\end{enumerate}
+
+\section{Ausführen der Tests}
+
+\begin{enumerate}
+  \item Die notwendige Installation (siehe vorheriger Abschnitt \ref{sec:installation}) vornehmen.
+  \item Bitte die notwendigen Dependencies zum Testen hinzufügen:
+  
+  \begin{verbatim}
+    pip install pytest==8.3.3
+  \end{verbatim}
+
+  \begin{verbatim}
+    pip install httpx==0.27.2
+  \end{verbatim}
+
+  \item Im Ordner mit den zwei Unterordnern \textit{src} und \textit{tests} ein Terminal öffnen und folgenden Befehl ausführen:
+  
+  \begin{verbatim}
+    pytest
+  \end{verbatim}
+
+  \item Die Tests sollten automatisch von \textit{pytest} gefunden und ausgeführt werden. Für mehr Informationen enthält jede Testdatei am Anfang einen Kommentar, der erklärt, welche Komponenten
+  getestet werden.
 \end{enumerate}

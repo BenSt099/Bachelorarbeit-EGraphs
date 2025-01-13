@@ -59,7 +59,6 @@ class AbstractSyntaxTree:
         root_ast_node = None
         stack = deque()
         word = ""
-
         for character in expression:
             if character == "(": |\label{ast0}|
                 if not stack:
@@ -143,6 +142,24 @@ class EClass:
         self.parents = set()
 \end{lstlisting}
 
+Die Klasse \textit{RewriteRule} besteht aus zwei Ausdrücken. Der linke Ausdruck (\textit{expr\_lhs}) beschreibt ein Muster, welches, wenn es im EGrgaph vorkommt, in den
+rechten Ausdruck (\textit{expr\_rhs}) umgeschrieben werden soll.
+Beide Ausdrücke werden mithilfe von AST abgespeichert.
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}]
+import AbstractSyntaxTree
+
+class RewriteRule:
+    def __init__(self, name, expr_lhs, expr_rhs):
+        self.name = name
+        self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
+        self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
+
+    def __str__(self):
+        return f"[{self.name}: {self.expr_lhs} => {self.expr_rhs}]"
+\end{lstlisting}
+
+
 Mit diesen beiden Hauptbestandteilen kann jetzt ein \textbf{EGraph} implementiert werden. 
 Die zugehörigen Methoden werden in den Abschnitten \ref{subsub:egg} und \ref{subsub:colab} vorgestellt.
 
@@ -162,28 +179,76 @@ class EGraph:
     # ...
 \end{lstlisting} 
 
-
-\begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}]
-import AbstractSyntaxTree
-
-class RewriteRule:
-    def __init__(self, name, expr_lhs, expr_rhs):
-        self.name = name
-        self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
-        self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
-
-    def __str__(self):
-        return f"[{self.name}: {self.expr_lhs} => {self.expr_rhs}]"
-\end{lstlisting}
-
-
+Bis jetzt hat die Klasse \textit{EGraph} noch keine Funktionalität, um tatsächlich ihre Aufgabe zu erfüllen. Die folgenden zwei Abschnitte 
+behandeln zwei Quellen, mit deren Hilfe diese Funktionalität erreicht werden konnte.
 
 \subsubsection{egg-Implementierung}\label{subsub:egg}
 
+In der Einleitung (Abschnitt \ref{sub:verwandtearbeiten}) wurde bereits die in Rust geschriebene Bibliothek \textbf{egg} vorgestellt, die auf einem Paper (\cite{2021-egg}) basiert.
+Für diese Implementierung wurden verschiedene, grundlegende Methoden übernommen, darunter \textit{add}, \textit{merge}, \textit{repair}, \textit{rebuild}, \textit{canonicalize} und
+\textit{find}. Abgesehen von einigen wenigen Änderungen wurden die Methoden aus dem Paper weitestgehend übernommen.
+
+
+
 \subsubsection{Colab-Implementierung}\label{subsub:colab}
+
+Das erwähnte Paper behandelt die grundlegenden Funktionen eines EGraphs. Allerdings werden andere Aspekte nicht beleuchtet. Hierzu wurde auf ein Google Colab Notebook zurückgegriffen \cite{devito},
+welches weiterführende Konzepte aufzeigt.
+
+
+
+
+
+
 
 \subsection{Services \& Server}
 
-\subsection{Frontend}
+Für die Interaktion zwischen EGraphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
+die Erstellung und Benutzung von EGraphs regelt.
 
-\subsubsection{Design}
+\subsubsection{Service}
+
+
+
+
+
+\subsubsection{Server}
+
+\begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{server.py}]
+# ... 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    open_new(r"http://127.0.0.1:8000")
+    yield
+
+app = FastAPI(lifespan=lifespan)
+egraphservice = EGraphService()
+
+@app.post("/createegraph")
+async def create_egraph(request: Request):
+    payload = await request.body()
+    pp = json.loads(payload)
+    if is_valid_expression(pp["payload"]):
+        egraphservice.create_egraph(pp["payload"])
+        return {"response": "true"}
+    return {"response": "false"}
+
+@app.get("/loadegraph")
+def load_egraph():
+    a = egraphservice.get_current_egraph()
+    if a is None:
+        return {"response": "false"}
+    else:
+        return {"response": "true", "p1": a[0], "p2": a[1]}
+
+# ... 
+\end{lstlisting} 
+
+
+\subsection{Benutzeroberfläche}
+
+Die Benutzeroberfläche besteht aus einer Website, die im Browser läuft. Näheres zu dieser Entscheidung kann in Kapitel \ref{sec:entscheidungenundprobleme} nachgelesen werden.
+
+
+
