@@ -8,7 +8,8 @@ Functions:
 """
 
 import os
-
+import json
+from datetime import datetime
 from EGraph import EGraph, apply_rules, export_egraph_to_file
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
@@ -59,11 +60,23 @@ class EGraphService:
 
     def get_snapshot(self):
         """"""
-        return {"rrc": self.rrc, "dor": self.dict_of_rules, "graph": self.expr}
+        rules = dict()
+        for k,v in self.dict_of_rules.items():
+            rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
+        return {"dor": rules, "graph": self.expr}
+
+    def save_to_file(self):
+        """"""
+        with open(("egraphs-" + datetime.now().isoformat() + ".json").replace(":", "_"), mode="w", encoding="utf-8") as file:
+            json.dump(self.get_snapshot(), file)
+        return True
 
     def set_service(self, data):
         """"""
-        # TODO
+        self.create_egraph(data['graph'])
+        self.rrc = 0
+        for k, v in data['dor'].items():
+            self.add_rule(v[1], v[2])
         return True
 
     def add_rule(self, lhs, rhs):
@@ -144,6 +157,8 @@ class EGraphService:
         else:
             return self.egraphs[self.current_major][self.current_minor]
 
-    def export(self):
+    def export(self, ext_format):
         """"""
-        return export_egraph_to_file(self.get_current_egraph()[1], str(os.getcwd()))
+        return export_egraph_to_file(
+            self.get_current_egraph()[1], str(os.getcwd()), extension=ext_format
+        )

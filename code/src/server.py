@@ -15,7 +15,6 @@ FastAPI:
 """
 
 import json
-import os
 from contextlib import asynccontextmanager
 from os.path import realpath
 from webbrowser import open_new
@@ -25,7 +24,6 @@ from fastapi import Request
 from starlette.staticfiles import StaticFiles
 
 from EGraphService import *
-from EGraph import export_egraph_to_file
 
 
 @asynccontextmanager
@@ -98,26 +96,35 @@ async def move(request: Request):
     return {"response": "true"}
 
 
-@app.post("/exportegraph")
-async def export_egraph():
+@app.post("/extractterm")
+async def extract_term(request: Request):
     """"""
-    a, b = egraphservice.export()
+
+    return {"response": "true"}
+
+
+@app.post("/exportegraph")
+async def export_egraph(request: Request):
+    """"""
+    payload = await request.body()
+    pp = json.loads(payload)
+    a, b = egraphservice.export(pp["payload"])
     if a:
         return {"response": b}
     return {"response": "false"}
 
 
 @app.post("/savetofile")
-async def save_egraph(request: Request):
+async def save_egraph():
     """"""
-
-    # egraphservice.get_snapshot()
-
-    return {"response": "true"}
+    a = egraphservice.save_to_file()
+    if a:
+        return {"response": "true"}
+    return {"response": "false"}
 
 
 @app.post("/loadfromfile")
-async def loadfromfile(request: Request):
+async def load_from_file(request: Request):
     """"""
     payload = await request.body()
     pp = json.loads(payload)

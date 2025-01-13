@@ -6,10 +6,9 @@
     <meta charset="UTF-8">
     <title>E-Graphs</title>
     <link rel="icon" type="image/x-icon" href="logo.png">
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="index_js.js"></script>
-    <script src="bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <script src="bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
     <script src="d3.v7.js"></script>
     <script src="graphviz.umd.js"></script>
     <script src="d3-graphviz.js"></script>
@@ -38,10 +37,11 @@
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a href="#" class="nav-link px-2">Home</a></li>
-            <!--<li><a href="index.html" class="nav-link px-2">Theorie</a></li>-->
-            <li><a href="dokumentation.html" target="_blank" rel="noopener noreferrer"
+            <li><a href="dokumentation.html" target="_blank"
+                   rel="noopener noreferrer"
                    class="nav-link px-2">Dokumentation</a></li>
-            <li><a href="about.html" target="_blank" rel="noopener noreferrer" class="nav-link px-2">About</a></li>
+            <li><a href="about.html" target="_blank" rel="noopener noreferrer"
+                   class="nav-link px-2">About</a></li>
         </ul>
 
         <div class="col-md-3 text-end">
@@ -60,7 +60,8 @@
 <div class="container" style="max-width: 100%;">
     <div class="row">
         <div class="col-6" style="border-right: 2px solid black">
-            <a href="egraph.html" target="_blank" rel="noopener noreferrer">In neuem Tab öffnen</a>
+            <a href="egraph.html" target="_blank" rel="noopener noreferrer">In
+                neuem Tab öffnen</a>
             <div id="graph" style="text-align: center;height: 90%;"></div>
         </div>
         <div class="col" style="border-right: 2px solid black">
@@ -77,7 +78,8 @@
                            aria-describedby="btn_rewrite_rule_create"
                            id="rewrite_rule_create_right">
                     <button class="btn btn-success" type="button"
-                            id="btn_rewrite_rule_create" onclick="create_rule('','')">
+                            id="btn_rewrite_rule_create"
+                            onclick="create_rule('','')">
                         Create
                     </button>
                 </div>
@@ -93,7 +95,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="container text-center" id="rr_table" style="overflow: scroll">
+                    <div class="container text-center" id="rr_table"
+                         style="overflow: scroll">
 
                     </div>
                 </div>
@@ -109,6 +112,8 @@
                            aria-describedby="btn_control_create"
                            id="control_create_input">
                     <button class="btn btn-success" type="button"
+                            data-bs-toggle="tooltip"
+                            title="Create EGraph, e.g. (/ (* a 2) 2)"
                             id="btn_control_create" onclick="create()">
                         Create
                     </button>
@@ -158,6 +163,15 @@
                                 <label class="form-check-label"
                                        for="export_svg">
                                     <b>SVG</b>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="export"
+                                       id="export_png">
+                                <label class="form-check-label"
+                                       for="export_png">
+                                    <b>PNG</b>
                                 </label>
                             </div>
                         </div>
@@ -245,13 +259,16 @@
                                     onclick="upload()"> Upload
                             </button>
                             <button type="button" class="btn btn-success"
-                                    style="border: 1px solid black;"> Save
+                                    style="border: 1px solid black;"
+                                    onclick="save_to_file()"> Save
                             </button>
                             <button type="button" class="btn btn-success"
-                                    style="border: 1px solid black;"> Extract
+                                    style="border: 1px solid black;"
+                                    onclick="extract_term()"> Extract
                             </button>
                             <button type="button" class="btn btn-success"
-                                    style="border: 1px solid black;" onclick="export_egraph()"> Export
+                                    style="border: 1px solid black;"
+                                    onclick="export_egraph()"> Export
                             </button>
                         </div>
                     </div>

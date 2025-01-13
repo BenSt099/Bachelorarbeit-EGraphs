@@ -97,8 +97,16 @@ function create_egraph() {
 }
 
 function export_egraph() {
+    let a;
+    if (document.getElementById("export_pdf").checked) {
+        a = String("pdf")
+    } else if (document.getElementById("export_svg").checked) {
+        a = String("svg")
+    } else {
+        a = String("png")
+    }
     contact_server("/exportegraph",
-        null,
+        JSON.stringify({"payload": a}),
         "POST").then(
         function (value) {
             if (value['response'] === "false") {
@@ -152,6 +160,30 @@ function upload() {
         };
     };
     upload_input_form.click();
+}
+
+
+function save_to_file() {
+    contact_server("/savetofile",
+        null,
+        "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT save file.");
+            } else {
+                add_to_status("[INFO]", "Saved file.");
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
+        }
+    );
+}
+
+
+function extract_term() {
+
+
 }
 
 
