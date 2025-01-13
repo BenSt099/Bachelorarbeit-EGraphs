@@ -97,19 +97,14 @@ function create_egraph() {
 }
 
 function export_egraph() {
-
-
     contact_server("/exportegraph",
-        JSON.stringify({
-            "payload": "rule"
-        }),
+        null,
         "POST").then(
         function (value) {
             if (value['response'] === "false") {
-                add_to_status("[WARN]", "Could NOT create Rule.");
+                add_to_status("[WARN]", "Could NOT export EGraph.");
             } else {
-                add_to_status("[INFO]", "Rule created.");
-
+                add_to_status("[INFO]", "EGraph exported to " + value['response']);
             }
         },
         function (error) {

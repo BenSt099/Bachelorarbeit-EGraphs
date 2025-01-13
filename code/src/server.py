@@ -15,6 +15,7 @@ FastAPI:
 """
 
 import json
+import os
 from contextlib import asynccontextmanager
 from os.path import realpath
 from webbrowser import open_new
@@ -24,6 +25,7 @@ from fastapi import Request
 from starlette.staticfiles import StaticFiles
 
 from EGraphService import *
+from EGraph import export_egraph_to_file
 
 
 @asynccontextmanager
@@ -97,10 +99,12 @@ async def move(request: Request):
 
 
 @app.post("/exportegraph")
-async def export_egraph(request: Request):
+async def export_egraph():
     """"""
-
-    return ""
+    a, b = egraphservice.export()
+    if a:
+        return {"response": b}
+    return {"response": "false"}
 
 
 @app.post("/savetofile")

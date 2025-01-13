@@ -309,22 +309,6 @@ class EGraph:
         else:
             self.str_repr += ast_node.key + " "
 
-    def export_egraph_to_file(self, filepath, extension="pdf"):
-        """Exports the EGraph into either svg or pdf file format."""
-        if (
-            not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
-            or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
-        ):
-            return False, filepath
-        egraph = self.egraph_to_dot()
-        src = graphviz.Source(egraph)
-        src.render(
-            filename=pathlib.Path(filepath).stem + ".gv",
-            directory=pathlib.Path(filepath).parents[0],
-            format=extension,
-        )
-        return True, filepath
-
     def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_nodes = [], marked_eclasses = []):
         """Returns a string of the EGraph in DOT notation."""
         dot_commands = [
@@ -437,6 +421,22 @@ class EGraph:
                     )
         dot_commands.append("}")
         return "".join(dot_commands)
+
+
+def export_egraph_to_file(eg, filepath, extension="pdf"):
+    """Exports the EGraph into either svg or pdf file format."""
+    if (
+            not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
+            or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
+    ):
+        return False, filepath
+    src = graphviz.Source(eg)
+    return True, src.render(
+        filename=str(pathlib.Path(filepath).stem + ".gv"),
+        directory=filepath.replace('\\', '/'),
+        format=extension,
+        cleanup=True,
+    ).replace('\\', '/')
 
 
 def equality_saturation(rules, etermid, egraph):

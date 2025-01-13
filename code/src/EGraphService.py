@@ -7,7 +7,9 @@ Functions:
     is_valid_expression
 """
 
-from EGraph import EGraph, apply_rules
+import os
+
+from EGraph import EGraph, apply_rules, export_egraph_to_file
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
 
@@ -141,3 +143,7 @@ class EGraphService:
             return None
         else:
             return self.egraphs[self.current_major][self.current_minor]
+
+    def export(self):
+        """"""
+        return export_egraph_to_file(self.get_current_egraph()[1], str(os.getcwd()))
