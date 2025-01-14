@@ -24,16 +24,23 @@ function add_to_status(status, msg) {
     let status_p = document.createElement("div");
     let msg_p = document.createElement("div");
     row.className = "row";
+    row.style.margin = "5px";
+    row.style.padding = "5px";
+    row.style.border = "1.5px solid black";
+    row.style.borderRadius = "6px";
     status_p.style.fontWeight = "bold";
-    status_p.className = "col-3";
+    status_p.className = "col-4";
     msg_p.style.fontWeight = "bold";
-    msg_p.className = "col-7";
+    msg_p.className = "col-12";
     if (status === "[ERROR]") {
         status_p.style.color = "#b40808";
+        row.style.backgroundColor = "#e39b9b";
     } else if (status === "[INFO]") {
         status_p.style.color = "#077c7c";
+        row.style.backgroundColor = "#9be3e3";
     } else {
         status_p.style.color = "#c47011";
+        row.style.backgroundColor = "#ffc88e";
     }
     status_p.innerHTML = status;
     msg_p.innerHTML = msg;
@@ -182,6 +189,25 @@ function save_to_file() {
 
 
 function extract_term() {
+    contact_server("/extractterm",
+        null,
+        "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                add_to_status("[WARN]", "Could NOT extract term.");
+            } else {
+                add_to_status("[INFO]", "Extracted term.");
+                set_extracted_term(value['response']);
+            }
+        },
+        function (error) {
+            add_to_status("[ERROR]", "Could NOT contact server.");
+        }
+    );
+}
+
+
+function download_rules() {
 
 
 }

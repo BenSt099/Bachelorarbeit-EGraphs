@@ -99,8 +99,8 @@ async def move(request: Request):
 @app.post("/extractterm")
 async def extract_term(request: Request):
     """"""
-
-    return {"response": "true"}
+    a = egraphservice.extract()
+    return {"response": str(a)}
 
 
 @app.post("/exportegraph")

@@ -92,6 +92,13 @@ class EGraphService:
         self.egraph = (eg, self.egraph[1])
         self.egraphs.append(dbg)
 
+    def extract(self):
+        """"""
+        # self.egraph[0].equality_saturation()
+
+        # self.egraphs.append()
+        return ""
+
     def get_all_rules(self):
         """"""
         return self.dict_of_rules
