@@ -58,24 +58,46 @@ class EGraphService:
         self.current_major = 0
         self.current_minor = 0
 
+    def save_rr_to_file(self):
+        """"""
+        rules = dict()
+        for k, v in self.dict_of_rules.items():
+            rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
+        with open(
+            ("rules-" + datetime.now().isoformat() + ".json").replace(":", "_"),
+            mode="w",
+            encoding="utf-8",
+        ) as file:
+            json.dump({"dor": rules}, file)
+        return True
+
+    def set_rules(self, data):
+        """"""
+
+        return True
+
     def get_snapshot(self):
         """"""
         rules = dict()
-        for k,v in self.dict_of_rules.items():
+        for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
         return {"dor": rules, "graph": self.expr}
 
     def save_to_file(self):
         """"""
-        with open(("egraphs-" + datetime.now().isoformat() + ".json").replace(":", "_"), mode="w", encoding="utf-8") as file:
+        with open(
+            ("egraphs-" + datetime.now().isoformat() + ".json").replace(":", "_"),
+            mode="w",
+            encoding="utf-8",
+        ) as file:
             json.dump(self.get_snapshot(), file)
         return True
 
     def set_service(self, data):
         """"""
-        self.create_egraph(data['graph'])
+        self.create_egraph(data["graph"])
         self.rrc = 0
-        for k, v in data['dor'].items():
+        for k, v in data["dor"].items():
             self.add_rule(v[1], v[2])
         return True
 
