@@ -15,6 +15,7 @@ FastAPI:
 """
 
 from contextlib import asynccontextmanager
+from json import JSONDecodeError
 from os.path import realpath
 from webbrowser import open_new
 
@@ -36,6 +37,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 egraphService = EGraphService()
+
+
+@app.get("/getrules")
+def get_rules():
+    a = egraphService.get_all_rules()
+    if a is None:
+        return {"response": "NA"}
+    else:
+        return {"response": "true", "p1": a}
 
 
 @app.post("/addrule")
@@ -71,7 +81,10 @@ async def download_rules():
 async def upload_rules(request: Request):
     """"""
     payload = await request.body()
-    pp = json.loads(payload)
+    try:
+        pp = json.loads(payload)
+    except JSONDecodeError:
+        return {"response": "false"}
     if egraphService.set_rules(json.loads(pp["p1"])):
         return {"response": "true"}
     return {"response": "false"}

@@ -24,12 +24,17 @@ def is_valid_expression(expression):
     :param expression: A string in prefix-notation
     :return: Returns True if the expression is valid, False otherwise.
     """
+    expression = expression.strip()
     try:
         ast = AbstractSyntaxTree(expression)
     except IndexError:
         return False
 
-    return expression == str(ast)
+    return (
+        expression == str(ast)
+        and expression.startswith("(")
+        and expression.endswith(")")
+    )
 
 
 class EGraphService:
@@ -73,6 +78,18 @@ class EGraphService:
 
     def set_rules(self, data):
         """"""
+        self.dict_of_rules = dict()
+        try:
+            d = data['dor']
+        except KeyError:
+            return False
+
+        if len(d.items()) < 1:
+            return False
+
+        for k, v in d.items():
+            if is_valid_expression(v[1]) and is_valid_expression(v[2]):
+                self.add_rule(v[1], v[2])
 
         return True
 
@@ -123,7 +140,10 @@ class EGraphService:
 
     def get_all_rules(self):
         """"""
-        return self.dict_of_rules
+        rules = dict()
+        for k, v in self.dict_of_rules.items():
+            rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
+        return rules
 
     def delete_rule(self, rule):
         self.dict_of_rules.pop(rule)

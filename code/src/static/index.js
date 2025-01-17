@@ -6,8 +6,19 @@
  * - renderEGraph(egraph)
  * - addMessageToStatusBar(status, msg)
  * -
- * -
- * -
+ * - loadEGraph()
+ * - exportEGraph()
+ * - extractBestTerm()
+ * - displayExtractedBestTerm(term)
+ * - createRewriteRule(lhs, rhs)
+ * - displayRewriteRule(lhs, rhs, num)
+ * - applyRewriteRule(number)
+ * - uploadRewriteRules()
+ * - downloadRewriteRules()
+ * - moveThroughDebugOutput(direction)
+ * - uploadSession()
+ * - downloadSession()
+ *
  */
 
 /**
@@ -81,6 +92,9 @@ function addMessageToStatusBar(status, msg) {
 
 
 function create() {
+    if (String(document.getElementById("control_create_input").value) === "") {
+        return;
+    }
     contactServer("/loadegraph", null, "GET").then(
         function (value) {
             if (value['response'] !== "false") {
@@ -208,6 +222,9 @@ function createRewriteRule(lhs, rhs) {
         left = String(lhs);
         right = String(rhs);
     }
+    if (left === "" || right === "") {
+        return;
+    }
     contactServer("/addrule", JSON.stringify({
         "payload": "rule", "lhs": left, "rhs": right
     }), "POST").then(function (value) {
@@ -279,6 +296,28 @@ function applyRewriteRule(number) {
 }
 
 
+function loadRewriteRules() {
+    contactServer("/getrules",
+        null, "GET").then(
+        function (value) {
+            if (value['response'] === "false") {
+                addMessageToStatusBar("[WARN]", "Could NOT load rewrite rules.");
+            } else {
+                addMessageToStatusBar("[INFO]", "Loaded rules.");
+                for (const child of document.getElementById("rr_table").children) {
+                    document.getElementById("rr_table").removeChild(child);
+                }
+                const data = JSON.parse(JSON.stringify(value['p1']));
+                for (const item of Object.keys(data)) {
+                    displayRewriteRule(data[item][1], data[item][2], data[item][0]);
+                }
+            }
+        }, function (error) {
+            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        });
+}
+
+
 function uploadRewriteRules() {
     let upload_input_form = document.createElement('input');
     upload_input_form.type = 'file';
@@ -296,7 +335,8 @@ function uploadRewriteRules() {
                     if (value['response'] === "false") {
                         addMessageToStatusBar("[WARN]", "Could NOT upload file.");
                     } else {
-                        addMessageToStatusBar("[INFO]", "Uploaded file. Loaded Rules.");
+                        addMessageToStatusBar("[INFO]", "Uploaded file.");
+                        loadRewriteRules();
                     }
                 }, function (error) {
                     addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
@@ -335,7 +375,7 @@ function moveThroughDebugOutput(direction) {
         "p1": String(document.getElementById("mode_debug").checked)
     }), "POST").then(function (value) {
         if (value['response'] === "false") {
-            addMessageToStatusBar("[WARN]", "Could NOT move in debug information.");
+            addMessageToStatusBar("[WARN]", "Could NOT load debug output - switch from standard to debug mode?");
         } else {
             addMessageToStatusBar("[INFO]", direction + ".");
         }
@@ -378,13 +418,20 @@ function uploadSession() {
 
 
 function downloadSession() {
-    contactServer("/savetofile", null, "POST").then(function (value) {
-        if (value['response'] === "false") {
-            addMessageToStatusBar("[WARN]", "Could NOT save file.");
-        } else {
-            addMessageToStatusBar("[INFO]", "Saved file.");
-        }
-    }, function (error) {
-        addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
-    });
+    contactServer("/savetofile", null, "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                addMessageToStatusBar("[WARN]", "Could NOT download session.");
+            } else {
+                addMessageToStatusBar("[INFO]", "Downloaded session.");
+            }
+        }, function (error) {
+            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        });
+}
+
+
+function loadData() {
+    loadEGraph();
+    loadRewriteRules();
 }
