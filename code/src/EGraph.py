@@ -322,7 +322,7 @@ class EGraph:
             fillcolor = 'fillcolor=\"navajowhite\"'
             ss = str(self._find(next(iter(subset))))
             if ss in marked_eclasses:
-                fillcolor = 'fillcolor=\"red\"'
+                fillcolor = 'fillcolor=\"crimson\"'
             dot_commands.append(
                 'subgraph \"cluster-' + ss
                 + '\" { graph [compound=true '
@@ -349,7 +349,7 @@ class EGraph:
                 if enode.key in ('<<', '>>'):
                     second_diff = enode.key[0] + '\\' + enode.key[1]
                 if enode in marked_nodes:
-                    fillcol = ', fillcolor=\"red\"'
+                    fillcol = ', fillcolor=\"crimson\"'
                 dot_commands.append(
                     '"' + enode.key + differentiator + '"'
                     + '[label="<' + str(node_identifier) + "0> | \\"

@@ -28,8 +28,8 @@ from EGraphService import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """This function is needed for FastAPI to open a browser tab with the corresponding
-    address. It is executed before anything else.
+    """This function is needed for FastAPI to open a browser tab with the
+    corresponding address. It is executed before anything else.
     """
     open_new(r"http://127.0.0.1:8000")
     yield
@@ -41,53 +41,64 @@ egraphService = EGraphService()
 
 @app.get("/getrules")
 def get_rules():
-    a = egraphService.get_all_rules()
-    if a is None:
-        return {"response": "NA"}
-    else:
-        return {"response": "true", "p1": a}
+    """Returns all rules.
+
+    :return:
+    """
+    result, msg, data = egraphService.get_all_rules()
+    return {"response": str(result), "msg": msg, "payload": data}
 
 
 @app.post("/addrule")
 async def add_rule(request: Request):
+    """Adds a new rule.
+
+    :param request:
+    :return:
+    """
     payload = await request.body()
     pp = json.loads(payload)
-    c = egraphService.add_rule(pp["lhs"], pp["rhs"])
-    if c is False:
-        return {"response": "false"}
-    else:
-        return {"response": str(c)}
+    result, msg, data = egraphService.add_rule(pp["lhs"], pp["rhs"])
+    return {"response": str(result), "msg": msg, "payload": data}
 
 
 @app.post("/applyrule")
 async def apply_rule(request: Request):
-    """"""
+    """Applies rule.
+
+    :param request:
+    :return:
+    """
     payload = await request.body()
     pp = json.loads(payload)
-    if int(pp["payload"]) in egraphService.dict_of_rules.keys():
-        egraphService.apply(int(pp["payload"]))
-        return {"response": "true"}
-    return {"response": "false"}
+    result, msg = egraphService.apply(int(pp["payload"]))
+    return {"response": str(result), "msg": msg}
 
 
 @app.post("/downloadrules")
 async def download_rules():
-    """"""
-    egraphService.save_rr_to_file()
-    return {"response": "true"}
+    """Save rewrite rules in a JSON file.
+
+    :return: {"response": result, "msg": msg}
+    """
+    result, msg = egraphService.save_rewrite_rules_to_file()
+    return {"response": str(result), "msg": msg}
 
 
 @app.post("/uploadrules")
 async def upload_rules(request: Request):
-    """"""
+    """Processes the uploaded rules.
+
+    :param request: JSON string with rules.
+    :return:
+    """
     payload = await request.body()
     try:
         pp = json.loads(payload)
     except JSONDecodeError:
-        return {"response": "false"}
-    if egraphService.set_rules(json.loads(pp["p1"])):
-        return {"response": "true"}
-    return {"response": "false"}
+        return {"response": "False", "msg": "Failed to decode JSON."}
+    result, msg = egraphService.add_rewrite_rules_from_file(json.loads(pp["payload"]))
+    return {"response": str(result), "msg": msg}
 
 
 @app.post("/createegraph")
@@ -99,41 +110,46 @@ async def create_egraph(request: Request):
     """
     payload = await request.body()
     pp = json.loads(payload)
-    if is_valid_expression(pp["payload"]):
-        egraphService.create_egraph(pp["payload"])
-        return {"response": "true"}
-    return {"response": "false"}
+    result, msg = egraphService.create_egraph(pp["payload"])
+    return {"response": str(result), "msg": msg}
 
 
 @app.get("/loadegraph")
 def load_egraph():
-    a = egraphService.get_current_egraph()
-    if a is None:
-        return {"response": "false"}
-    else:
-        return {"response": "true", "p1": a[0], "p2": a[1]}
+    """Returns the currently selected EGraph.
+
+    :return:
+    """
+    result, msg, data = egraphService.get_current_egraph()
+    return {"response": str(result), "msg": msg, "payload1": data[0], "payload2": data[1]}
 
 
 @app.post("/move")
 async def move(request: Request):
-    """"""
+    """Moves in debug information.
+
+    :param request:
+    :return:
+    """
     payload = await request.body()
     pp = json.loads(payload)
-    if pp["payload"] == "backward" and pp["p1"] == "false":
-        return {"response": "false"}
-    elif pp["payload"] == "backward" and pp["p1"] != "false":
+    if pp["payload"] == "backward" and pp["debugModeEnabled"] == "false":
+        return {"response": "False",
+                "msg": "Could NOT load debug output - switch from standard to debug mode?"}
+    elif pp["payload"] == "backward" and pp["debugModeEnabled"] != "false":
         egraphService.move_backward()
-    elif pp["payload"] == "forward" and pp["p1"] == "false":
-        return {"response": "false"}
-    elif pp["payload"] == "forward" and pp["p1"] != "false":
+    elif pp["payload"] == "forward" and pp["debugModeEnabled"] == "false":
+        return {"response": "False",
+                "msg": "Could NOT load debug output - switch from standard to debug mode?"}
+    elif pp["payload"] == "forward" and pp["debugModeEnabled"] != "false":
         egraphService.move_forward()
     elif pp["payload"] == "fastbackward":
         egraphService.move_fastbackward()
     elif pp["payload"] == "fastforward":
         egraphService.move_fastforward()
     else:
-        return {"response": "false"}
-    return {"response": "true"}
+        return {"response": "False", "msg": "Failed to move."}
+    return {"response": "True", "msg": pp["payload"] + "."}
 
 
 @app.post("/extractterm")
@@ -148,29 +164,31 @@ async def export_egraph(request: Request):
     """"""
     payload = await request.body()
     pp = json.loads(payload)
-    a, b = egraphService.export(pp["payload"])
-    if a:
-        return {"response": b}
-    return {"response": "false"}
+    result, msg, data = egraphService.export(pp["payload"])
+    return {"response": str(result), "msg": msg, "payload": data}
 
 
 @app.post("/savetofile")
-async def save_egraph():
-    """"""
-    a = egraphService.save_to_file()
-    if a:
-        return {"response": "true"}
-    return {"response": "false"}
+async def download_session():
+    """Saves the current session to a file.
+
+    :return:
+    """
+    result, msg = egraphService.save_to_file()
+    return {"response": str(result), "msg": msg}
 
 
 @app.post("/loadfromfile")
-async def load_from_file(request: Request):
-    """"""
+async def upload_session(request: Request):
+    """Processes the uploaded session file.
+
+    :param request:
+    :return:
+    """
     payload = await request.body()
     pp = json.loads(payload)
-    if egraphService.set_service(json.loads(pp["p1"])):
-        return {"response": "true"}
-    return {"response": "false"}
+    result, msg = egraphService.set_service(json.loads(pp["payload"]))
+    return {"response": str(result), "msg": msg}
 
 
 """

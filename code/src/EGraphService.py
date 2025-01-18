@@ -63,73 +63,104 @@ class EGraphService:
         self.current_major = 0
         self.current_minor = 0
 
-    def save_rr_to_file(self):
-        """"""
+    def save_rewrite_rules_to_file(self):
+        """Saves all rewrite rules in a JSON file.
+
+        :return: True if successful, False otherwise.
+        """
         rules = dict()
+        if self.dict_of_rules == dict():
+            return False, "No rules to save."
         for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
-        with open(
-            ("rules-" + datetime.now().isoformat() + ".json").replace(":", "_"),
-            mode="w",
-            encoding="utf-8",
-        ) as file:
-            json.dump({"dor": rules}, file)
-        return True
+        try:
+            with open(
+                ("rules-" + datetime.now().isoformat() + ".json").replace(":", "_"),
+                mode="w",
+                encoding="utf-8",
+            ) as file:
+                json.dump({"RewriteRules": rules}, file)
+        except OSError:
+            return False, "Couldn't save file, OSError."
+        return True, "Downloaded rules in " + str(os.getcwd()) + "."
 
-    def set_rules(self, data):
-        """"""
+    def add_rewrite_rules_from_file(self, data):
+        """Adds all rewrite rules from a file.
+
+        :param data:
+        :return: Boolean and msg
+        """
         self.dict_of_rules = dict()
         try:
-            d = data['dor']
+            d = data["RewriteRules"]
         except KeyError:
-            return False
+            return False, "Format is broken."
 
         if len(d.items()) < 1:
-            return False
+            return False, "No rewrite rules found."
 
         for k, v in d.items():
             if is_valid_expression(v[1]) and is_valid_expression(v[2]):
                 self.add_rule(v[1], v[2])
 
-        return True
+        return True, "Added rewrite rules."
 
     def get_snapshot(self):
         """"""
         rules = dict()
         for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
-        return {"dor": rules, "graph": self.expr}
+        return {"RewriteRules": rules, "graph": self.expr}
 
     def save_to_file(self):
         """"""
-        with open(
-            ("egraphs-" + datetime.now().isoformat() + ".json").replace(":", "_"),
-            mode="w",
-            encoding="utf-8",
-        ) as file:
-            json.dump(self.get_snapshot(), file)
-        return True
+        try:
+            with open(
+                ("egraphs-" + datetime.now().isoformat() + ".json").replace(":", "_"),
+                mode="w",
+                encoding="utf-8",
+            ) as file:
+                json.dump(self.get_snapshot(), file)
+        except OSError:
+            return False, "Couldn't save file, OSError."
+        return True, "Saved session to file."
 
     def set_service(self, data):
-        """"""
-        self.create_egraph(data["graph"])
+        """
+
+        :param data:
+        :return:
+        """
+        try:
+            d = data["graph"]
+            e = data["RewriteRules"]
+        except KeyError:
+            return False, "Format is broken."
+
+        self.create_egraph(d)
         self.rrc = 0
-        for k, v in data["dor"].items():
+        for k, v in e.items():
             self.add_rule(v[1], v[2])
-        return True
+        return True, "Saved session."
 
     def add_rule(self, lhs, rhs):
         if is_valid_expression(lhs) and is_valid_expression(rhs):
             self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), lhs, rhs)
             self.rrc += 1
-            return self.rrc - 1
-        return False
+            return True, "Added rule.", self.rrc - 1
+        return False, "No valid rule.", None
 
     def apply(self, rule):
-        """Apply a rewrite rule to the egraph."""
+        """Apply a rewrite rule to the egraph.
+
+        """
+
+        if int(rule) in self.dict_of_rules.keys():
+            return False, "Couldn't apply rule."
         eg, dbg = apply_rules([self.dict_of_rules[rule]], self.egraph[0])
         self.egraph = (eg, self.egraph[1])
         self.egraphs.append(dbg)
+        return True, "Applied rule."
 
     def extract(self):
         """"""
@@ -139,17 +170,28 @@ class EGraphService:
         return ""
 
     def get_all_rules(self):
-        """"""
+        """Returns all rules in dictionary format.
+
+        :return: dictionary with rewrite rules
+        """
         rules = dict()
+        if self.dict_of_rules == dict():
+            return False, "No rules to extract.", None
         for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
-        return rules
+        return True, "Added rules.", rules
 
     def delete_rule(self, rule):
         self.dict_of_rules.pop(rule)
 
     def create_egraph(self, expr):
-        """"""
+        """Creates an EGraph.
+
+        :param expr:
+        :return:
+        """
+        if not is_valid_expression(expr):
+            return False, "Invalid expression."
         eg = EGraph()
         eterm_id = eg.add_node(AbstractSyntaxTree(expr).root_node)
         self.egraph = (eg, eterm_id)
@@ -160,6 +202,7 @@ class EGraphService:
         self.egraphs[self.current_major].append(["EGraph created.", eg.egraph_to_dot()])
         self.rrc = 0
         self.dict_of_rules = {}
+        return True, "Created EGraph."
 
     def move_backward(self):
         """"""
@@ -202,12 +245,19 @@ class EGraphService:
         :return: String representation of the egraph in DOT format.
         """
         if self.egraphs == [[]]:
-            return None
+            return False, "No EGraph there.", (None, None)
         else:
-            return self.egraphs[self.current_major][self.current_minor]
+            return True, "EGraph loaded.", self.egraphs[self.current_major][self.current_minor]
 
-    def export(self, ext_format):
-        """"""
+    def export(self, extension_format):
+        """
+        Saves the currently selected EGraph into a chosen format.
+
+        :param extension_format: Determines which format should be used (pdf, svg, png).
+        :return: True if successful, False otherwise.
+        """
+        return (True, "EGraph exported to " + str(os.getcwd()))
+
         return export_egraph_to_file(
-            self.get_current_egraph()[1], str(os.getcwd()), extension=ext_format
+            self.get_current_egraph()[1], str(os.getcwd()), extension=extension_format
         )

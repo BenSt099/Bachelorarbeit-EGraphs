@@ -2,12 +2,11 @@
  * This file includes all functions that are necessary for index.html and
  * egraph.html to operate properly. The following functions are available:
  *
- * - contactServer(path, payload, httpMethod)
- * - renderEGraph(egraph)
- * - addMessageToStatusBar(status, msg)
- * -
+ * - create()
+ * - createEGraph()
  * - loadEGraph()
  * - exportEGraph()
+ * - renderEGraph(egraph)
  * - extractBestTerm()
  * - displayExtractedBestTerm(term)
  * - createRewriteRule(lhs, rhs)
@@ -15,89 +14,34 @@
  * - applyRewriteRule(number)
  * - uploadRewriteRules()
  * - downloadRewriteRules()
+ * - contactServer(path, payload, httpMethod)
+ * - addMessageToStatusBar(status, msg)
  * - moveThroughDebugOutput(direction)
  * - uploadSession()
  * - downloadSession()
+ * - loadData()
  *
  */
 
+
 /**
- * Contacts the server and returns the result.
- * @param {string} path - The destination path.
- * @param {string} payload - Data in JSON format.
- * @param {string} httpMethod - Either GET or POST.
- * @returns {json} Data retrieved from the server in JSON format.
+ * EGraphs
+ *******************************************************************************
+ *******************************************************************************
+ *******************************************************************************
  */
-async function contactServer(path, payload, httpMethod) {
-    let request;
-    if (payload == null) {
-        request = new Request("http://127.0.0.1:8000" + path, {
-            method: httpMethod
-        });
-    } else {
-        request = new Request("http://127.0.0.1:8000" + path, {
-            method: httpMethod,
-            body: payload,
-        });
-    }
-    return (await fetch(request)).json();
-}
 
 
 /**
- * Renders an EGraph from an input string in DOT format.
- * @param {string} egraph - The EGraph in DOT format.
+ * Wrapper for creating an EGraph. Makes sure user wants to delete old EGraph.
  */
-function renderEGraph(egraph) {
-    d3.select("#graph").graphviz().renderDot(egraph);
-}
-
-
-/**
- * Adds a message to the status bar.
- * @param {string} status - One of the following: [INFO], [ERROR], [WARN]
- * @param {string} msg - The actual message that should be displayed.
- */
-function addMessageToStatusBar(status, msg) {
-    let rowDiv = document.createElement("div");
-    let statusDiv = document.createElement("div");
-    let msgDiv = document.createElement("div");
-    rowDiv.className = "row";
-    rowDiv.style.margin = "5px";
-    rowDiv.style.padding = "5px";
-    rowDiv.style.border = "1.5px solid black";
-    rowDiv.style.borderRadius = "6px";
-    statusDiv.style.fontWeight = "bold";
-    statusDiv.className = "col-4";
-    msgDiv.style.fontWeight = "bold";
-    msgDiv.className = "col-12";
-    if (status === "[ERROR]") {
-        statusDiv.style.color = "#b40808";
-        rowDiv.style.backgroundColor = "#e39b9b";
-    } else if (status === "[INFO]") {
-        statusDiv.style.color = "#077c7c";
-        rowDiv.style.backgroundColor = "#9be3e3";
-    } else {
-        statusDiv.style.color = "#c47011";
-        rowDiv.style.backgroundColor = "#ffc88e";
-    }
-    statusDiv.innerHTML = status;
-    msgDiv.innerHTML = msg;
-    msgDiv.style.paddingRight = "0px";
-    rowDiv.appendChild(statusDiv);
-    rowDiv.appendChild(msgDiv);
-    document.getElementById("status_msg").appendChild(rowDiv);
-    document.getElementById("status_msg").scrollTop = document.getElementById("status_msg").scrollHeight;
-}
-
-
 function create() {
     if (String(document.getElementById("control_create_input").value) === "") {
         return;
     }
     contactServer("/loadegraph", null, "GET").then(
         function (value) {
-            if (value['response'] !== "false") {
+            if (value['response'] !== "False") {
                 if (confirm("There is already an EGraph. Do you want to replace it and all data attached to it?") === true) {
                     addMessageToStatusBar("[INFO]", "Creating new EGraph...");
                     for (const child of document.getElementById("rr_table").children) {
@@ -110,12 +54,16 @@ function create() {
             } else {
                 createEGraph();
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.")
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.")
         });
 }
 
 
+/**
+ * Creates an EGraph.
+ */
 function createEGraph() {
     contactServer("/createegraph",
         JSON.stringify({
@@ -123,14 +71,14 @@ function createEGraph() {
         }),
         "POST").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT create EGraph.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "EGraph created.");
+                addMessageToStatusBar("[INFO]", value['msg']);
                 document.getElementById("control_create_input").value = "";
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        }, function () {
+            addMessageToStatusBar("[ERROR]", "Failed to contact server.");
         });
     loadEGraph();
     document.getElementById("control_create_input").value = "";
@@ -145,15 +93,16 @@ function createEGraph() {
 function loadEGraph() {
     contactServer("/loadegraph", null, "GET").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT load EGraph.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[INFO]", value['msg']);
             } else {
-                renderEGraph(value['p2'])
-                addMessageToStatusBar("[INFO]", "EGraph loaded.");
-                addMessageToStatusBar("[INFO]", value['p1'])
+                renderEGraph(value['payload2'])
+                addMessageToStatusBar("[INFO]", value['msg']);
+                addMessageToStatusBar("[INFO]", value['payload1'])
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.")
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.")
         });
 }
 
@@ -173,28 +122,51 @@ function exportEGraph() {
     contactServer("/exportegraph",
         JSON.stringify({"payload": format}), "POST").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT export EGraph.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]",value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "EGraph exported to " + value['response']);
+                addMessageToStatusBar("[INFO]", value['msg']);
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
         });
 }
 
+/**
+ * Renders an EGraph from an input string in DOT format.
+ * @param {string} egraph - The EGraph in DOT format.
+ */
+function renderEGraph(egraph) {
+    d3.select("#graph").graphviz().renderDot(egraph);
+}
 
+
+/**
+ * Extraction of Best Term
+ *******************************************************************************
+ *******************************************************************************
+ *******************************************************************************
+ */
+
+
+/**
+ * Extracts best term.
+ */
 function extractBestTerm() {
-    contactServer("/extractterm", null, "POST").then(function (value) {
-        if (value['response'] === "false") {
-            addMessageToStatusBar("[WARN]", "Could NOT extract term.");
-        } else {
-            addMessageToStatusBar("[INFO]", "Extracted term.");
-            displayExtractedBestTerm(value['response']);
-        }
-    }, function (error) {
-        addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
-    });
+    contactServer("/extractterm", null, "POST").then(
+        function (value) {
+            if (value['response'] === "false") {
+                addMessageToStatusBar("[WARN]",
+                    "Could NOT extract term.");
+            } else {
+                addMessageToStatusBar("[INFO]", "Extracted term.");
+                displayExtractedBestTerm(value['response']);
+            }
+        }, function (error) {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
+        });
 }
 
 
@@ -205,6 +177,14 @@ function extractBestTerm() {
 function displayExtractedBestTerm(term) {
     document.getElementById("term").innerHTML = term;
 }
+
+
+/**
+ * Rewrite Rules
+ *******************************************************************************
+ *******************************************************************************
+ *******************************************************************************
+ */
 
 
 /**
@@ -228,14 +208,14 @@ function createRewriteRule(lhs, rhs) {
     contactServer("/addrule", JSON.stringify({
         "payload": "rule", "lhs": left, "rhs": right
     }), "POST").then(function (value) {
-        if (value['response'] === "false") {
-            addMessageToStatusBar("[WARN]", "Could NOT create Rule.");
+        if (value['response'] === "False") {
+            addMessageToStatusBar("[WARN]", value['msg']);
         } else {
-            addMessageToStatusBar("[INFO]", "Rule created.");
-            displayRewriteRule(left, right, value['response']);
+            addMessageToStatusBar("[INFO]", value['msg']);
+            displayRewriteRule(left, right, value['payload']);
         }
-    }, function (error) {
-        addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+    }, function () {
+        addMessageToStatusBar("[ERROR]", "Failed to contact server.");
     });
 }
 
@@ -284,14 +264,15 @@ function applyRewriteRule(number) {
     contactServer("/applyrule",
         JSON.stringify({"payload": number}), "POST").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT apply rule to EGraph.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "Applied rule.");
+                addMessageToStatusBar("[INFO]", value['msg']);
                 document.getElementById("ar" + String(number)).innerHTML = "Applied";
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
         });
 }
 
@@ -300,20 +281,21 @@ function loadRewriteRules() {
     contactServer("/getrules",
         null, "GET").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT load rewrite rules.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[INFO]", value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "Loaded rules.");
+                addMessageToStatusBar("[INFO]", value['msg']);
                 for (const child of document.getElementById("rr_table").children) {
                     document.getElementById("rr_table").removeChild(child);
                 }
-                const data = JSON.parse(JSON.stringify(value['p1']));
+                const data = JSON.parse(JSON.stringify(value['payload']));
                 for (const item of Object.keys(data)) {
                     displayRewriteRule(data[item][1], data[item][2], data[item][0]);
                 }
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
         });
 }
 
@@ -330,16 +312,16 @@ function uploadRewriteRules() {
         reader.onload = function () {
             try {
                 contactServer("/uploadrules", JSON.stringify({
-                    "payload": "rule", "p1": reader.result.trim()
+                    "payload": reader.result.trim()
                 }), "POST").then(function (value) {
-                    if (value['response'] === "false") {
-                        addMessageToStatusBar("[WARN]", "Could NOT upload file.");
+                    if (value['response'] === "False") {
+                        addMessageToStatusBar("[WARN]", value['msg']);
                     } else {
-                        addMessageToStatusBar("[INFO]", "Uploaded file.");
+                        addMessageToStatusBar("[INFO]", value['msg']);
                         loadRewriteRules();
                     }
-                }, function (error) {
-                    addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+                }, function () {
+                    addMessageToStatusBar("[ERROR]", "Failed to contact server.");
                 });
             } catch (error) {
                 addMessageToStatusBar("[ERROR]", "File could not be parsed.");
@@ -353,14 +335,85 @@ function uploadRewriteRules() {
 function downloadRewriteRules() {
     contactServer("/downloadrules", null, "POST").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT download rules.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "Downloaded rules.");
+                addMessageToStatusBar("[INFO]", value['msg']);
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
         });
+}
+
+
+/**
+ * General functionality
+ *******************************************************************************
+ *******************************************************************************
+ *******************************************************************************
+ */
+
+
+/**
+ * Contacts the server and returns the result.
+ * @param {string} path - The destination path.
+ * @param {string} payload - Data in JSON format.
+ * @param {string} httpMethod - Either GET or POST.
+ * @returns {json} Data retrieved from the server in JSON format.
+ */
+async function contactServer(path, payload, httpMethod) {
+    let request;
+    if (payload == null) {
+        request = new Request("http://127.0.0.1:8000" + path, {
+            method: httpMethod
+        });
+    } else {
+        request = new Request("http://127.0.0.1:8000" + path, {
+            method: httpMethod,
+            body: payload,
+        });
+    }
+    return (await fetch(request)).json();
+}
+
+
+/**
+ * Adds a message to the status bar.
+ * @param {string} status - One of the following: [INFO], [ERROR], [WARN]
+ * @param {string} msg - The actual message that should be displayed.
+ */
+function addMessageToStatusBar(status, msg) {
+    let rowDiv = document.createElement("div");
+    let statusDiv = document.createElement("div");
+    let msgDiv = document.createElement("div");
+    rowDiv.className = "row";
+    rowDiv.style.margin = "5px";
+    rowDiv.style.padding = "5px";
+    rowDiv.style.border = "1.5px solid black";
+    rowDiv.style.borderRadius = "6px";
+    statusDiv.style.fontWeight = "bold";
+    statusDiv.className = "col-4";
+    msgDiv.style.fontWeight = "bold";
+    msgDiv.className = "col-12";
+    if (status === "[ERROR]") {
+        statusDiv.style.color = "#b40808";
+        rowDiv.style.backgroundColor = "#e39b9b";
+    } else if (status === "[INFO]") {
+        statusDiv.style.color = "#077c7c";
+        rowDiv.style.backgroundColor = "#9be3e3";
+    } else {
+        statusDiv.style.color = "#c47011";
+        rowDiv.style.backgroundColor = "#ffc88e";
+    }
+    statusDiv.innerHTML = status;
+    msgDiv.innerHTML = msg;
+    msgDiv.style.paddingRight = "0px";
+    rowDiv.appendChild(statusDiv);
+    rowDiv.appendChild(msgDiv);
+    document.getElementById("status_msg").appendChild(rowDiv);
+    document.getElementById("status_msg").scrollTop =
+        document.getElementById("status_msg").scrollHeight;
 }
 
 
@@ -372,20 +425,25 @@ function downloadRewriteRules() {
 function moveThroughDebugOutput(direction) {
     contactServer("/move", JSON.stringify({
         "payload": direction,
-        "p1": String(document.getElementById("mode_debug").checked)
+        "debugModeEnabled": String(document.getElementById("mode_debug").checked)
     }), "POST").then(function (value) {
-        if (value['response'] === "false") {
-            addMessageToStatusBar("[WARN]", "Could NOT load debug output - switch from standard to debug mode?");
+        if (value['response'] === "False") {
+            addMessageToStatusBar("[WARN]", value['msg']);
         } else {
-            addMessageToStatusBar("[INFO]", direction + ".");
+            addMessageToStatusBar("[INFO]", value['msg']);
         }
-    }, function (error) {
-        addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+    }, function () {
+        addMessageToStatusBar("[ERROR]",
+            "Failed to contact server.");
     });
     loadEGraph();
 }
 
 
+/**
+ * Handles the upload of a JSON file containing a session and sends it to the
+ * server.
+ */
 function uploadSession() {
     let upload_input_form = document.createElement('input');
     upload_input_form.type = 'file';
@@ -398,18 +456,20 @@ function uploadSession() {
         reader.onload = function () {
             try {
                 contactServer("/loadfromfile", JSON.stringify({
-                    "payload": "rule", "p1": reader.result.trim()
+                    "payload": reader.result.trim()
                 }), "POST").then(function (value) {
-                    if (value['response'] === "false") {
-                        addMessageToStatusBar("[WARN]", "Could NOT upload file.");
+                    if (value['response'] === "False") {
+                        addMessageToStatusBar("[WARN]", value['msg']);
                     } else {
-                        addMessageToStatusBar("[INFO]", "Uploaded file. Loaded EGraph.");
+                        addMessageToStatusBar("[INFO]", value['msg']);
                     }
-                }, function (error) {
-                    addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+                }, function () {
+                    addMessageToStatusBar("[ERROR]",
+                        "Failed to contact server.");
                 });
             } catch (error) {
-                addMessageToStatusBar("[ERROR]", "File could not be parsed.");
+                addMessageToStatusBar("[ERROR]",
+                    "File could not be parsed.");
             }
         };
     };
@@ -417,20 +477,27 @@ function uploadSession() {
 }
 
 
+/**
+ * Orders the server to save the session into a JSON file.
+ */
 function downloadSession() {
     contactServer("/savetofile", null, "POST").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]", "Could NOT download session.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "Downloaded session.");
+                addMessageToStatusBar("[INFO]", value['msg']);
             }
-        }, function (error) {
-            addMessageToStatusBar("[ERROR]", "Could NOT contact server.");
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
         });
 }
 
 
+/**
+ * Loads all the necessary data when the page is refreshed.
+ */
 function loadData() {
     loadEGraph();
     loadRewriteRules();
