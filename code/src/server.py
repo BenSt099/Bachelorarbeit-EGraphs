@@ -154,18 +154,26 @@ async def move(request: Request):
 
 @app.post("/extractterm")
 async def extract_term(request: Request):
-    """"""
-    a = egraphService.extract()
-    return {"response": str(a)}
+    """
+
+    :param request:
+    :return:
+    """
+    result, msg, data =  egraphService.extract()
+    return {"response": str(result), "msg": msg, "payload": data}
 
 
 @app.post("/exportegraph")
 async def export_egraph(request: Request):
-    """"""
+    """Exports current EGraph into one format.
+
+    :param request:
+    :return:
+    """
     payload = await request.body()
     pp = json.loads(payload)
-    result, msg, data = egraphService.export(pp["payload"])
-    return {"response": str(result), "msg": msg, "payload": data}
+    result, msg = egraphService.export(pp["payload"])
+    return {"response": str(result), "msg": msg}
 
 
 @app.post("/savetofile")

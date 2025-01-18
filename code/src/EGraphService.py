@@ -10,7 +10,8 @@ Functions:
 import os
 import json
 from datetime import datetime
-from EGraph import EGraph, apply_rules, export_egraph_to_file
+from EGraph import EGraph, apply_rules, export_egraph_to_file, \
+    equality_saturation
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
 
@@ -136,7 +137,6 @@ class EGraphService:
             e = data["RewriteRules"]
         except KeyError:
             return False, "Format is broken."
-
         self.create_egraph(d)
         self.rrc = 0
         for k, v in e.items():
@@ -144,6 +144,7 @@ class EGraphService:
         return True, "Saved session."
 
     def add_rule(self, lhs, rhs):
+        """"""
         if is_valid_expression(lhs) and is_valid_expression(rhs):
             self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), lhs, rhs)
             self.rrc += 1
@@ -151,11 +152,8 @@ class EGraphService:
         return False, "No valid rule.", None
 
     def apply(self, rule):
-        """Apply a rewrite rule to the egraph.
-
-        """
-
-        if int(rule) in self.dict_of_rules.keys():
+        """Apply a rewrite rule to the egraph."""
+        if rule not in self.dict_of_rules.keys():
             return False, "Couldn't apply rule."
         eg, dbg = apply_rules([self.dict_of_rules[rule]], self.egraph[0])
         self.egraph = (eg, self.egraph[1])
@@ -164,10 +162,10 @@ class EGraphService:
 
     def extract(self):
         """"""
-        # self.egraph[0].equality_saturation()
-
-        # self.egraphs.append()
-        return ""
+        eg, dbg = equality_saturation(list(self.dict_of_rules.values()), self.egraph[1], self.egraph[0])
+        self.egraphs.append(dbg)
+        self.egraph = (eg, self.egraph[1])
+        return True, "Extracted best term.", ""
 
     def get_all_rules(self):
         """Returns all rules in dictionary format.
@@ -180,9 +178,6 @@ class EGraphService:
         for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
         return True, "Added rules.", rules
-
-    def delete_rule(self, rule):
-        self.dict_of_rules.pop(rule)
 
     def create_egraph(self, expr):
         """Creates an EGraph.
@@ -247,7 +242,11 @@ class EGraphService:
         if self.egraphs == [[]]:
             return False, "No EGraph there.", (None, None)
         else:
-            return True, "EGraph loaded.", self.egraphs[self.current_major][self.current_minor]
+            return (
+                True,
+                "EGraph loaded.",
+                self.egraphs[self.current_major][self.current_minor],
+            )
 
     def export(self, extension_format):
         """
@@ -256,8 +255,6 @@ class EGraphService:
         :param extension_format: Determines which format should be used (pdf, svg, png).
         :return: True if successful, False otherwise.
         """
-        return (True, "EGraph exported to " + str(os.getcwd()))
-
         return export_egraph_to_file(
             self.get_current_egraph()[1], str(os.getcwd()), extension=extension_format
         )

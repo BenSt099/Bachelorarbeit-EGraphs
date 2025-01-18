@@ -133,6 +133,7 @@ function exportEGraph() {
         });
 }
 
+
 /**
  * Renders an EGraph from an input string in DOT format.
  * @param {string} egraph - The EGraph in DOT format.
@@ -156,14 +157,13 @@ function renderEGraph(egraph) {
 function extractBestTerm() {
     contactServer("/extractterm", null, "POST").then(
         function (value) {
-            if (value['response'] === "false") {
-                addMessageToStatusBar("[WARN]",
-                    "Could NOT extract term.");
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
             } else {
-                addMessageToStatusBar("[INFO]", "Extracted term.");
-                displayExtractedBestTerm(value['response']);
+                addMessageToStatusBar("[INFO]", value['msg']);
+                displayExtractedBestTerm(value['payload']);
             }
-        }, function (error) {
+        }, function () {
             addMessageToStatusBar("[ERROR]",
                 "Failed to contact server.");
         });
@@ -395,6 +395,7 @@ function addMessageToStatusBar(status, msg) {
     statusDiv.style.fontWeight = "bold";
     statusDiv.className = "col-4";
     msgDiv.style.fontWeight = "bold";
+    msgDiv.style.fontFamily = "monospace";
     msgDiv.className = "col-12";
     if (status === "[ERROR]") {
         statusDiv.style.color = "#b40808";

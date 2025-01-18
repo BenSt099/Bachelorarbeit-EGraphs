@@ -29,19 +29,17 @@
     <script>
         function load_egraph() {
             contactServer("/loadegraph", null, "GET").then(
-                function (value) {
-                    if (value['response'] === "false") {
-                        // add_to_status("[WARN]", "Could NOT load EGraph.");
-                    } else {
-                        renderEGraph(value['p2'])
-                        // add_to_status("[INFO]", "EGraph loaded.");
-                        // add_to_status("[INFO]", value['p1'])
-                    }
-                },
-                function (error) {
-                    // add_to_status("[ERROR]", "Could NOT contact server.")
-                }
-            );
+        function (value) {
+            if (value['response'] === "False") {
+                // addMessageToStatusBar("[INFO]", value['msg']);
+            } else {
+                renderEGraph(value['payload2'])
+                // addMessageToStatusBar("[INFO]", value['msg']);
+                // addMessageToStatusBar("[INFO]", value['payload1'])
+            }
+        }, function () {
+            // addMessageToStatusBar("[ERROR]", "Failed to contact server.")
+        });
         }
     </script>
 </head>

@@ -429,14 +429,22 @@ def export_egraph_to_file(eg, filepath, extension="pdf"):
             not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
             or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
     ):
-        return False, filepath
+        return False, "False path."
     src = graphviz.Source(eg)
-    return True, src.render(
-        filename=str(pathlib.Path(filepath).stem + ".gv"),
-        directory=filepath.replace('\\', '/'),
-        format=extension,
-        cleanup=True,
-    ).replace('\\', '/')
+    try:
+        src.render(
+            filename=str(pathlib.Path(filepath).stem + ".gv"),
+            directory=filepath.replace('\\', '/'),
+            format=extension,
+            cleanup=True,
+        ).replace('\\', '/')
+    except (ValueError
+            and graphviz.ExecutableNotFound
+            and graphviz.RequiredArgumentError
+            and graphviz.CalledProcessError
+            and RuntimeError):
+        return False, "Error occurred."
+    return True, "Export successful to " + filepath
 
 
 def equality_saturation(rules, etermid, egraph):
@@ -446,6 +454,7 @@ def equality_saturation(rules, etermid, egraph):
     This method is based on work of Zachary DeVito. For more information,
     please see the implementation section in the module's docstring.
     """
+    dbg = []
     if not egraph.is_saturated:
         while True:
             v = egraph.version
@@ -453,7 +462,7 @@ def equality_saturation(rules, etermid, egraph):
             apply_rules(rules, egraph)
             if v == egraph.version:
                 break
-    return egraph
+    return egraph, dbg
 
 
 def apply_rules(rules, egraph):
