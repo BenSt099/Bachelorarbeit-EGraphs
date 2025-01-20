@@ -100,7 +100,10 @@ class EGraph:
                     return self.h[x]
         elif enode in self.h.keys():
             return self.h[enode]
-        elif enode.key in [key.key for key in self.h.keys()] and enode_args in canonical_eclass_ids:
+        elif (
+            enode.key in [key.key for key in self.h.keys()]
+            and enode_args in canonical_eclass_ids
+        ):
             for en in self.h.keys():
                 en.arguments = [self._find(arg) for arg in en.arguments]
                 if en.key == enode.key and en.arguments == enode.arguments:
@@ -167,7 +170,7 @@ class EGraph:
     def _repair(self, eclass_id):
         """Repairs the EGraph."""
         for p_node, p_eclass in self.m[eclass_id].parents:
-            #if p_node in self.h.keys():
+            # if p_node in self.h.keys():
             self.h.pop(p_node)
             p_node = self._canonicalize(p_node)
             self.h[p_node] = self._find(p_eclass)
@@ -426,23 +429,25 @@ class EGraph:
 def export_egraph_to_file(eg, filepath, extension="pdf"):
     """Exports the EGraph into either svg or pdf file format."""
     if (
-            not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
-            or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
+        not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
+        or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
     ):
         return False, "False path."
     src = graphviz.Source(eg)
     try:
         src.render(
             filename=str(pathlib.Path(filepath).stem + ".gv"),
-            directory=filepath.replace('\\', '/'),
+            directory=filepath.replace("\\", "/"),
             format=extension,
             cleanup=True,
-        ).replace('\\', '/')
-    except (ValueError
-            and graphviz.ExecutableNotFound
-            and graphviz.RequiredArgumentError
-            and graphviz.CalledProcessError
-            and RuntimeError):
+        ).replace("\\", "/")
+    except (
+        ValueError
+        and RuntimeError
+        and graphviz.ExecutableNotFound
+        and graphviz.RequiredArgumentError
+        and graphviz.CalledProcessError
+    ):
         return False, "Error occurred."
     return True, "Export successful to " + filepath
 
@@ -483,22 +488,38 @@ def apply_rules(rules, egraph):
     for rule in rules:
         for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
             list_of_matches.append((rule, eclass_id, environment))
-            debug_info.append(["MATCHED EClass with " + str(environment) + ".", egraph.egraph_to_dot(marked_eclasses=[eclass_id])])
+            debug_info.append(
+                [
+                    "MATCHED EClass with " + str(environment) + ".",
+                    egraph.egraph_to_dot(marked_eclasses=[eclass_id]),
+                ]
+            )
 
     # print(f"VERSION {egraph.version}")
     for rule, eclass_id, environment in list_of_matches:
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
         # if eclass_id != new_eclass_id:
-            # print(f"{eclass_id} MATCHED {rule} with {environment}")
+        # print(f"{eclass_id} MATCHED {rule} with {environment}")
 
-        debug_info.append(["MERGE colored eclasses.", egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id])])
+        debug_info.append(
+            [
+                "MERGE colored eclasses.",
+                egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id]),
+            ]
+        )
         egraph.merge(eclass_id, new_eclass_id)
     debug_info.append(["MERGED.", egraph.egraph_to_dot()])
-    debug_info.append(["REBUILD colored eclasses.", egraph.egraph_to_dot(marked_eclasses=egraph.pending)])
+    debug_info.append(
+        [
+            "REBUILD colored eclasses.",
+            egraph.egraph_to_dot(marked_eclasses=egraph.pending),
+        ]
+    )
     egraph.rebuild()
     debug_info.append(["EGraph was rebuilt. Done.", egraph.egraph_to_dot()])
     # print(egraph.egraph_to_dot())
     return egraph, debug_info
+
 
 def _extract_term(eterm_id, egraph):
     """
@@ -532,6 +553,7 @@ def _extract_term(eterm_id, egraph):
     def extract_best_term(eclass_id):
         enode = costs[eclass_id][1]
         return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
+
     egraph.str_repr = ""
     egraph._preorder(extract_best_term(eterm_id))
     egraph.str_repr = egraph.str_repr.strip()

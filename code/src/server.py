@@ -153,7 +153,7 @@ async def move(request: Request):
 
 
 @app.post("/extractterm")
-async def extract_term(request: Request):
+async def extract_term():
     """
 
     :param request:

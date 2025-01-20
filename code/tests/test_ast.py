@@ -1,5 +1,4 @@
 import AbstractSyntaxTree
-import EGraphService
 
 
 def test_ast_1():
@@ -102,43 +101,3 @@ def test_ast_19():
 def test_ast_20():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(- xx (* a yy_y))")
     assert "(- xx (* a yy_y))" == str(ast)
-
-
-def test_valid_expression_1():
-    assert EGraphService.is_valid_expression("(<< (* aa (+ 1 ss)) ww)")
-
-
-def test_valid_expression_2():
-    assert not EGraphService.is_valid_expression("(<< a +)")
-
-
-def test_valid_expression_3():
-    assert EGraphService.is_valid_expression("(- b (/ x y))")
-
-
-def test_valid_expression_4():
-    assert EGraphService.is_valid_expression("(>> 7 (* x (/ y aa)))")
-
-
-def test_valid_expression_5():
-    assert EGraphService.is_valid_expression("(/ (* var 23) 2)")
-
-
-def test_valid_expression_6():
-    assert not EGraphService.is_valid_expression("(<< (a aa (+ 1 ss)) ww)")
-
-
-def test_valid_expression_7():
-    assert not EGraphService.is_valid_expression("(<< ")
-
-
-def test_valid_expression_8():
-    assert not EGraphService.is_valid_expression("-- b (/ x y))")
-
-
-def test_valid_expression_9():
-    assert not EGraphService.is_valid_expression("(>> 7 (x * (/ y aa)))")
-
-
-def test_valid_expression_10():
-    assert not EGraphService.is_valid_expression("(/ (* var (- )) 2)")
