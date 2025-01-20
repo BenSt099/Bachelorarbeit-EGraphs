@@ -455,14 +455,19 @@ def equality_saturation(rules, etermid, egraph):
     please see the implementation section in the module's docstring.
     """
     dbg = []
+    best = ""
     if not egraph.is_saturated:
         while True:
             v = egraph.version
-            print('BEST ', _extract_term(etermid, egraph))
-            apply_rules(rules, egraph)
+            best = _extract_term(etermid, egraph)
+            dbg.append(["Best Term: " + best, egraph.egraph_to_dot()])
+            # print('BEST ', _extract_term(etermid, egraph))
+            egraph, debug = apply_rules(rules, egraph)
+            for x in debug:
+                dbg.append(x)
             if v == egraph.version:
                 break
-    return egraph, dbg
+    return egraph, dbg, best
 
 
 def apply_rules(rules, egraph):
@@ -480,11 +485,11 @@ def apply_rules(rules, egraph):
             list_of_matches.append((rule, eclass_id, environment))
             debug_info.append(["MATCHED EClass with " + str(environment) + ".", egraph.egraph_to_dot(marked_eclasses=[eclass_id])])
 
-    print(f"VERSION {egraph.version}")
+    # print(f"VERSION {egraph.version}")
     for rule, eclass_id, environment in list_of_matches:
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
-        if eclass_id != new_eclass_id:
-            print(f"{eclass_id} MATCHED {rule} with {environment}")
+        # if eclass_id != new_eclass_id:
+            # print(f"{eclass_id} MATCHED {rule} with {environment}")
 
         debug_info.append(["MERGE colored eclasses.", egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id])])
         egraph.merge(eclass_id, new_eclass_id)

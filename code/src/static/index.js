@@ -463,6 +463,7 @@ function uploadSession() {
                         addMessageToStatusBar("[WARN]", value['msg']);
                     } else {
                         addMessageToStatusBar("[INFO]", value['msg']);
+                        loadData();
                     }
                 }, function () {
                     addMessageToStatusBar("[ERROR]",

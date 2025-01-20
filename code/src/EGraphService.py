@@ -162,10 +162,11 @@ class EGraphService:
 
     def extract(self):
         """"""
-        eg, dbg = equality_saturation(list(self.dict_of_rules.values()), self.egraph[1], self.egraph[0])
+        eg, dbg, best = equality_saturation(list(self.dict_of_rules.values()), self.egraph[1], self.egraph[0])
         self.egraphs.append(dbg)
         self.egraph = (eg, self.egraph[1])
-        return True, "Extracted best term.", ""
+
+        return True, "Extracted best term.", best
 
     def get_all_rules(self):
         """Returns all rules in dictionary format.
