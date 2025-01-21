@@ -228,28 +228,34 @@ function createRewriteRule(lhs, rhs) {
  */
 function displayRewriteRule(lhs, rhs, num) {
     const heading = document.createElement("div");
-    const button = document.createElement("button");
-    button.innerHTML = "Apply";
-    button.type = "button";
-    button.classList.add("btn", "btn-success", "btn-sm");
-    button.id = "ar" + String(num);
-    button.style.marginLeft = "10px";
-    button.setAttribute("onclick", "applyRewriteRule(" + num + ")");
     heading.classList.add("row");
     heading.style.marginBottom = "5px";
     const a1 = document.createElement("div");
     const a2 = document.createElement("div");
-    a1.classList.add("col-6");
-    a2.classList.add("col");
+    a1.classList.add("col-7");
+    a2.classList.add("col-4");
     const b1 = document.createElement("b");
     const b2 = document.createElement("b");
     b1.innerHTML = lhs + " => " + rhs;
-    b2.innerHTML = num;
+    b2.innerHTML = String(num);
     a1.appendChild(b1);
-    a2.appendChild(b2);
-    a2.appendChild(button);
+    const formDiv = document.createElement("div");
+    formDiv.classList.add("form-check");
+    formDiv.style.paddingLeft = "50px";
+    const inputCheckbox = document.createElement("input");
+    const labelForCheckbox = document.createElement("label");
+    inputCheckbox.classList.add("form-check-input", "checkboxRR");
+    inputCheckbox.type = "checkbox";
+    inputCheckbox.value = "";
+    inputCheckbox.id = "inputCheckbox" + String(num);
+    labelForCheckbox.classList.add("form-check-label");
+    labelForCheckbox.setAttribute("for", "inputCheckbox" + String(num));
+    labelForCheckbox.appendChild(b2);
+    formDiv.appendChild(inputCheckbox);
+    formDiv.appendChild(labelForCheckbox);
     heading.appendChild(a1);
     heading.appendChild(a2);
+    a2.appendChild(formDiv);
     document.getElementById("rr_table").appendChild(heading);
     document.getElementById("rewrite_rule_create_left").value = "";
     document.getElementById("rewrite_rule_create_right").value = "";
@@ -258,17 +264,21 @@ function displayRewriteRule(lhs, rhs, num) {
 
 /**
  * Applies the Rewrite Rule that is registered under a certain number.
- * @param {string} number - Number of the rewrite rule.
  */
-function applyRewriteRule(number) {
+function applyRewriteRules() {
+    let rrNumbers = [];
+    for (const element of document.getElementsByClassName("checkboxRR")) {
+        if (element.checked) {
+            rrNumbers.push(String(element.id).at(-1))
+        }
+    }
     contactServer("/applyrule",
-        JSON.stringify({"payload": number}), "POST").then(
+        JSON.stringify({"payload": rrNumbers}), "POST").then(
         function (value) {
             if (value['response'] === "False") {
                 addMessageToStatusBar("[WARN]", value['msg']);
             } else {
                 addMessageToStatusBar("[INFO]", value['msg']);
-                document.getElementById("ar" + String(number)).innerHTML = "Applied";
             }
         }, function () {
             addMessageToStatusBar("[ERROR]",
@@ -277,6 +287,28 @@ function applyRewriteRule(number) {
 }
 
 
+/**
+ * Apply all rewrite rules randomly.
+ */
+function applyAllRewriteRulesRandomly() {
+    contactServer("/applyallrandomly",
+        null, "POST").then(
+        function (value) {
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
+            } else {
+                addMessageToStatusBar("[INFO]", value['msg']);
+            }
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
+        });
+}
+
+
+/**
+ * Load all rewrites rules.
+ */
 function loadRewriteRules() {
     contactServer("/getrules",
         null, "GET").then(
@@ -515,6 +547,36 @@ async function copyTextToClipboard() {
             await navigator.clipboard.writeText(String(document.getElementById("term").innerHTML).trim());
         } catch (Error) {
             console.log("Couldn't perform copy to clipboard.");
+        }
+    }
+}
+
+
+/**
+ * Expands or collapses the second or third container in the grid.
+ */
+function expandOrCollapseGridContainer(column) {
+    if (column === '1') {
+        if (document.getElementById("gridCol1").style.maxWidth !== "10%") {
+            document.getElementById("gridCol1").style.maxWidth = "10%";
+            document.getElementById("accordionPanelsStayOpenExample").style.display = "none";
+            document.getElementById("ruleSection").style.display = "none";
+            document.getElementById("buttonRR").style.display = "none";
+        } else {
+            document.getElementById("gridCol1").style.maxWidth = "";
+            document.getElementById("accordionPanelsStayOpenExample").style.display = "";
+            document.getElementById("ruleSection").style.display = "";
+            document.getElementById("buttonRR").style.display = "";
+        }
+    } else {
+        if (document.getElementById("gridCol2").style.maxWidth !== "10%") {
+            document.getElementById("gridCol2").style.maxWidth = "10%";
+            document.getElementById("accordion").style.display = "none";
+            document.getElementById("status_div").style.display = "none";
+        } else {
+            document.getElementById("gridCol2").style.maxWidth = "";
+            document.getElementById("accordion").style.display = "";
+            document.getElementById("status_div").style.display = "";
         }
     }
 }

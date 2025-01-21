@@ -71,7 +71,18 @@ async def apply_rule(request: Request):
     """
     payload = await request.body()
     pp = json.loads(payload)
-    result, msg = egraphService.apply(int(pp["payload"]))
+    result, msg = egraphService.apply(pp["payload"])
+    return {"response": str(result), "msg": msg}
+
+
+@app.post("/applyallrandomly")
+async def apply_rule():
+    """Apply all rules
+
+    :param request:
+    :return:
+    """
+    result, msg = egraphService.apply_all_rules_randomly()
     return {"response": str(result), "msg": msg}
 
 
@@ -121,7 +132,12 @@ def load_egraph():
     :return:
     """
     result, msg, data = egraphService.get_current_egraph()
-    return {"response": str(result), "msg": msg, "payload1": data[0], "payload2": data[1]}
+    return {
+        "response": str(result),
+        "msg": msg,
+        "payload1": data[0],
+        "payload2": data[1],
+    }
 
 
 @app.post("/move")
@@ -134,13 +150,17 @@ async def move(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
     if pp["payload"] == "backward" and pp["debugModeEnabled"] == "false":
-        return {"response": "False",
-                "msg": "Could NOT load debug output - switch from standard to debug mode?"}
+        return {
+            "response": "False",
+            "msg": "Could NOT load debug output - switch from standard to debug mode?",
+        }
     elif pp["payload"] == "backward" and pp["debugModeEnabled"] != "false":
         egraphService.move_backward()
     elif pp["payload"] == "forward" and pp["debugModeEnabled"] == "false":
-        return {"response": "False",
-                "msg": "Could NOT load debug output - switch from standard to debug mode?"}
+        return {
+            "response": "False",
+            "msg": "Could NOT load debug output - switch from standard to debug mode?",
+        }
     elif pp["payload"] == "forward" and pp["debugModeEnabled"] != "false":
         egraphService.move_forward()
     elif pp["payload"] == "fastbackward":
@@ -159,7 +179,7 @@ async def extract_term():
     :param request:
     :return:
     """
-    result, msg, data =  egraphService.extract()
+    result, msg, data = egraphService.extract()
     return {"response": str(result), "msg": msg, "payload": data}
 
 

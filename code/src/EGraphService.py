@@ -10,8 +10,7 @@ Functions:
 import os
 import json
 from datetime import datetime
-from EGraph import EGraph, apply_rules, export_egraph_to_file, \
-    equality_saturation
+from EGraph import EGraph, apply_rules, export_egraph_to_file, equality_saturation
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
 
@@ -84,7 +83,14 @@ class EGraphService:
         except OSError:
             return False, "Couldn't save file, OSError."
         path = str(os.getcwd())
-        return True, "Downloaded rules in " + path[0:int(len(path)/2)] + " " + path[int(len(path)/2) + 1:len(path)] + "."
+        return (
+            True,
+            "Downloaded rules in "
+            + path[0 : int(len(path) / 2)]
+            + " "
+            + path[int(len(path) / 2) + 1 : len(path)]
+            + ".",
+        )
 
     def add_rewrite_rules_from_file(self, data):
         """Adds all rewrite rules from a file.
@@ -126,7 +132,14 @@ class EGraphService:
         except OSError:
             return False, "Couldn't save file, OSError."
         path = str(os.getcwd())
-        return True, "Downloaded session in " + path[0:int(len(path)/2)] + " " + path[int(len(path)/2) + 1:len(path)] + "."
+        return (
+            True,
+            "Downloaded session in "
+            + path[0 : int(len(path) / 2)]
+            + " "
+            + path[int(len(path) / 2) + 1 : len(path)]
+            + ".",
+        )
 
     def set_service(self, data):
         """
@@ -153,22 +166,44 @@ class EGraphService:
             return True, "Added rule.", self.rrc - 1
         return False, "No valid rule.", None
 
-    def apply(self, rule):
+    def apply_all_rules_randomly(self):
+        """"""
+
+
+        return True, ""
+
+    def apply(self, rules):
         """Apply a rewrite rule to the egraph."""
-        if rule not in self.dict_of_rules.keys():
-            return False, "Couldn't apply rule."
-        eg, dbg = apply_rules([self.dict_of_rules[rule]], self.egraph[0])
-        self.egraph = (eg, self.egraph[1])
-        self.egraphs.append(dbg)
-        return True, "Applied rule."
+        std = "Applied rule(s): "
+        applied_rules = []
+        for rule in rules:
+            if int(rule) in self.dict_of_rules.keys():
+                applied_rules.append(self.dict_of_rules[int(rule)])
+                std += rule + ", "
+        std = std.strip()
+        if std[-1] == ",":
+            std = std[0 : len(std) - 1]
+        if applied_rules:
+            eg, dbg = apply_rules(applied_rules, self.egraph[0])
+            self.egraph = (eg, self.egraph[1])
+            self.egraphs.append(dbg)
+        else:
+            return False, "No rules applied."
+        return True, std
 
     def extract(self):
         """"""
-        eg, dbg, best = equality_saturation(list(self.dict_of_rules.values()), self.egraph[1], self.egraph[0])
+        eg, dbg, best = equality_saturation(
+            list(self.dict_of_rules.values()), self.egraph[1], self.egraph[0]
+        )
         self.egraphs.append(dbg)
         self.egraph = (eg, self.egraph[1])
 
-        return True, "Extracted best term. Use debug (>) output to watch extraction.", best
+        return (
+            True,
+            "Extracted best term. Use debug (>) output to watch extraction.",
+            best,
+        )
 
     def get_all_rules(self):
         """Returns all rules in dictionary format.
