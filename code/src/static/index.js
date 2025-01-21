@@ -44,9 +44,7 @@ function create() {
             if (value['response'] !== "False") {
                 if (confirm("There is already an EGraph. Do you want to replace it and all data attached to it?") === true) {
                     addMessageToStatusBar("[INFO]", "Creating new EGraph...");
-                    for (const child of document.getElementById("rr_table").children) {
-                        document.getElementById("rr_table").removeChild(child);
-                    }
+                    document.getElementById("rr_table").innerHTML = "";
                     createEGraph();
                 } else {
                     addMessageToStatusBar("[INFO]", "Action aborted.");
@@ -80,10 +78,8 @@ function createEGraph() {
         }, function () {
             addMessageToStatusBar("[ERROR]", "Failed to contact server.");
         });
-    loadEGraph();
+    loadData();
     document.getElementById("control_create_input").value = "";
-    createRewriteRule("(* x 2)", "(<< x 1)");
-    createRewriteRule("(/ x x)", "(1)");
 }
 
 
@@ -212,7 +208,7 @@ function createRewriteRule(lhs, rhs) {
             addMessageToStatusBar("[WARN]", value['msg']);
         } else {
             addMessageToStatusBar("[INFO]", value['msg']);
-            displayRewriteRule(left, right, value['payload']);
+            loadRewriteRules();
         }
     }, function () {
         addMessageToStatusBar("[ERROR]", "Failed to contact server.");
@@ -317,9 +313,7 @@ function loadRewriteRules() {
                 addMessageToStatusBar("[INFO]", value['msg']);
             } else {
                 addMessageToStatusBar("[INFO]", value['msg']);
-                for (const child of document.getElementById("rr_table").children) {
-                    document.getElementById("rr_table").removeChild(child);
-                }
+                document.getElementById("rr_table").innerHTML = "";
                 const data = JSON.parse(JSON.stringify(value['payload']));
                 for (const item of Object.keys(data)) {
                     displayRewriteRule(data[item][1], data[item][2], data[item][0]);

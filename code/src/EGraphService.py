@@ -98,7 +98,6 @@ class EGraphService:
         :param data:
         :return: Boolean and msg
         """
-        self.dict_of_rules = dict()
         try:
             d = data["RewriteRules"]
         except KeyError:

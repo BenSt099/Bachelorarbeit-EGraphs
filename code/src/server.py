@@ -76,7 +76,7 @@ async def apply_rule(request: Request):
 
 
 @app.post("/applyallrandomly")
-async def apply_rule():
+async def apply_all_rules():
     """Apply all rules
 
     :param request:
@@ -122,6 +122,8 @@ async def create_egraph(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
     result, msg = egraphService.create_egraph(pp["payload"])
+    egraphService.add_rule("(* x 2)", "(<< x 1)")
+    egraphService.add_rule("(/ x x)", "(1)")
     return {"response": str(result), "msg": msg}
 
 
