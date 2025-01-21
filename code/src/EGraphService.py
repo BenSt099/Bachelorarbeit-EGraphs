@@ -83,7 +83,8 @@ class EGraphService:
                 json.dump({"RewriteRules": rules}, file)
         except OSError:
             return False, "Couldn't save file, OSError."
-        return True, "Downloaded rules in " + str(os.getcwd()) + "."
+        path = str(os.getcwd())
+        return True, "Downloaded rules in " + path[0:int(len(path)/2)] + " " + path[int(len(path)/2) + 1:len(path)] + "."
 
     def add_rewrite_rules_from_file(self, data):
         """Adds all rewrite rules from a file.
@@ -117,14 +118,15 @@ class EGraphService:
         """"""
         try:
             with open(
-                ("egraphs-" + datetime.now().isoformat() + ".json").replace(":", "_"),
+                ("session-" + datetime.now().isoformat() + ".json").replace(":", "_"),
                 mode="w",
                 encoding="utf-8",
             ) as file:
                 json.dump(self.get_snapshot(), file)
         except OSError:
             return False, "Couldn't save file, OSError."
-        return True, "Saved session to file."
+        path = str(os.getcwd())
+        return True, "Downloaded session in " + path[0:int(len(path)/2)] + " " + path[int(len(path)/2) + 1:len(path)] + "."
 
     def set_service(self, data):
         """
@@ -166,7 +168,7 @@ class EGraphService:
         self.egraphs.append(dbg)
         self.egraph = (eg, self.egraph[1])
 
-        return True, "Extracted best term.", best
+        return True, "Extracted best term. Use debug (>) output to watch extraction.", best
 
     def get_all_rules(self):
         """Returns all rules in dictionary format.

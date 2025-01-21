@@ -110,6 +110,7 @@ def test_egraph_9():
     new_eclass_id = g._substitute(rule.expr_rhs.root_node, environment)
     assert g._find(new_eclass_id)
 
+
 def test_egraph_10():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(+ a 2)")
     g = EGraph.EGraph()

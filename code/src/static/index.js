@@ -123,7 +123,7 @@ function exportEGraph() {
         JSON.stringify({"payload": format}), "POST").then(
         function (value) {
             if (value['response'] === "False") {
-                addMessageToStatusBar("[WARN]",value['msg']);
+                addMessageToStatusBar("[WARN]", value['msg']);
             } else {
                 addMessageToStatusBar("[INFO]", value['msg']);
             }
@@ -503,4 +503,18 @@ function downloadSession() {
 function loadData() {
     loadEGraph();
     loadRewriteRules();
+}
+
+
+/**
+ * Copies the extracted term to the clipboard.
+ */
+async function copyTextToClipboard() {
+    if (String(document.getElementById("term").innerHTML).trim() !== "") {
+        try {
+            await navigator.clipboard.writeText(String(document.getElementById("term").innerHTML).trim());
+        } catch (Error) {
+            console.log("Couldn't perform copy to clipboard.");
+        }
+    }
 }
