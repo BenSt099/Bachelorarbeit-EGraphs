@@ -178,6 +178,7 @@ class EGraphService:
         for rule in rules:
             if int(rule) in self.dict_of_rules.keys():
                 applied_rules.append(self.dict_of_rules[int(rule)])
+                applied_rules.append(RewriteRule(rule, str(self.dict_of_rules[int(rule)].expr_lhs), str(self.dict_of_rules[int(rule)].expr_rhs)))
                 std += rule + ", "
         std = std.strip()
         if std[-1] == ",":

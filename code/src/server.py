@@ -157,6 +157,9 @@ async def move(request: Request):
             "msg": "Could NOT load debug output - switch from standard to debug mode?",
         }
     elif pp["payload"] == "backward" and pp["debugModeEnabled"] != "false":
+        if egraphService.current_minor == 0:
+            if egraphService.current_major == 0:
+                return {"response": "False", "msg": "End of debug output."}
         egraphService.move_backward()
     elif pp["payload"] == "forward" and pp["debugModeEnabled"] == "false":
         return {
@@ -164,11 +167,23 @@ async def move(request: Request):
             "msg": "Could NOT load debug output - switch from standard to debug mode?",
         }
     elif pp["payload"] == "forward" and pp["debugModeEnabled"] != "false":
+        if (
+            len(egraphService.egraphs[egraphService.current_major]) - 1
+            == egraphService.current_minor
+        ):
+            if egraphService.current_major == len(egraphService.egraphs) - 1:
+                return {"response": "False", "msg": "End of debug output."}
         egraphService.move_forward()
     elif pp["payload"] == "fastbackward":
-        egraphService.move_fastbackward()
+        if egraphService.current_major != 0:
+            egraphService.move_fastbackward()
+        else:
+            return {"response": "False", "msg": "Start of debug output."}
     elif pp["payload"] == "fastforward":
-        egraphService.move_fastforward()
+        if egraphService.current_major != len(egraphService.egraphs) - 1:
+            egraphService.move_fastforward()
+        else:
+            return {"response": "False", "msg": "End of debug output."}
     else:
         return {"response": "False", "msg": "Failed to move."}
     return {"response": "True", "msg": pp["payload"] + "."}

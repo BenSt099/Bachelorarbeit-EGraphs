@@ -232,7 +232,7 @@ function displayRewriteRule(lhs, rhs, num) {
     a2.classList.add("col-4");
     const b1 = document.createElement("b");
     const b2 = document.createElement("b");
-    b1.innerHTML = lhs + " => " + rhs;
+    b1.innerHTML = lhs + " <=> " + rhs;
     b2.innerHTML = String(num);
     a1.appendChild(b1);
     const formDiv = document.createElement("div");
@@ -458,12 +458,12 @@ function moveThroughDebugOutput(direction) {
             addMessageToStatusBar("[WARN]", value['msg']);
         } else {
             addMessageToStatusBar("[INFO]", value['msg']);
+            loadEGraph();
         }
     }, function () {
         addMessageToStatusBar("[ERROR]",
             "Failed to contact server.");
     });
-    loadEGraph();
 }
 
 
