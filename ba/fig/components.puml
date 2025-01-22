@@ -1,0 +1,47 @@
+@startuml components
+
+footer Einige Dateien ausgelassen
+
+title Komponenten der Anwendung
+
+allowmixing
+
+class AbstractSyntaxTreeNode
+class AbstractSyntaxTree
+class RewriteRule
+class ENode
+class EClass
+class EGraph
+class EGraphService
+component [server.py] as server
+file "index.html" as index
+
+hide members
+
+EGraphService<--server
+EGraph<--EGraphService
+AbstractSyntaxTreeNode<--AbstractSyntaxTree
+AbstractSyntaxTree<--EGraph
+EClass<--EGraph
+ENode<--EGraph
+RewriteRule<--EGraph
+server<-down->index: Kommunikation durch HTTP, \n Daten im JSON-Format
+
+note bottom of [AbstractSyntaxTree]
+Ausdruck wird zuerst in AST
+und dann in einen EGraph 
+umgewandelt.
+end note
+
+note right of [server]
+Ein mit <<FastAPI>> erstellter 
+Webserver, der Requests beantwortet
+und dazu den Service nutzt.
+end note
+
+note left of [EGraphService]
+Regelt die Interaktion zwischen
+Server und EGraph.
+end note
+
+@enduml
