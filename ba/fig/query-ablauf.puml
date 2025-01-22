@@ -1,0 +1,50 @@
+@startuml query
+
+footer Vereinfachte Darstellung
+
+title Beispielanfrage eines Users für die Erstellung eines EGraphs
+
+participant Server
+participant Website
+actor User
+autonumber
+
+Website<--User: **"Create EGraph"**-Button
+
+== Methode create() ==
+
+Server<-[#0000FF]-Website: /loadegraph | GET
+
+Server-[#red]>Website: {'**response**': 'False'}
+
+note over Website #fab9b9
+__Anmerkung__:
+Falls bereits ein EGraph existiert, kann der User diesen überschreiben (hier nicht gezeigt).
+end note
+
+== Methode createEGraph() ==
+
+Server<-[#0000FF]-Website: /createegraph | POST | {'payload': data}
+
+Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Created EGraph.'}
+
+note over Website: Füge **msg** als Statusmeldung hinzu
+Website->User: User sieht Statusmeldung
+
+== Methode loadData() ==
+
+Server<-[#0000FF]-Website: /loadegraph | GET
+
+Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Created EGraph.', '**payload**': data}
+
+note over Website: Führe "renderEGraph(**payload**)" aus
+Website->User: User sieht gerenderten EGraph
+
+Server<-[#0000FF]-Website: /getrules | GET
+
+Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Created EGraph.', '**payload**': data}
+
+note over Website: Führe "displayRewriteRule(**payload**)" aus
+Website->User: User sieht gerenderte Rewrite Rules
+
+@enduml
