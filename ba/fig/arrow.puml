@@ -1,0 +1,8 @@
+@startuml arrow
+
+() a #black
+() b #black
+
+a -right-> b
+
+@enduml

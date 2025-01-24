@@ -1,5 +1,11 @@
 @startuml components
 
+<style>
+.legende {
+ LineStyle 2
+}
+</style>
+
 footer Einige Dateien ausgelassen
 
 title Komponenten der Anwendung
@@ -28,20 +34,46 @@ RewriteRule<--EGraph
 server<-down->index: Kommunikation durch HTTP, \n Daten im JSON-Format
 
 note bottom of [AbstractSyntaxTree]
-Ausdruck wird zuerst in AST
-und dann in einen EGraph 
-umgewandelt.
+Wandelt mathematischen Ausdruck 
+zuerst in AST um und wird dann der
+Klasse **EGraph** für die Weiterver- 
+arbeitung übergeben.
 end note
 
 note right of [server]
 Ein mit <<FastAPI>> erstellter 
-Webserver, der Requests beantwortet
-und dazu den Service nutzt.
+Webserver, der Anfragen der 
+Website beantwortet und dazu 
+den EGraphService nutzt.
 end note
 
 note left of [EGraphService]
-Regelt die Interaktion zwischen
-Server und EGraph.
+Regelt die Interaktion zwischen Server
+und EGraph. Stellt revelante Funktionen
+z.B. für das Debugging bereit. 
+end note
+
+note right of [EGraph]
+Nimmt AST entgegen und
+erstellt daraus einen EGraph.
+Stellt weitere Methoden zur
+Interaktion, Visualisierung
+und Export von EGraphs bereit.
+end note
+
+note left of [index]
+Lokale Website, die Interaktion mit
+EGraphs ermöglicht. Stellt veschiedene
+Features, darunter Schritt-für-Schritt
+Ausführung und Export des EGraphs zur
+Verfügung. Die Dokumentation ist ebenfalls
+unter der Website erreichbar.
+end note
+
+note as N1 <<legende>> #white 
+__Legende__
+<img:arrow.png>
+Abhängigkeit zwischen zwei Komponenten 
 end note
 
 @enduml
