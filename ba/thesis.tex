@@ -121,6 +121,14 @@
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
 
+\usepackage{algpseudocodex}
+\algrenewcommand\algorithmicfunction{\textbf{Funktion}}
+\usepackage{algorithm}
+\floatname{algorithm}{Algorithmus}
+\renewcommand{\listalgorithmname}{Algorithmenverzeichnis}
+
+\usepackage{setspace}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% (Ende) LaTeX Packages in Nutzung                                           %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -143,7 +151,6 @@
 
 
 \tableofcontents
-
 
 \mainmatter
 
@@ -171,6 +178,9 @@
 \listoffigures
 %\listoftables
 \lstlistoflistings
+\doublespacing
+\listofalgorithms
+\singlespacing
 
 \clearpage
 \bibliography{references}
