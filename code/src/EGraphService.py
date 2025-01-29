@@ -215,7 +215,7 @@ class EGraphService:
             return False, "No rules to extract.", None
         for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
-        return True, "Added rules.", rules
+        return True, "Loaded rules.", rules
 
     def create_egraph(self, expr):
         """Creates an EGraph.

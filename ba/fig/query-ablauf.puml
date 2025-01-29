@@ -2,14 +2,14 @@
 
 footer Vereinfachte Darstellung
 
-title Beispielanfrage eines Users für die Erstellung eines EGraphs
+title Beispielanfrage eines Benutzers für die Erstellung eines EGraphs
 
 participant Server
 participant Website
-actor User
+actor Benutzer
 autonumber
 
-Website<--User: **"Create EGraph"**-Button
+Website<--Benutzer: **"Create EGraph"**-Button
 
 == Methode create() ==
 
@@ -19,7 +19,7 @@ Server-[#red]>Website: {'**response**': 'False'}
 
 note over Website #fab9b9
 __Anmerkung__:
-Falls bereits ein EGraph existiert, kann der User diesen überschreiben (hier nicht gezeigt).
+Falls bereits ein EGraph existiert, kann der Benutzer diesen überschreiben (hier nicht gezeigt).
 end note
 
 == Methode createEGraph() ==
@@ -29,22 +29,22 @@ Server<-[#0000FF]-Website: /createegraph | POST | {'payload': data}
 Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Created EGraph.'}
 
 note over Website: Füge **msg** als Statusmeldung hinzu
-Website->User: User sieht Statusmeldung
+Website->Benutzer: Benutzer sieht Statusmeldung
 
 == Methode loadData() ==
 
 Server<-[#0000FF]-Website: /loadegraph | GET
 
-Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Created EGraph.', '**payload**': data}
+Server-[#red]>Website: {'**response**': 'True', '**msg**': 'EGraph loaded.', '**payload**': data}
 
 note over Website: Führe "renderEGraph(**payload**)" aus
-Website->User: User sieht gerenderten EGraph
+Website->Benutzer: Benutzer sieht gerenderten EGraph
 
 Server<-[#0000FF]-Website: /getrules | GET
 
-Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Created EGraph.', '**payload**': data}
+Server-[#red]>Website: {'**response**': 'True', '**msg**': 'Loaded rules.', '**payload**': data}
 
 note over Website: Führe "displayRewriteRule(**payload**)" aus
-Website->User: User sieht gerenderte Rewrite Rules
+Website->Benutzer: Benutzer sieht gerenderte Rewrite Rules
 
 @enduml

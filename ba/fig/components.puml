@@ -28,17 +28,18 @@ EGraphService<--server
 EGraph<--EGraphService
 AbstractSyntaxTreeNode<--AbstractSyntaxTree
 AbstractSyntaxTree<--EGraph
+AbstractSyntaxTree<-- RewriteRule
 EClass<--EGraph
 ENode<--EGraph
 RewriteRule<--EGraph
 server<-down->index: Kommunikation durch HTTP, \n Daten im JSON-Format
 
-note bottom of [AbstractSyntaxTree]
-Wandelt mathematischen Ausdruck 
-zuerst in AST um und wird dann der
-Klasse **EGraph** für die Weiterver- 
-arbeitung übergeben.
-end note
+'note bottom of [AbstractSyntaxTree]
+'Wandelt mathematischen Ausdruck 
+'zuerst in AST um und wird dann der
+'Klasse **EGraph** für die Weiterver- 
+'arbeitung übergeben.
+'end note
 
 note right of [server]
 Ein mit <<FastAPI>> erstellter 
@@ -55,17 +56,17 @@ end note
 
 note right of [EGraph]
 Nimmt AST entgegen und
-erstellt daraus einen EGraph.
+erstellt daraus einen E-Graph.
 Stellt weitere Methoden zur
 Interaktion, Visualisierung
-und Export von EGraphs bereit.
+und Export von E-Graphs bereit.
 end note
 
 note left of [index]
 Lokale Website, die Interaktion mit
-EGraphs ermöglicht. Stellt veschiedene
+E-Graphs ermöglicht. Stellt veschiedene
 Features, darunter Schritt-für-Schritt
-Ausführung und Export des EGraphs zur
+Ausführung und Export des E-Graphs zur
 Verfügung. Die Dokumentation ist ebenfalls
 unter der Website erreichbar.
 end note

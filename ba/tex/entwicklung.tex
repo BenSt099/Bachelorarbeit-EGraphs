@@ -1,10 +1,13 @@
 \section{Entwicklung der Anwendung}\label{sec:entwicklung}
 
+In Kapitel~\ref{sec:architektur} wurde die Architektur der Anwendung vorgestellt. Dieses Kapitel bietet einem Einblick in die Entwicklungsphase
+der Anwendung.
+
 \subsection{E-Graphs}
 
-Um die Erstellung von EGraphs zu vereinfachen, erfolgt der Aufbau in mehreren Schritten.
+Um die Erstellung von E-Graphs zu vereinfachen, erfolgt der Aufbau in mehreren Schritten.
 Im ersten Schritt wird ein gegebenener mathematischer Ausdruck in einen \textbf{Abstract Syntax Tree} (AST) umgewandelt.
-Im zweiten Schritt wird der EGraph erstellt, indem der AST rekursiv traversiert und jeder Knoten dem EGraph hinzugefügt wird. 
+Im zweiten Schritt wird der E-Graph erstellt, indem der AST rekursiv traversiert und jeder Knoten dem E-Graph hinzugefügt wird. 
 
 \subsubsection{AST}
 
@@ -116,9 +119,9 @@ Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{wor
 Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
 Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
 
-\subsubsection{EGraph}
+\subsubsection{E-Graph}
 
-Aus dem Ausdruck wurde im letzten Abschnitt ein AST erzeugt. Nun soll dieser in einen EGraph umgewandelt werden. Ein EGraph besteht aus EClasses und ENodes.
+Aus dem Ausdruck wurde im letzten Abschnitt ein AST erzeugt. Nun soll dieser in einen E-Graph umgewandelt werden. Ein E-Graph besteht aus EClasses und ENodes.
 Die Klasse \textit{ENode} repräsentiert später einen Knoten aus dem AST. Daher enthält sie auch einen Schlüssel sowie eine Liste mit Argumenten. Die Argumente werden 
 EClass-IDs sein.
 
@@ -160,7 +163,7 @@ class RewriteRule:
 \end{lstlisting}
 
 
-Mit diesen beiden Hauptbestandteilen kann jetzt ein \textbf{EGraph} implementiert werden. 
+Mit diesen beiden Hauptbestandteilen kann jetzt ein \textbf{E-Graph} implementiert werden. 
 Die zugehörigen Methoden werden in den Abschnitten \ref{subsub:egg} und \ref{subsub:colab} vorgestellt.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EGraph}]
@@ -192,7 +195,7 @@ Für diese Implementierung wurden verschiedene, grundlegende Methoden übernomme
 
 \subsubsection{Colab-Implementierung}\label{subsub:colab}
 
-Das erwähnte Paper behandelt die grundlegenden Funktionen eines EGraphs. Allerdings werden andere Aspekte nicht beleuchtet. Hierzu wurde auf ein Google Colab Notebook zurückgegriffen \cite{devito},
+Das erwähnte Paper behandelt die grundlegenden Funktionen eines E-Graphs. Allerdings werden andere Aspekte nicht beleuchtet. Hierzu wurde auf ein Google Colab Notebook zurückgegriffen \cite{devito},
 welches weiterführende Konzepte aufzeigt.
 
 
@@ -203,8 +206,8 @@ welches weiterführende Konzepte aufzeigt.
 
 \subsection{Services \& Server}
 
-Für die Interaktion zwischen EGraphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
-die Erstellung und Benutzung von EGraphs regelt.
+Für die Interaktion zwischen E-Graphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
+die Erstellung und Benutzung von E-Graphs regelt.
 
 \subsubsection{Service}
 
@@ -223,20 +226,20 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-egraphservice = EGraphService()
+E-Graphservice = E-GraphService()
 
-@app.post("/createegraph")
-async def create_egraph(request: Request):
+@app.post("/createE-Graph")
+async def create_E-Graph(request: Request):
     payload = await request.body()
     pp = json.loads(payload)
     if is_valid_expression(pp["payload"]):
-        egraphservice.create_egraph(pp["payload"])
+        E-Graphservice.create_E-Graph(pp["payload"])
         return {"response": "true"}
     return {"response": "false"}
 
-@app.get("/loadegraph")
-def load_egraph():
-    a = egraphservice.get_current_egraph()
+@app.get("/loadE-Graph")
+def load_E-Graph():
+    a = E-Graphservice.get_current_E-Graph()
     if a is None:
         return {"response": "false"}
     else:
