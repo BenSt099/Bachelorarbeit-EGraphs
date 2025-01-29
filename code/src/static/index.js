@@ -414,6 +414,7 @@ function addMessageToStatusBar(status, msg) {
     let statusDiv = document.createElement("div");
     let msgDiv = document.createElement("div");
     rowDiv.className = "row";
+    rowDiv.classList.add("msgContainer");
     rowDiv.style.margin = "5px";
     rowDiv.style.padding = "5px";
     rowDiv.style.border = "1.5px solid black";
