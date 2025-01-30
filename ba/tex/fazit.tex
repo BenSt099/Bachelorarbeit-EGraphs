@@ -2,20 +2,30 @@
 
 \subsection{Fazit}
 
+Die in dieser Arbeit entwickelte Lernanwendung gibt Studentinnen und Studenten die Möglichkeit, sich auf interaktive Weise mit den Themen \textbf{E-Graphs} und 
+\textbf{Equality Saturation} auseinander zu setzen. Dabei können sie \textit{E-Graphs} erstellen, \textit{rewrite rules} hinzufügen und Schritt für Schritt 
+auf den \textit{E-Graph} anwenden sowie einen optimalen Term extrahieren. Die Anwendung ist getestet und funktioniert auf den gängigen Plattformen.
+
 \subsection{Ausblick}
 
-Momentan ist das Testen von EGraphs aufwendig. Vorstellbar wäre hier die Implementierung einer Vergleichsmethode, die für einen gegebenen Ausdruck die beiden EGraphs vergleicht,
-die mit der eigenen Implementierung und mit der von \textbf{egg} erstellt wurden. Dadurch lässt sich die Qualität der Software einfacher überprüfen und Fehler können schneller
-erkannt werden.
+Aufgrund der zeitlichen Beschränkungen konnten verschiedene Ansätze und Weiterentwicklungen nicht mehr ausprobiert und in die Anwendung integriert werden.
+Nachfolgend sind mehrere Aspekte aufgelistet, die als Erweiterung denkbar wären. 
 
-\noindent Die Visualisierung von EGraphs setzt bei Anwendung der RewriteRules an. Denkbar wäre eine detailierte Schritt-für-Schritt Darstellung vom Aufbau eines EGraphs.
-Je nach Detailgrad könnte dies in drei bis vier Wochen umgesetzt werden.
+\textbf{Erweitertes Testing} Momentan ist das Testen von E-Graphs aufwendig, da auf die internen Datenstrukuren zugegriffen werden muss.
+Denkbar wäre hier die Implementierung einer Vergleichsmethode, die für einen gegebenen Ausdruck die beiden E-Graphs vergleicht,
+die mit der eigenen Implementierung und mit der von \textit{egg}~(~\cite{2021-egg}) erstellt wurden. 
+Dadurch lässt sich die Qualität der Software einfacher überprüfen und Fehler können schneller erkannt werden.
+Mit drei Wochen Zeit wäre zu rechnen.
 
-\noindent Eine Anbindung der Anwendung an \textbf{egg} wäre ebenfalls denkbar. Dafür wären jedoch \textit{Rust}-Kenntnisse erforderlich. An sich wäre dies umsetzbar, da 
-\textit{Rust}-Methoden, mit wenigen Modifikationen, auch von Python aus aufgerufen werden können.
-Der Zeitaufwand könnte hier sechs Wochen betragen.
+\textbf{Erstellung von E-Graphs visualisieren} Die Visualisierungen setzen bei der Anwendung von \textit{rewrite rules} auf den E-Graph an.
+Möglich wäre hier eine detailierte Schritt für Schritt Darstellung, die auch den Aufbau eines E-Graphs zeigt. Je nach Detailgrad könnte dies in ein bis zwei Wochen umgesetzt werden.
 
-\noindent Das System ist zurzeit nicht in der Lage, eine Analyse durchzuführen, um sicher zu gehen, dass RewriteRules mathematisch sicher sind. Das bedeutet zum Beispiel, dass 
-bei einer Divisions-Regel nicht überprüft wird, ob der Nenner eventuell null werden könnte. 
-Auch \textit{Constant Folding} lässt sich erreichen.
-Diese Art der Analyse wird \textit{EClass-Analysis} genannt.  
+\textbf{Anbindung an egg} Die Anwendung arbeitet zurzeit mit einer eigenen Implementierung von E-Graphs. Dem Benutzer könnte eine weitere Option zur Verfügung stehen, eine weitere
+Implementierung, zum Beispiel die von \textit{egg}~(~\cite{2021-egg}), als Basis zu nutzen.
+Für dieses Unterfangen müsste jedoch der Debug-Output von \textit{egg} geparst und verarbeitet werden oder die Methoden der Bibliothek selbst müssten modifiziert werden.
+Dabei kann der Umstand ausgenutzt werden, dass Methoden, die in \textit{Rust} geschrieben wurden, mit wenigen Modifikationen auch von \textit{Python} aus aufgerufen werden können.
+Für dieses Vorhaben müsste wahrscheinlich sechs Wochen eingeplant werden.
+
+\textbf{EClass Analysis}
+Die Implementierung ist zurzeit nicht in der Lage eine \textit{EClass Analysis} durchzuführen. Bei dieser Art von Analyse kommen mehrere Techniken zum Einsatz, darunter
+\textit{Conditional and Dynamic rewrites} und \textit{Constant Folding}. Zwei bis drei Wochen wären vermutlich für die Umsetzung nötig.

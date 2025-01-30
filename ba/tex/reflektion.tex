@@ -10,6 +10,7 @@ In diesem Abschnitt wird eine kritische Reflektion zur Entwicklung der Anwendung
 
 \subsection{Ziel der Bachelorarbeit}
 
+Das Ziel der Bachelorarbeit wurde in der Einleitung bereits definiert. 
 
 \begin{tcolorbox}[enhanced, frame hidden, borderline west = {1.5pt}{0pt}{gray-700},lower separated=false,fontupper=\sffamily] 
 \glqq Das Ziel dieser Bachelorarbeit ist es, ein sinnvolles Werkzeug für die Lehre zu erstellen,
@@ -20,7 +21,7 @@ Die praktische Ebene soll Schritt für Schritt aufzeigen, wie der \textbf{E-Grap
 Für grö{\ss}tmöglichen Nutzen soll die Anwendung plattformunabhängig sein und möglichst nur von \textit{Open-Source-Software} (OSS) Gebrauch machen. [...]\grqq
 
 \begin{flushright}
-    --- Kapitel Problemstellung, Exposé
+    --- Kapitel~\ref{sec:einleitung}, Ziel der Arbeit
 \end{flushright}
 \end{tcolorbox}
 
@@ -31,7 +32,9 @@ Für grö{\ss}tmöglichen Nutzen soll die Anwendung plattformunabhängig sein un
 
 \subsection{Ziele des Exposés}
 
-Im Exposé werden folgende Ziele definiert.
+Das Exposé dient als Plan für eine Arbeit, dem sowohl Prüfer als auch Prüfling zugestimmt haben. Somit wird dem Prüfling eine Orientierung
+und dem Prüfer ein objektives Maß für die Vollständigkeit der Arbeit gegeben. Im Exposé wurden dabei folgende Ziele definiert, die die Anwendung
+erfüllen muss.
 
 \begin{tcolorbox}[enhanced, frame hidden, borderline west = {1.5pt}{0pt}{gray-700},lower separated=false,fontupper=\sffamily]
 \glqq [...] sollen dem Benutzer folgende Funktionen zur Verfügung gestellt werden:
@@ -58,5 +61,31 @@ Im Exposé werden folgende Ziele definiert.
 \end{flushright}
 \end{tcolorbox}
 
+
+
+
+Damit wurden alle Anforderungen an die Anwendung, die das Exposé festlegt, erreicht.
+
 \subsection{Qualität der Software}
+
+Ein Kernfaktor bei der Bewertung von Software ist ihre Qualität. Dabei bedeutet Qualität im Sinne der Softwareentwicklung: Wartbarkeit, Dokumentation, Testing, 
+Portierbarkeit und Bedienbarkeit.  
+
+\noindent\textbf{Wartbarkeit} Die Software hat eine klare Struktur, die es ermöglicht neue Strukturen ohne zu viel Aufwand zu implementieren.
+Der Code wurde mit \textit{Black}~\footnote{\url{https://black.readthedocs.io/en/stable/}} formatiert und richtet sich nach \textit{PEP 8}~\footnote{\url{https://peps.python.org/pep-0008/}}.
+
+\noindent\textbf{Dokumentation} Jede Funktion bzw. Methode im Python- oder JavaScript-Code ist mit einem Kommentar versehen, der Parameter (falls vorhanden), Rückgabewerte (falls vorhanden) und
+Sinn erklären. Darüber hinaus enthalten alle Dateien einschließlich der Testdateien einen Kommentar, der den Inhalt der Datei erläutert.
+Über die Benutzeroberfläche kann der Benutzer außerdem auf die Bedienungsanleitung der Website zugreifen. In dieser ist genau erklärt, wie die Anwendung gesteuert werden kann. 
+
+\noindent\textbf{Testing} Die Anwendung ist durch Unit-Tests abgedeckt, die eine breite Palette an möglichen Eingaben und Zuständen simulieren.
+Insgesamt wurden {\color{red} X} Tests geschrieben. Einfache \textit{Getter}-Methoden wurden dabei nicht getestet.
+
+\noindent\textbf{Portierbarkeit} Die eingesetzten Komponenten laufen problemlos auf verschiedenen Plattformen inklusive der drei größten Betriebssysteme Windows, MacOS und Linux.
+Durch den Einsatz von Python als Hauptprogrammiersprache, mit der auch der Server erstellt wurde, kann auf eine sehr gute Plattformunabhängigkeit geschlossen werden.
+Die Benutzeroberfläche der Anwendung läuft als lokale Website im Browser des Benutzers, was ebenfalls keine Hürde darstellt. Zuletzt können vier der fünf Dependencies mit Python
+heruntergeladen werden. Die fünfte Dependency, \textit{Grahviz}, ist auf allen gängigen Plattformen vertreten und bereits intensiv erprobt worden. 
+
+\noindent\textbf{Bedienbarkeit} Die Benutzeroberfläche integriert Komponenten aus dem Framework \textit{Bootstrap}~\footnote{\url{https://getbootstrap.com/}}, das auf 
+Benutzerfreundlichkeit und Kompatibilität ausgelegt ist. Zudem kann über die Benutzeroberfläche die Bedienungsanleitung eingesehen werden.
 
