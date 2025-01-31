@@ -19,7 +19,7 @@ Außerdem wurde \textit{Python} auf allen gängigen Betriebssystemen bereits get
 \subsection{Graphviz}
 
 Jeder EGraph besteht aus drei Datenstrukturen. Um diese visuell darstellen zu können, wird eine Software benötigt, die Graphen erzeugen kann.
-Dazu wurde die Software \textit{Graphviz}~\cite{graphviz} ausgewählt. Folgende Gründe waren dabei ausschlaggebend.
+Dazu wurde die Software \textit{Graphviz}~\footnote{\hspace{1.5mm}\url{https://graphviz.org/}} ausgewählt. Folgende Gründe waren dabei ausschlaggebend.
 
 \begin{itemize}
     \item \textit{Graphviz} ist auf allen gängigen Plattformen verfügbar und weitreichend getestet.
@@ -27,7 +27,7 @@ Dazu wurde die Software \textit{Graphviz}~\cite{graphviz} ausgewählt. Folgende 
     \item Die \textit{Dot}-Sprache ist, ähnlich zu anderen Formaten wie JSON oder YAML, zu einem Standard geworden, der auch von anderen Werkzeugen und Software verarbeitet werden kann.
     \item Ein in der \textit{Dot}-Sprache beschriebener EGraph kann mit \textit{Graphviz} in gängige Formate wie SVG, PNG oder PDF exportiert werden.
     \item Es gibt bereits ein Python-Paket, was nativen Anschluss an \textit{Graphviz} ermöglicht. Damit kann auf das Interagieren mit \textit{Graphviz} über ein CLI verzichtet werden.
-    \item Durch die JavaScript-Bibliothek \textit{D3} und einer entsprechenden Bibliothek~\cite{d3-graphviz}, kann ein EGraph auch im Browser als SVG-Datei angezeigt werden.
+    \item Durch die JavaScript-Bibliothek \textit{D3} und einer entsprechenden Bibliothek (\textit{d3-graphviz}~\footnote{\hspace{1.5mm}\url{https://github.com/magjac/d3-graphviz}}), kann ein EGraph auch im Browser als SVG-Datei angezeigt werden.
 \end{itemize}
 
 \subsection{FastAPI}
@@ -42,7 +42,7 @@ In dieser Arbeit stellt eine Website, die lokal im Browser läuft zum Einsatz. D
     Gerade \textit{Django} ist zwar sehr beliebt und weit verbreitet, hat aber auch Performance-Schwierigkeiten.
     Das liegt unter anderem daran, dass \textit{Django} ein umfangreiches Angebot anbietet und für viele Anwendungsfälle entwickelt wurde.
     Für dieses Projekt werden die meisten Features jedoch nicht benötigt.
-    \item Im Gegensatz zu \textit{Django} bietet \textit{FastAPI}~\cite{fastapi} nur essenzielle Funktionen an, was das Aufsetzen eines Servers deutlich vereinfacht.
+    \item Im Gegensatz zu \textit{Django} bietet \textit{FastAPI}~\footnote{\hspace{1.5mm}\url{https://fastapi.tiangolo.com/}} nur essenzielle Funktionen an, was das Aufsetzen eines Servers deutlich vereinfacht.
 \end{itemize}
 
 \subsection{JSON-Format}
@@ -54,6 +54,6 @@ zum Beispiel durch die Developer Tools von Firefox. Dieses Feature macht das Deb
 
 \subsection{Bootstrap-Framework}
 
-Für die Gestaltung der Benutzeroberfläche wurde auf das CSS-Framework \textit{Bootstrap}~\cite{bootstrap} in der Version 5.3.3 zurückgegriffen.
+Für die Gestaltung der Benutzeroberfläche wurde auf das CSS-Framework \textit{Bootstrap}~\footnote{\hspace{1.5mm}\url{https://getbootstrap.com/}} in der Version 5.3.3 zurückgegriffen.
 \textit{Bootstrap} kam bereits auf zahlreichen Websiten zum Einsatz und ist daher vielfach erprobt worden.
 Zudem enthält es viele bereits fertige und optimierte Bausteine, die nicht nur für Konsistenz sorgen, sondern auch für Accessibility ausgelegt sind. 

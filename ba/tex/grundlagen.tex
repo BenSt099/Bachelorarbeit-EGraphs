@@ -10,7 +10,7 @@ im Programm vornehmen kann, indem er verschiedenen Techniken wie die Datenflussa
 
 \noindent Eine weitere Möglichkeit für Optimierungen ist die Verwendung von \textit{E-Graphs} und \textit{Equality Saturation}.
 Hierbei werden vor allem mathematische Ausdrücke in effizientere umgewandelt.
-Um diesen Prozess zu verstehen, startet dieses Kapitel zuerst mit einem naiven Ansatz und zeigt anhanddessen Probleme auf, die
+Um diesen Prozess zu verstehen, startet dieses Kapitel zuerst mit einem naiven Ansatz und zeigt anhand dessen Probleme auf, die
 während der Optimierung auftreten können.
 
 \subsection{Naives Optimieren}
@@ -53,7 +53,7 @@ Das Ergebnis hängt also von der Reihenfolge der verwendeten Regeln ab. Dieses P
 Ein weiteres Problem sind kurzsichtige Heuristiken, die dazu tendieren, die Optimalität von Ausdrücken nicht über mehrere Schritte, sondern nur für den momentanen Schritt
 zu verfolgen~\cite{phaseorder-2009}.
 
-\noindent Um diese Probleme zu umgehen, kann der vorherige Algorithmus um eine Liste erweitert werden (siehe~\footnote{\url{https://www.cole-k.com/2023/07/24/e-graphs-primer/}}).
+\noindent Um diese Probleme zu umgehen, kann der vorherige Algorithmus um eine Liste erweitert werden (siehe~\footnote{\hspace{1.5mm}\url{https://www.cole-k.com/2023/07/24/e-graphs-primer/}}).
 Diese Liste speichert alle erzeugten Ausdrücke ohne Duplikate. Nun wird versucht, alle möglichen Regeln auf die Ausdrücke in der Liste anzuwenden. 
 Dies setzt der nächste Algorithmus in Abbildung~\ref{alg:ausdruck2} um.
 
