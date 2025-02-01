@@ -224,7 +224,7 @@ function createRewriteRule(lhs, rhs) {
  */
 function displayRewriteRule(lhs, rhs, num) {
     const heading = document.createElement("div");
-    heading.classList.add("row");
+    heading.classList.add("row", "rr");
     heading.style.marginBottom = "5px";
     const a1 = document.createElement("div");
     const a2 = document.createElement("div");
@@ -490,7 +490,9 @@ function uploadSession() {
                         addMessageToStatusBar("[WARN]", value['msg']);
                     } else {
                         addMessageToStatusBar("[INFO]", value['msg']);
-                        loadData();
+                        if(value["payload"] !== []) {
+                            addMessageToStatusBar("[INFO]", "Applied rules in last session: " + value['payload']);
+                        }
                     }
                 }, function () {
                     addMessageToStatusBar("[ERROR]",

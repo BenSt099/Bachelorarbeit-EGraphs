@@ -57,6 +57,7 @@ class EGraphService:
         """
         self.rrc = 0
         self.dict_of_rules = {}
+        self.applied_rules = set()
         self.egraph = None
         self.expr = None
         self.egraphs = [[]]
@@ -117,7 +118,11 @@ class EGraphService:
         rules = dict()
         for k, v in self.dict_of_rules.items():
             rules[k] = [v.name, str(v.expr_lhs), str(v.expr_rhs)]
-        return {"RewriteRules": rules, "graph": self.expr}
+        return {
+            "RewriteRules": rules,
+            "Applied": list(self.applied_rules),
+            "graph": self.expr,
+        }
 
     def save_to_file(self):
         """"""
@@ -149,13 +154,17 @@ class EGraphService:
         try:
             d = data["graph"]
             e = data["RewriteRules"]
+            f = data["Applied"]
         except KeyError:
             return False, "Format is broken."
         self.create_egraph(d)
         self.rrc = 0
+        kk = []
         for k, v in e.items():
-            self.add_rule(v[1], v[2])
-        return True, "Saved session."
+            a, b, c = self.add_rule(v[1], v[2])
+            if v[0] in f:
+                kk.append(c)
+        return True, "Saved session.", kk
 
     def add_rule(self, lhs, rhs):
         """"""
@@ -168,7 +177,6 @@ class EGraphService:
     def apply_all_rules_randomly(self):
         """"""
 
-
         return True, ""
 
     def apply(self, rules):
@@ -178,13 +186,21 @@ class EGraphService:
         for rule in rules:
             if int(rule) in self.dict_of_rules.keys():
                 applied_rules.append(self.dict_of_rules[int(rule)])
-                applied_rules.append(RewriteRule(rule, str(self.dict_of_rules[int(rule)].expr_lhs), str(self.dict_of_rules[int(rule)].expr_rhs)))
+                applied_rules.append(
+                    RewriteRule(
+                        rule,
+                        str(self.dict_of_rules[int(rule)].expr_lhs),
+                        str(self.dict_of_rules[int(rule)].expr_rhs),
+                    )
+                )
                 std += rule + ", "
         std = std.strip()
         if std[-1] == ",":
             std = std[0 : len(std) - 1]
         if applied_rules:
             eg, dbg = apply_rules(applied_rules, self.egraph[0])
+            for x in applied_rules:
+                self.applied_rules.add(x.name)
             self.egraph = (eg, self.egraph[1])
             self.egraphs.append(dbg)
         else:

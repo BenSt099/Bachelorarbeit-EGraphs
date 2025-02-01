@@ -170,8 +170,8 @@ class EGraph:
     def _repair(self, eclass_id):
         """Repairs the EGraph."""
         for p_node, p_eclass in self.m[eclass_id].parents:
-            # if p_node in self.h.keys():
-            self.h.pop(p_node)
+            if p_node in self.h.keys():
+                self.h.pop(p_node)
             p_node = self._canonicalize(p_node)
             self.h[p_node] = self._find(p_eclass)
         new_parents = set()
