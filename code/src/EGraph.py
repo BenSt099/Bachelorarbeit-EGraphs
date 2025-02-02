@@ -177,10 +177,15 @@ class EGraph:
         new_parents = set()
         for p_node, p_eclass in self.m[eclass_id].parents:
             p_node = self._canonicalize(p_node)
-            if p_node.key in [new_parent[0].key for new_parent in new_parents]:
-                for new_parent in new_parents:
-                    if new_parent[0].key == p_node.key:
-                        self.merge(p_eclass, new_parent[1])
+            # if p_node.key in [new_parent[0].key for new_parent in new_parents]:
+            #     for new_parent in new_parents:
+            #         if new_parent[0].key == p_node.key:
+            #             self.merge(p_eclass, new_parent[1])
+            if p_node in [x[0] for x in new_parents]:
+                for nn, cc in new_parents:
+                    if nn == p_node:
+                        self.merge(p_eclass, cc)
+
             new_parents.add((p_node, self._find(p_eclass)))
         self.m[self._find(eclass_id)].parents = new_parents
 
@@ -243,7 +248,7 @@ class EGraph:
         if (
             ast_node.left is None
             and ast_node.right is None
-            and not re.search("[0-9]+", ast_node.key)
+            and not re.match("[0-9]+", ast_node.key)
         ):
             return environment[ast_node.key]
         else:
@@ -312,7 +317,7 @@ class EGraph:
         else:
             self.str_repr += ast_node.key + " "
 
-    def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_nodes = [], marked_eclasses = []):
+    def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_eclasses = []):
         """Returns a string of the EGraph in DOT notation."""
         dot_commands = [
             "digraph parent { graph [compound=true, nodesep=" + str(nodesep)
@@ -351,8 +356,8 @@ class EGraph:
                 second_diff = enode.key
                 if enode.key in ('<<', '>>'):
                     second_diff = enode.key[0] + '\\' + enode.key[1]
-                if enode in marked_nodes:
-                    fillcol = ', fillcolor=\"crimson\"'
+                # if enode in marked_nodes:
+                #     fillcol = ', fillcolor=\"crimson\"'
                 dot_commands.append(
                     '"' + enode.key + differentiator + '"'
                     + '[label="<' + str(node_identifier) + "0> | \\"
@@ -498,7 +503,13 @@ def apply_rules(rules, egraph):
     # print(f"VERSION {egraph.version}")
     for rule, eclass_id, environment in list_of_matches:
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
-        # if eclass_id != new_eclass_id:
+        if eclass_id != new_eclass_id:
+            debug_info.append(
+                [
+                    "MATCHED EClass with " + str(environment) + ".",
+                    egraph.egraph_to_dot(marked_eclasses=[eclass_id]),
+                ]
+            )
         # print(f"{eclass_id} MATCHED {rule} with {environment}")
 
         debug_info.append(
@@ -508,7 +519,7 @@ def apply_rules(rules, egraph):
             ]
         )
         egraph.merge(eclass_id, new_eclass_id)
-    debug_info.append(["MERGED.", egraph.egraph_to_dot()])
+        debug_info.append(["MERGED.", egraph.egraph_to_dot()])
     debug_info.append(
         [
             "REBUILD colored eclasses.",

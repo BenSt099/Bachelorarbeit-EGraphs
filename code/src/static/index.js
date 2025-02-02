@@ -43,8 +43,8 @@ function create() {
         function (value) {
             if (value['response'] !== "False") {
                 if (confirm("There is already an EGraph. Do you want to replace it and all data attached to it?") === true) {
-                    addMessageToStatusBar("[INFO]", "Creating new EGraph...");
                     document.getElementById("rr_table").innerHTML = "";
+                    addMessageToStatusBar("[INFO]", "Creating new EGraph...");
                     createEGraph();
                 } else {
                     addMessageToStatusBar("[INFO]", "Action aborted.");

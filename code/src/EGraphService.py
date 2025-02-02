@@ -185,7 +185,7 @@ class EGraphService:
         applied_rules = []
         for rule in rules:
             if int(rule) in self.dict_of_rules.keys():
-                applied_rules.append(self.dict_of_rules[int(rule)])
+                # applied_rules.append(self.dict_of_rules[int(rule)])
                 applied_rules.append(
                     RewriteRule(
                         rule,
