@@ -326,6 +326,9 @@ function loadRewriteRules() {
 }
 
 
+/**
+ * Upload rewrites rules from JSON file to server.
+ */
 function uploadRewriteRules() {
     let upload_input_form = document.createElement('input');
     upload_input_form.type = 'file';
@@ -358,6 +361,9 @@ function uploadRewriteRules() {
 }
 
 
+/**
+ * Commands server to save all rewrites rules to JSON file.
+ */
 function downloadRewriteRules() {
     contactServer("/downloadrules", null, "POST").then(
         function (value) {
@@ -483,14 +489,14 @@ function uploadSession() {
         reader.readAsText(t);
         reader.onload = function () {
             try {
-                contactServer("/loadfromfile", JSON.stringify({
+                contactServer("/uploadsession", JSON.stringify({
                     "payload": reader.result.trim()
                 }), "POST").then(function (value) {
                     if (value['response'] === "False") {
                         addMessageToStatusBar("[WARN]", value['msg']);
                     } else {
                         addMessageToStatusBar("[INFO]", value['msg']);
-                        if(value["payload"] !== []) {
+                        if (value["payload"] !== []) {
                             addMessageToStatusBar("[INFO]", "Applied rules in last session: " + value['payload']);
                         }
                     }
@@ -512,7 +518,7 @@ function uploadSession() {
  * Orders the server to save the session into a JSON file.
  */
 function downloadSession() {
-    contactServer("/savetofile", null, "POST").then(
+    contactServer("/downloadsession", null, "POST").then(
         function (value) {
             if (value['response'] === "False") {
                 addMessageToStatusBar("[WARN]", value['msg']);

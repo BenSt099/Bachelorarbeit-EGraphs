@@ -62,7 +62,7 @@ def test_service_get_snapshot():
 
 def test_service_set_service():
     service = EGraphService.EGraphService()
-    result, msg = service.set_service(dict())
+    result, msg = service.set_session_from_file(dict())
     assert result == False
 
 
