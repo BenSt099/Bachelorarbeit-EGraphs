@@ -1,4 +1,4 @@
-"""This module implements an EGraph.
+"""This module implements an e-graph.
 
 Classes:
     EGraph: Represents an Equality-Graph
@@ -25,9 +25,9 @@ Implementation:
         url: https://colab.research.google.com/drive/1tNOQijJqe5tw-Pk9iqd6HHb2abC5aRid?usp=sharing
 
 Visualisation:
-    Visualising an EGraph can be done by calling
+    Visualising an e-graph can be done by calling
     ``egraph_to_dot(self,nodesep=0.5,ranksep=0.5)``.
-    It will return a string of the EGraph in DOT notation.
+    It will return a string of the e-graph in DOT notation.
         url: https://graphviz.org/doc/info/lang.html
 """
 
@@ -55,7 +55,6 @@ class EGraph:
         add_node(ast_node)
         merge(eclass_id1, eclass_id2)
         rebuild()
-        apply_rule(rules)
         apply_rules(rules)
         equality_saturation(rules, etermid)
         export_egraph_to_file(filepath, extension="pdf")
@@ -89,25 +88,25 @@ class EGraph:
         enode_args = [self._find(arg) for arg in enode.arguments]
 
         canonical_eclass_ids = []
-        for x in self.h.keys():
-            x.arguments = [self._find(arg) for arg in x.arguments]
-            canonical_eclass_ids.append(x.arguments)
+        for e_node in self.h.keys():
+            e_node.arguments = [self._find(arg) for arg in e_node.arguments]
+            canonical_eclass_ids.append(e_node.arguments)
         if enode.key not in ("/", "*", "+", "-", "<<", ">>") and enode.key in [
             key.key for key in self.h.keys()
         ]:
-            for x in self.h.keys():
-                if x.key == enode.key:
-                    return self.h[x]
+            for e_node in self.h.keys():
+                if e_node.key == enode.key:
+                    return self.h[e_node]
         elif enode in self.h.keys():
             return self.h[enode]
         elif (
             enode.key in [key.key for key in self.h.keys()]
             and enode_args in canonical_eclass_ids
         ):
-            for en in self.h.keys():
-                en.arguments = [self._find(arg) for arg in en.arguments]
-                if en.key == enode.key and en.arguments == enode.arguments:
-                    return self.h[en]
+            for e_node in self.h.keys():
+                e_node.arguments = [self._find(arg) for arg in e_node.arguments]
+                if e_node.key == enode.key and e_node.arguments == enode.arguments:
+                    return self.h[e_node]
         else:
             self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
@@ -177,14 +176,10 @@ class EGraph:
         new_parents = set()
         for p_node, p_eclass in self.m[eclass_id].parents:
             p_node = self._canonicalize(p_node)
-            # if p_node.key in [new_parent[0].key for new_parent in new_parents]:
-            #     for new_parent in new_parents:
-            #         if new_parent[0].key == p_node.key:
-            #             self.merge(p_eclass, new_parent[1])
-            if p_node in [x[0] for x in new_parents]:
-                for nn, cc in new_parents:
-                    if nn == p_node:
-                        self.merge(p_eclass, cc)
+            if p_node in [new_parent[0] for new_parent in new_parents]:
+                for new_p_enode, new_p_eclass_id in new_parents:
+                    if new_p_enode == p_node:
+                        self.merge(p_eclass, new_p_eclass_id)
 
             new_parents.add((p_node, self._find(p_eclass)))
         self.m[self._find(eclass_id)].parents = new_parents
@@ -343,8 +338,6 @@ class EGraph:
                 for n in self.m[eclass_id].nodes:
                     nodes_in_subset.add(n)
 
-            # for eclass_id in subset:
-            #     for enode in self.m[eclass_id].nodes:
             for enode in nodes_in_subset:
                 fillcol = ', fillcolor=\"white\"'
                 differentiator = ""
@@ -356,8 +349,6 @@ class EGraph:
                 second_diff = enode.key
                 if enode.key in ('<<', '>>'):
                     second_diff = enode.key[0] + '\\' + enode.key[1]
-                # if enode in marked_nodes:
-                #     fillcol = ', fillcolor=\"crimson\"'
                 dot_commands.append(
                     '"' + enode.key + differentiator + '"'
                     + '[label="<' + str(node_identifier) + "0> | \\"
@@ -431,14 +422,14 @@ class EGraph:
         return "".join(dot_commands)
 
 
-def export_egraph_to_file(eg, filepath, extension="pdf"):
-    """Exports the EGraph into either svg or pdf file format."""
+def export_egraph_to_file(egraph, filepath, extension="pdf"):
+    """Exports the e-graph into either svg, pdf or png file format."""
     if (
         not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
         or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
     ):
-        return False, "False path."
-    src = graphviz.Source(eg)
+        return False, "There's a problem with the path."
+    src = graphviz.Source(egraph)
     try:
         src.render(
             filename=str(pathlib.Path(filepath).stem + ".gv"),
@@ -454,30 +445,30 @@ def export_egraph_to_file(eg, filepath, extension="pdf"):
         and graphviz.CalledProcessError
     ):
         return False, "Error occurred."
-    return True, "Export successful to " + filepath
+    return True, "Export was successful. " + filepath
 
 
-def equality_saturation(rules, etermid, egraph):
+def equality_saturation(rules, eterm_id, egraph):
     """Performs equality saturation.
 
     (DISCLAIMER)
     This method is based on work of Zachary DeVito. For more information,
     please see the implementation section in the module's docstring.
     """
-    dbg = []
-    best = ""
+    debug_information = []
+    best_term = ""
     if not egraph.is_saturated:
+        debug_information.append(["Cost model: ['+'|'-'|'<<'|'>>']: 1, ['*']: 2, ['/']: 3, [other]: 0", egraph.egraph_to_dot()])
         while True:
             v = egraph.version
-            best = _extract_term(etermid, egraph)
-            dbg.append(["Best Term: " + best, egraph.egraph_to_dot()])
-            # print('BEST ', _extract_term(etermid, egraph))
+            best_term = _extract_term(eterm_id, egraph)
+            debug_information.append(["Best Term: " + best_term, egraph.egraph_to_dot()])
             egraph, debug = apply_rules(rules, egraph)
             for x in debug:
-                dbg.append(x)
+                debug_information.append(x)
             if v == egraph.version:
                 break
-    return egraph, dbg, best
+    return egraph, debug_information, best_term
 
 
 def apply_rules(rules, egraph):
@@ -491,44 +482,39 @@ def apply_rules(rules, egraph):
     eclasses = egraph.get_eclasses()
     list_of_matches = []
     for rule in rules:
-        for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
-            list_of_matches.append((rule, eclass_id, environment))
-            debug_info.append(
-                [
-                    "MATCHED EClass with " + str(environment) + ".",
-                    egraph.egraph_to_dot(marked_eclasses=[eclass_id]),
-                ]
-            )
-
-    # print(f"VERSION {egraph.version}")
+        if not egraph._ematch(eclasses, rule.expr_lhs.root_node):
+            debug_info.append(["No MATCH for rule: " + str(rule), egraph.egraph_to_dot()])
+        else:
+            for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
+                list_of_matches.append((rule, eclass_id, environment))
     for rule, eclass_id, environment in list_of_matches:
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
         if eclass_id != new_eclass_id:
             debug_info.append(
                 [
-                    "MATCHED EClass with " + str(environment) + ".",
+                    "Rule " + str(rule.name) + ": MATCHED EClass with " + str(environment) + ".",
                     egraph.egraph_to_dot(marked_eclasses=[eclass_id]),
                 ]
             )
-        # print(f"{eclass_id} MATCHED {rule} with {environment}")
-
         debug_info.append(
             [
-                "MERGE colored eclasses.",
+                "Rule " + str(rule.name) + ": MERGE colored eclasses.",
                 egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id]),
             ]
         )
         egraph.merge(eclass_id, new_eclass_id)
-        debug_info.append(["MERGED.", egraph.egraph_to_dot()])
-    debug_info.append(
-        [
-            "REBUILD colored eclasses.",
-            egraph.egraph_to_dot(marked_eclasses=egraph.pending),
-        ]
-    )
-    egraph.rebuild()
-    debug_info.append(["EGraph was rebuilt. Done.", egraph.egraph_to_dot()])
-    # print(egraph.egraph_to_dot())
+        debug_info.append(["Rule " + str(rule.name) + ": MERGED.", egraph.egraph_to_dot()])
+    if egraph.pending:
+        debug_info.append(
+            [
+                "REBUILD colored eclasses.",
+                egraph.egraph_to_dot(marked_eclasses=egraph.pending),
+            ]
+        )
+        egraph.rebuild()
+        debug_info.append(["EGraph was rebuilt.", egraph.egraph_to_dot()])
+    debug_info.append(["Done.", egraph.egraph_to_dot()])
+    egraph.is_saturated = False
     return egraph, debug_info
 
 
@@ -553,9 +539,9 @@ def _extract_term(eterm_id, egraph):
     while has_changed:
         has_changed = False
         for eclass, enodes in eclasses.items():
-            x = [(cost_for_enode(enode), enode) for enode in enodes]
-            x.sort(key=lambda student: student[0])
-            new_cost = min(x, key=lambda st: st[0])
+            costs_to_enodes = [(cost_for_enode(enode), enode) for enode in enodes]
+            costs_to_enodes.sort(key=lambda student: student[0])
+            new_cost = min(costs_to_enodes, key=lambda st: st[0])
 
             if costs[eclass][0] != new_cost[0]:
                 has_changed = True
