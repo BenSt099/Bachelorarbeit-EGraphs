@@ -273,8 +273,7 @@ class EGraph:
             return self._add(enode)
 
     def get_eclasses(self):
-        """
-        Returns a dictionary with a mapping of eclasses to their enodes.
+        """Returns a dictionary with a mapping of eclasses to their enodes.
 
         (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
