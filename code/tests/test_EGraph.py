@@ -1,7 +1,7 @@
-"""This file contains test to ensure the capability and correctness of EGraph.py
-The tests are separated into groups to test one aspect of EGraph.py.
+"""This file contains tests to ensure the capability and correctness of EGraph.py
+The tests are separated into groups to test different aspects of EGraph.py.
 
-- Number of Tests: 11
+- Number of Tests: 20
 
 """
 
@@ -10,8 +10,6 @@ import pytest
 import AbstractSyntaxTree
 import EGraph
 import RewriteRule
-
-from src.EGraph import apply_rules, export_egraph_to_file
 
 
 ################################################################################
@@ -228,7 +226,7 @@ def test_egraph_to_dot_1():
         RewriteRule.RewriteRule("simp", "(* x 1)", "(x)"),
     ]
     egraph, dbg, best = EGraph.equality_saturation(rules, eterm_id, egraph)
-    export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
+    EGraph.export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
     assert True
 
 
@@ -239,7 +237,7 @@ def test_egraph_to_dot_2():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(* (>> b 2) (/ c 3))")
     egraph = EGraph.EGraph()
     egraph.add_node(ast.root_node)
-    export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
+    EGraph.export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
     assert True
 
 
@@ -250,7 +248,7 @@ def test_egraph_to_dot_3():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(* (/ (- a 3) a)(* 2 b))")
     egraph = EGraph.EGraph()
     egraph.add_node(ast.root_node)
-    export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
+    EGraph.export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
     assert True
 
 
@@ -268,7 +266,7 @@ def test_egraph_to_dot_4():
         RewriteRule.RewriteRule("zero", "(* 0 x)", "(0)"),
     ]
     egraph, dbg, best = EGraph.equality_saturation(rules, eterm_id, egraph)
-    export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
+    EGraph.export_egraph_to_file(egraph.egraph_to_dot(), str(os.getcwd()))
     assert True
 
 
@@ -282,7 +280,7 @@ def test_edge_case():
     egraph = EGraph.EGraph()
     eterm_id = egraph.add_node(ast.root_node)
     rules = [RewriteRule.RewriteRule("expand", "(x)", "(* x 1)")]
-    egraph, debug_output = apply_rules(rules, egraph)
-    egraph, debug_output = apply_rules(rules, egraph)
+    egraph, debug_output = EGraph.apply_rules(rules, egraph)
+    egraph, debug_output = EGraph.apply_rules(rules, egraph)
     assert len(egraph.u.subsets()) == 2
     assert "a" == EGraph._extract_term(eterm_id, egraph)

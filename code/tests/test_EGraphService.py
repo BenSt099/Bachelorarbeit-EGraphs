@@ -1,4 +1,15 @@
+"""This file contains tests to ensure the capability and correctness of EGraphService.py
+The tests are separated into groups to test different aspects of EGraphService.py.
+
+- Number of Tests: 20
+
+"""
+
 import EGraphService
+
+################################################################################
+# Validation of Expression              ########################################
+################################################################################
 
 
 def test_valid_expression_1():
@@ -41,6 +52,11 @@ def test_valid_expression_10():
     assert not EGraphService.is_valid_expression("(/ (* var (- )) 2)")
 
 
+################################################################################
+# General functionality                 ########################################
+################################################################################
+
+
 def test_service_add_rule():
     service = EGraphService.EGraphService()
     result, msg, data = service.add_rule("(* x 1)", "ii")
@@ -62,14 +78,14 @@ def test_service_get_snapshot():
 
 def test_service_set_service():
     service = EGraphService.EGraphService()
-    result, msg = service.set_session_from_file(dict())
+    result, msg, data = service.set_session_from_file(dict())
     assert result == False
 
 
 def test_service_apply():
     service = EGraphService.EGraphService()
     service.add_rule("(* x 1)", "(x)")
-    result, msg = service.apply(1)
+    result, msg = service.apply([1])
     assert result == False
 
 

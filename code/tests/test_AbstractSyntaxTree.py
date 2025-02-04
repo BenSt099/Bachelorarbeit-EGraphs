@@ -1,3 +1,10 @@
+"""This file contains tests to ensure the capability and correctness of
+AbstractSyntaxTree.py and AbstractSyntaxTreeNode.py
+
+- Number of Tests: 20
+
+"""
+
 import AbstractSyntaxTree
 
 
