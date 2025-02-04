@@ -232,7 +232,7 @@ function displayRewriteRule(lhs, rhs, num) {
     a2.classList.add("col-4");
     const b1 = document.createElement("b");
     const b2 = document.createElement("b");
-    b1.innerHTML = lhs + " <=> " + rhs;
+    b1.innerHTML = lhs + " => " + rhs;
     b2.innerHTML = String(num);
     a1.appendChild(b1);
     const formDiv = document.createElement("div");
@@ -284,10 +284,10 @@ function applyRewriteRules() {
 
 
 /**
- * Apply all rewrite rules randomly.
+ * Apply all rewrite rules till egraph is saturated.
  */
-function applyAllRewriteRulesRandomly() {
-    contactServer("/applyallrandomly",
+function applyAllRewriteRules() {
+    contactServer("/applyallrules",
         null, "POST").then(
         function (value) {
             if (value['response'] === "False") {
@@ -498,6 +498,7 @@ function uploadSession() {
                         addMessageToStatusBar("[INFO]", value['msg']);
                         if (value["payload"] !== []) {
                             addMessageToStatusBar("[INFO]", "Applied rules in last session: " + value['payload']);
+                            loadData();
                         }
                     }
                 }, function () {

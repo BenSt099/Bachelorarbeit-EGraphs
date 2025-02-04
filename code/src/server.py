@@ -83,13 +83,13 @@ async def apply_rule(request: Request):
     return {"response": str(result), "msg": msg}
 
 
-@app.post("/applyallrandomly")
+@app.post("/applyallrules")
 async def apply_all_rules():
     """Apply all rules
 
-    :return:
+    :return: JSON, {'response': ..., 'msg': ...}
     """
-    result, msg = egraphService.apply_all_rules_randomly()
+    result, msg = egraphService.apply_all_rules()
     return {"response": str(result), "msg": msg}
 
 

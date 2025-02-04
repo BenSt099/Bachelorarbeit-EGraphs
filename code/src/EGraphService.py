@@ -29,7 +29,13 @@ Functions:
 import os
 import json
 from datetime import datetime
-from EGraph import EGraph, apply_rules, export_egraph_to_file, equality_saturation
+from EGraph import (
+    EGraph,
+    apply_rules,
+    export_egraph_to_file,
+    equality_saturation,
+    equality_saturation_no_extract,
+)
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
 
@@ -165,18 +171,38 @@ class EGraphService:
         :param rhs: str, right-hand side of rewrite rule
         :return: bool, str, str (if action is successful, status msg, number of rule)
         """
-        if is_valid_expression(lhs) and is_valid_expression(rhs):
+        if (
+            is_valid_expression(lhs)
+            and is_valid_expression(rhs)
+            and lhs + " => " + rhs
+            not in [
+                str(rule.expr_lhs) + " => " + str(rule.expr_rhs)
+                for rule in self.dict_of_rules.values()
+            ]
+        ):
             self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), lhs, rhs)
             self.rrc += 1
-            self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), rhs, lhs)
-            self.rrc += 1
+
+            if rhs + " => " + lhs not in [
+                str(rule.expr_lhs) + " => " + str(rule.expr_rhs)
+                for rule in self.dict_of_rules.values()
+            ]:
+                self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), rhs, lhs)
+                self.rrc += 1
             return True, "Added rules."
-        return False, "No valid rules."
+        return False, "No valid rule OR Exists already."
 
-    def apply_all_rules_randomly(self):
-        """"""
+    def apply_all_rules(self):
+        """Apply all rewrite rules to the egraph.
 
-        return True, ""
+        :return: bool, str (if action is successful, status msg)
+        """
+        egraph, debug_information = equality_saturation_no_extract(
+            list(self.dict_of_rules.values()), self.egraph[0]
+        )
+        self.egraphs.append(debug_information)
+        self.egraph = (egraph, self.egraph[1])
+        return True, "Applied all rules - graph saturated."
 
     def apply(self, rules):
         """Apply rewrite rule(s) to the egraph.

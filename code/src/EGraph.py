@@ -470,6 +470,25 @@ def equality_saturation(rules, eterm_id, egraph):
     return egraph, debug_information, best_term
 
 
+def equality_saturation_no_extract(rules, egraph):
+    """Performs equality saturation.
+
+    (DISCLAIMER)
+    This method is based on work of Zachary DeVito. For more information,
+    please see the implementation section in the module's docstring.
+    """
+    debug_information = []
+    if not egraph.is_saturated:
+        while True:
+            v = egraph.version
+            egraph, debug = apply_rules(rules, egraph)
+            for x in debug:
+                debug_information.append(x)
+            if v == egraph.version:
+                break
+    return egraph, debug_information
+
+
 def apply_rules(rules, egraph):
     """Apply multiple rules to the egraph.
 
