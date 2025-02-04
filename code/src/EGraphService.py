@@ -168,8 +168,10 @@ class EGraphService:
         if is_valid_expression(lhs) and is_valid_expression(rhs):
             self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), lhs, rhs)
             self.rrc += 1
-            return True, "Added rule.", self.rrc - 1
-        return False, "No valid rule.", None
+            self.dict_of_rules[self.rrc] = RewriteRule(str(self.rrc), rhs, lhs)
+            self.rrc += 1
+            return True, "Added rules."
+        return False, "No valid rules."
 
     def apply_all_rules_randomly(self):
         """"""
@@ -186,15 +188,8 @@ class EGraphService:
         applied_rules = []
         for rule in rules:
             if int(rule) in self.dict_of_rules.keys():
-                # applied_rules.append(self.dict_of_rules[int(rule)])
-                applied_rules.append(
-                    RewriteRule(
-                        rule,
-                        str(self.dict_of_rules[int(rule)].expr_lhs),
-                        str(self.dict_of_rules[int(rule)].expr_rhs),
-                    )
-                )
-                applied_rules_str += rule + ", "
+                applied_rules.append(self.dict_of_rules[int(rule)])
+                applied_rules_str += str(rule) + ", "
         applied_rules_str = applied_rules_str.strip()
         if applied_rules_str[-1] == ",":
             applied_rules_str = applied_rules_str[0 : len(applied_rules_str) - 1]
@@ -312,7 +307,7 @@ class EGraphService:
         self.rrc = 0
         applied_rules_str = []
         for _, rule in rules.items():
-            _, _, number = self.add_rule(rule[1], rule[2])
+            _, number = self.add_rule(rule[1], rule[2])
             if rule[0] in applied_rules:
                 applied_rules_str.append(number)
         return True, "Saved session.", applied_rules_str

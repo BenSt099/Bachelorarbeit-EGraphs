@@ -24,7 +24,7 @@ def test_get_rules_1():
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
     response = client.get("/getrules")
     assert "'response': 'True'" in str(response.json())
-    assert "['2', '(* x 1)', '(x)']" in str(response.json())
+    assert "['4', '(* x 1)', '(x)']" in str(response.json())
 
 
 def test_get_rules_2():
@@ -35,8 +35,8 @@ def test_get_rules_2():
     client.post("/addrule", json={"lhs": "(* y 1)", "rhs": "(y)"})
     response = client.get("/getrules")
     assert "'response': 'True'" in str(response.json())
-    assert "['2', '(* x 1)', '(x)']" in str(response.json())
-    assert "['3', '(* y 1)', '(y)']" in str(response.json())
+    assert "['4', '(* x 1)', '(x)']" in str(response.json())
+    assert "['6', '(* y 1)', '(y)']" in str(response.json())
 
 
 ################################################################################
@@ -50,7 +50,6 @@ def test_add_rule_1():
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     response = client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
     assert "'response': 'True'" in str(response.json())
-    assert "'payload': 2" in str(response.json())
 
 
 def test_add_rule_2():
@@ -91,7 +90,7 @@ def test_apply_rule_3():
     client.post("/createegraph", json={"payload": "(/ a 2)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
     client.post("/addrule", json={"lhs": "(* y 1)", "rhs": "(y)"})
-    response = client.post("/applyrule", json={"payload": "7"})
+    response = client.post("/applyrule", json={"payload": "9"})
     assert "'response': 'False'" in str(response.json())
 
 
@@ -214,10 +213,10 @@ def test_extract_term_2():
     client.post("/addrule", json={"lhs": "(* x 2)", "rhs": "(<< x 1)"})
     client.post("/addrule", json={"lhs": "(/ x x)", "rhs": "(1)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
-    client.post("/applyrule", json={"payload": "2"})
-    client.post("/applyrule", json={"payload": "3"})
     client.post("/applyrule", json={"payload": "4"})
-    client.post("/applyrule", json={"payload": "5"})
+    client.post("/applyrule", json={"payload": "6"})
+    client.post("/applyrule", json={"payload": "8"})
+    client.post("/applyrule", json={"payload": "10"})
     response = client.post("/extractterm")
     assert "'response': 'True'" and "a" in str(response.json())
 

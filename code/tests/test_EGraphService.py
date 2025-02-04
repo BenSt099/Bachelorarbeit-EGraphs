@@ -59,7 +59,7 @@ def test_valid_expression_10():
 
 def test_service_add_rule():
     service = EGraphService.EGraphService()
-    result, msg, data = service.add_rule("(* x 1)", "ii")
+    result, msg = service.add_rule("(* x 1)", "ii")
     assert result == False
 
 
@@ -71,7 +71,7 @@ def test_service_get_snapshot():
     result = service.get_snapshot()
     assert "'graph': '(+ a 1)'" in str(result)
     assert (
-        "'RewriteRules': {0: ['0', '(* x 1)', '(x)'], 1: ['1', '(* x 2)', '(<< x 1)']}"
+        "'RewriteRules': {0: ['0', '(* x 1)', '(x)'], 1: ['1', '(x)', '(* x 1)'], 2: ['2', '(* x 2)', '(<< x 1)'], 3: ['3', '(<< x 1)', '(* x 2)']}"
         in str(result)
     )
 
@@ -84,9 +84,10 @@ def test_service_set_service():
 
 def test_service_apply():
     service = EGraphService.EGraphService()
-    service.add_rule("(* x 1)", "(x)")
-    result, msg = service.apply([1])
-    assert result == False
+    service.create_egraph("(+ a 1)")
+    service.add_rule("(+ x 1)", "(x)")
+    result, msg = service.apply([0])
+    assert result == True
 
 
 def test_service_add_rewrite_rules_from_file():

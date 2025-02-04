@@ -66,8 +66,8 @@ async def add_rule(request: Request):
     """
     payload = await request.body()
     json_data = json.loads(payload)
-    result, msg, data = egraphService.add_rule(json_data["lhs"], json_data["rhs"])
-    return {"response": str(result), "msg": msg, "payload": data}
+    result, msg = egraphService.add_rule(json_data["lhs"], json_data["rhs"])
+    return {"response": str(result), "msg": msg}
 
 
 @app.post("/applyrule")
