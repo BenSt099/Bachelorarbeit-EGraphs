@@ -2,21 +2,95 @@
 
 \subsection{Motivation}
 
-\noindent Die Abkürzung \textit{E-Graphs} steht für \textit{Equality-} oder \textit{Equivalence-}Graphs und beschreibt eine Datenstruktur, die es
- erlaubt, äquivalente (mathematische) Ausdrücke kompakt abzuspeichern, indem
-Äquivalenzklassen der Ausdrücke abgespeichert werden. Die Äquivalenzrelation ist dabei kongruent. 
-Ursprünglich wurde diese Datenstruktur nur in der automatisierten Beweisführung verwendet, wird mittlerweile aber auch für Compiler eingesetzt~\cite{2021-egg}.
-Als Beispiel dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, welches \textit{E-Graphs} für die Optimierung verwendet.
+% Titel: Entwicklung einer Anwendung zum Vermitteln von Lerninhalten über E-Graphs und Equality Saturation für die Lehre
 
-\noindent Im Compiler gibt es verschiedene Technicken, um den Zwischencode (engl. \textit{Intermediate Representation}) zu optimieren, bevor dieser in 
-Assemblersprache übersetzt wird. Optimierungen werden dabei sequentiell durchgeführt. Bei dem Ausführen von Optimierungen wird der Compiler mit dem \textit{Phase Ordering Problem}
-konfrontiert. Beim \textit{Phase Ordering Problem} geht es um die Frage, in welcher Reihenfolge die Optimierungen auf das eingegebene 
-Programm angewendet werden sollen. Bei einer falschen Reihenfolge kann ein lokales Optimum erreicht werden, wodurch die Effizienz nachlässt~\cite{phaseorder-2009}.
+% - Beginn
+% - Hintergrundkenntnisse
+% - brücke zur problemstellung 
 
-\noindent Es gibt mehrere Möglichkeiten, dieses Problem zu lösen. Neben Backtracking und Brute-Force sind \textit{E-Graphs} eine Möglichkeit, da sie durch \textit{Equality Saturation}
-in der Lage sind, viele mögliche Optimierungen des Eingabe-Programms gleichzeitig effizient zu speichern und das beste aus diesen zu extrahieren.
+
+% - optimieren von termen, z.b. in compilern
+% - e-graph und Equality Saturation
+% - wie vermitteln? -> titel der arbeit
+
+
+\noindent In der Informatik nimmt das Optimieren von Ausdrücken eine wichtige Rolle ein. 
+Ausdrücke können in Form von mathematischen Termen vorkommen oder als Programmcode auftreten.
+Häufig ist der Compiler für diese Aufgabe zuständig, da manche Optimierungen nicht durch den Programmierer vorgenommen werden können. 
+Der Compiler kann verschiedene Techniken anwenden, zum Beispiel Teile des Zwischencodes (engl. \textit{Intermediate Representation}) durch effizientere zu ersetzen.
+Findet diese Ersetzung sequentiell statt, tritt das sogenannte \textit{Phase Ordering Problem} auf. Dabei endet die Kette an Optimierungen in einem lokalen Optimum~\cite{phaseorder-2009}.
+Neben Backtracking- und Brute-Force-Methoden sind \textit{E-Graphs} eine Möglichkeit, dieses Problem zu umgehen. 
+
+\noindent Die Abkürzung \textit{E-Graph} steht für \textit{Equality-} oder \textit{Equivalence-Graph} und beschreibt eine Datenstruktur, die es
+erlaubt, äquivalente Ausdrücke kompakt abzuspeichern.
+Ursprünglich wurden sie in der automatisierten Beweisführung eingesetzt~\cite{2021-egg}. Heute findet sie, auch dank \textit{Equality Saturation}, Anwendung in Compilern.
+Als Beispiel dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, das \textit{E-Graphs} für die Optimierung verwendet.
+
+\noindent \textit{E-Graphs} und \textit{Equality Saturation} sind nicht-triviale Konzepte, die indessen an Wichtigkeit zunehmen. 
+Das schrittweise Heranführen von Studentinnen und Studenten an diese Themen erfordert eine Methode, die interaktiv funktioniert, da das Anwenden des Gelernten 
+das Erlernen von Konzepten erleichtert. Damit soll sich diese Bachelorarbeit beschäftigen. 
+
+
+% \noindent In der Informatik nimmt das Optimieren von Programmcode eine wichtige Aufgabe ein.
+% Indem überflüssige Schleifendurchläufe eingespart oder unerreichbarer Code eliminiert wird,
+% kann das Programm Zeit und Ressourcen einsparen. 
+% Während manche Optimierungen vom Programmierer vorgenommen werden können, sind andere nur 
+% durch den Compiler möglich.
+
+% Der Compiler kann verschiedene Optimierungen in verschiedenen Phasen durchführen. 
+
+% Eine Möglichkeit besteht darin, den Zwischencode (engl. \textit{Intermediate Representation}) zu optimieren, bevor dieser in 
+% Assemblersprache übersetzt wird. Dazu kann der Zwischencode durch anderen, schnelleren Code ersetzt werden.
+% Wenn die Ersetzung sequentiell erfolgt, kann sie, durch eine falsche Reihenfolge der Optimierungen, in einem lokalen Optimum enden.
+% Das ist allgemein als das \textit{Phase Ordering Problem} bekannt~\cite{phaseorder-2009}.
+
+% Neben Backtracking- und Brute-Force-Methoden sind \textit{E-Graphs} eine Möglichkeit, dieses Problem zu umgehen. 
+% Die Abkürzung \textit{E-Graph} steht für \textit{Equality-} oder \textit{Equivalence-Graph} und beschreibt eine Datenstruktur, die es
+% erlaubt, äquivalente (mathematische) Ausdrücke kompakt abzuspeichern.
+% Ursprünglich wurde diese Datenstruktur nur in der automatisierten Beweisführung verwendet, wird mittlerweile aber auch für Compiler eingesetzt~\cite{2021-egg}.
+% Als Beispiel dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, das \textit{E-Graphs} für die Optimierung verwendet.
+
+
+% Der Compiler enthält zum Beispiel einen maschinenunabhängigen Codeoptimierer, der global Optimierungen
+% im Programm vornehmen kann, indem er verschiedenen Techniken wie die Datenflussanalyse anwendet~\cite{ullman2008}.
+
+
+% Im Compiler gibt es verschiedene Techniken, um den Zwischencode (engl. \textit{Intermediate Representation}) zu optimieren, bevor dieser in 
+% Assemblersprache übersetzt wird. Optimierungen werden dabei sequentiell durchgeführt. Bei dem Ausführen von Optimierungen wird der Compiler mit dem \textit{Phase Ordering Problem}
+% konfrontiert. Beim \textit{Phase Ordering Problem} geht es um die Frage, in welcher Reihenfolge die Optimierungen auf das eingegebene 
+% Programm angewendet werden sollen. Bei einer falschen Reihenfolge kann ein lokales Optimum erreicht werden, wodurch die Effizienz nachlässt~\cite{phaseorder-2009}.
+
+% \noindent Es gibt mehrere Möglichkeiten, dieses Problem zu lösen. Neben Backtracking und Brute-Force sind \textit{E-Graphs} eine Möglichkeit, da sie durch \textit{Equality Saturation}
+% in der Lage sind, viele mögliche Optimierungen des Eingabe-Programms gleichzeitig effizient zu speichern und das beste aus diesen zu extrahieren.
+
+
+
+
+% \noindent Die Abkürzung \textit{E-Graph} steht für \textit{Equality-} oder \textit{Equivalence-Graph} und beschreibt eine Datenstruktur, die es
+%  erlaubt, äquivalente (mathematische) Ausdrücke kompakt abzuspeichern, indem
+% Äquivalenzklassen der Ausdrücke abgespeichert werden. Die Äquivalenzrelation ist dabei kongruent. 
+% Ursprünglich wurde diese Datenstruktur nur in der automatisierten Beweisführung verwendet, wird mittlerweile aber auch für Compiler eingesetzt~\cite{2021-egg}.
+% Als Beispiel dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, welches \textit{E-Graphs} für die Optimierung verwendet.
+
+
 
 \subsection{Ziel der Arbeit}
+
+\vspace{5mm}
+\begin{center}
+    {\itshape
+    \rmfamily
+    \glqq Show me and I forget.
+    Teach me and I remember. 
+    Involve me and I learn.\grqq}
+    \vspace{-3mm}
+    \begin{flushright}
+        \footnotesize
+        --- Vermeintlich 
+        Benjamin Franklin \\
+        zugeschrieben
+    \end{flushright}
+\end{center}\vspace{5mm}
 
 Das Ziel dieser Bachelorarbeit ist es, ein sinnvolles Werkzeug für die Lehre zu erstellen,
 um Studentinnen und Studenten die Themen \textbf{E-Graphs} und \textbf{Equality Saturation} näher zu bringen.
@@ -61,7 +135,7 @@ Kapitel vier ermöglicht einen detailierten Einblick in die Vorgehensweise währ
 Kapitel fünf behandelt alle Entscheidungen, die während der Entwicklungsphase getroffen wurden sowie etwaige Probleme, die währenddessen auftraten.
 \vspace{6mm}
 
-\noindent {\itshape Kapitel \ref{sec:reflektion} - Reflektion}\vspace{-2mm}
+\noindent {\itshape Kapitel \ref{sec:reflexion} - Reflexion der Arbeit}\vspace{-2mm}
 
 Kapitel sechs erläutert, inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren der Erfolg gemessen werden kann.
 \vspace{6mm}
