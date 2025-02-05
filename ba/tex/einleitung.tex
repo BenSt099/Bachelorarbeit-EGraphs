@@ -90,22 +90,34 @@ das Erlernen von Konzepten erleichtert. Damit soll sich diese Bachelorarbeit bes
         Benjamin Franklin \\
         zugeschrieben
     \end{flushright}
-\end{center}\vspace{5mm}
+\end{center}\vspace{3mm}
 
-Das Ziel dieser Bachelorarbeit ist es, ein sinnvolles Werkzeug für die Lehre zu erstellen,
-um Studentinnen und Studenten die Themen \textbf{E-Graphs} und \textbf{Equality Saturation} näher zu bringen.
-Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit E-Graphs auseinander setzen zu können.
-Die theoretische Ebene soll den Studenten die notwendigen Hintergrundkenntnisse vermitteln sowie einen Enblick in die Implementierung geben.
-Die praktische Ebene soll Schritt für Schritt aufzeigen, wie der \textbf{E-Graph} aufgebaut wird, und wie an diesem \textbf{Equality Saturation} durchgeführt werden kann.
-Für grö{\ss}tmöglichen Nutzen soll die Anwendung plattformunabhängig sein und möglichst nur von \textit{Open-Source-Software} (OSS) Gebrauch machen.
+Das Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die Studentinnen und Studenten Wissen zu den Themen \textit{E-Graphs} und \textit{Equality Saturation}
+vermittelt. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit den Themen auseinander setzen zu können.
+Die Grundlage der theoretischen Ebene bildet diese Arbeit, in der notwendige Hintergrundkenntnisse erarbeitet werden. Außerdem wird ein Einblick in die Implementierung gegeben. 
+Die praktische Ebene besteht aus der Anwendung, mit deren Hilfe Schritt für Schritt aufgezeigt wird, wie \textit{E-Graphs} und \textit{Equality Saturation} funktionieren.
+Für grö{\ss}tmöglichen Nutzen soll die Anwendung zudem plattformunabhängig sein und möglichst nur von \textit{Open-Source-Software} (OSS) Gebrauch machen.
 Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgangen und zeitgleich die Hürden für Erweiterungen gesenkt.
+
+% Das Ziel dieser Bachelorarbeit ist es, ein sinnvolles Werkzeug für die Lehre zu erstellen,
+% um Studentinnen und Studenten die Themen \textbf{E-Graphs} und \textbf{Equality Saturation} näher zu bringen.
+
+% Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit E-Graphs auseinander setzen zu können.
+
+% Die theoretische Ebene soll den Studenten die notwendigen Hintergrundkenntnisse vermitteln sowie einen Enblick in die Implementierung geben.
+
+% Die praktische Ebene soll Schritt für Schritt aufzeigen, wie der \textbf{E-Graph} aufgebaut wird, und wie an diesem \textbf{Equality Saturation} durchgeführt werden kann.
+
+% Für grö{\ss}tmöglichen Nutzen soll die Anwendung plattformunabhängig sein und möglichst nur von \textit{Open-Source-Software} (OSS) Gebrauch machen.
+% Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgangen und zeitgleich die Hürden für Erweiterungen gesenkt.
+
 
 \subsection{Verwandte Arbeiten}\label{sub:verwandtearbeiten}
 
-\noindent\textbf{egg} Das Akronym \textit{egg} steht für \textit{e-graphs good} und ist eine in der Programmiersprache \textit{Rust} geschriebene Bibliothek.
-Die Bibliothek implementiert die Datenstruktur E-Graph und stellt Funktionen für die Interaktion mit dieser zur Verfügung.
-Neben der Erzeugung von E-Graphs kann auch \textit{Equality Saturation} auf diesen durchgeführt werden.
-Das gesamte Projekt wurde in einem Paper vorgestellt, auf welches sich diese Arbeit stützt~\cite{2021-egg}.
+\noindent\textbf{egg} Das Akronym \textit{egg} bildet sich aus den Wörtern \textit{e-graphs good} und ist eine in der Programmiersprache \textit{Rust} geschriebene Bibliothek.
+Die Bibliothek implementiert die Datenstruktur \textit{E-Graph} und stellt Funktionen zur Manipulation dieser zur Verfügung.
+Neben der Erzeugung von \textit{E-Graphs} kann auch \textit{Equality Saturation} auf diesen ausgeführt werden.
+Das gesamte Projekt wurde in einem Paper vorgestellt, auf das sich diese Arbeit teilweise stützt~\cite{2021-egg}.
 
 \noindent\textbf{egglog} Das weiterführende System \textit{egglog} basiert auf \textit{egg} und \textit{Datalog}. 
 \textit{Datalog} ist eine \glqq [...] rekursive Abfragesprache für Datenbanken [...] \grqq~\cite{2023-egglog}.
@@ -117,7 +129,9 @@ Auch dieses Projekt wurde in einem Paper vorgestellt~\cite{2023-egglog}.
 
 \noindent {\itshape Kapitel \ref{sec:grundlagen} - Grundlagen}\vspace{-2mm}
 
-Dieses Kapitel zeichnet den Beginn der Arbeit, indem notwendige Kenntnisse über E-Graphs und Equality Saturation vermittelt werden.
+Dieses Kapitel zeichnet den Beginn der Arbeit. Es beginnt mit einem naiven Ansatz zur Optimierung von Ausdrücken und leitet zu \textit{E-Graphs} und \textit{Equality Saturation} über.
+
+% notwendige Kenntnisse über E-Graphs und Equality Saturation vermittelt werden.
 \vspace{6mm}
 
 \noindent {\itshape Kapitel \ref{sec:architektur} - Architektur der Anwendung}\vspace{-2mm}
@@ -125,19 +139,23 @@ Dieses Kapitel zeichnet den Beginn der Arbeit, indem notwendige Kenntnisse über
 Kapitel drei gibt einen Überblick über die einzelnen Komponenten der Anwendung und zeigt das Zusammenspiel dieser untereinander.
 \vspace{6mm}
 
-\noindent {\itshape Kapitel \ref{sec:entwicklung} - Entwicklung der Anwendung}\vspace{-2mm}
-
-Kapitel vier ermöglicht einen detailierten Einblick in die Vorgehensweise während der Entwicklung und beschreibt, wie einzelne Komponenten praktisch umgesetzt wurden.
-\vspace{6mm}
-
 \noindent {\itshape Kapitel \ref{sec:entscheidungenundprobleme} - Entscheidungen und Probleme}\vspace{-2mm}
 
-Kapitel fünf behandelt alle Entscheidungen, die während der Entwicklungsphase getroffen wurden sowie etwaige Probleme, die währenddessen auftraten.
+Kapitel vier behandelt alle Entscheidungen, die während der Entwicklungsphase getroffen wurden sowie etwaige Probleme, die währenddessen auftraten.
+\vspace{6mm}
+
+\noindent {\itshape Kapitel \ref{sec:entwicklung} - Entwicklung der Anwendung}\vspace{-2mm}
+
+Kapitel fünf ermöglicht einen detailierten Einblick in die Vorgehensweise während der Entwicklung und beschreibt die praktische Umsetzung einzelner Komponenten.
+
+% , wie einzelne Komponenten praktisch umgesetzt wurden.
 \vspace{6mm}
 
 \noindent {\itshape Kapitel \ref{sec:reflexion} - Reflexion der Arbeit}\vspace{-2mm}
 
-Kapitel sechs erläutert, inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren der Erfolg gemessen werden kann.
+Kapitel sechs bietet eine kritische Reflexion der Arbeit. Hier wird erläutert, inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren dies gemessen werden kann.
+
+% Kapitel sechs erläutert, inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren der Erfolg gemessen werden kann.
 \vspace{6mm}
 
 \noindent {\itshape Kapitel \ref{sec:fazit} - Fazit und Ausblick}\vspace{-2mm}

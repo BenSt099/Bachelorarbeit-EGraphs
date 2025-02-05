@@ -5,6 +5,8 @@ Dazu erläutert dieses Kapitel die Architektur der Anwendung sowie ihre Funktion
 Die Anwendung besteht aus vier Hauptkomponenten: der Klasse \textit{EGraph} mit ihren Hilfsklassen, dem \textit{EGraphService}, dem Server (\textit{server.py}) und der
 Weboberfläche (\textit{index.html}). Abbildung~\ref{fig:architektur} gibt einen Überblick über den Zusammenhang zwischen den Komponenten. 
 
+\subsection{Grundlegende Komponenten}
+
 Die erste Komponente bildet die Klasse \textit{EGraph}. Instanzen dieser Klasse implementieren die Datenstruktur E-Graph. Dazu sind fünf weitere Klassen nötig: 
 \textit{AbstractSyntaxTreeNode}, \textit{AbstractSyntaxTree}, \textit{RewriteRule}, \textit{ENode} und \textit{EClass}.
 Die Klasse \textit{AbstractSyntaxTree} stellt einen AST (\textbf{Abstract Syntax Tree}) dar und benötigt dafür eine Klasse, die die Knoten repräsentiert (\textit{AbstractSyntaxTreeNode}).

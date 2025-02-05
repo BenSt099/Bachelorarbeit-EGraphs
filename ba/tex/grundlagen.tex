@@ -1,57 +1,69 @@
 \section{Grundlagen}\label{sec:grundlagen}
 
-% In der Informatik nimmt das Optimieren von Programmcode eine wichtige Aufgabe ein.
-% Indem überflüssige Schleifendurchläufe eingespart oder unerreichbarer Code eliminiert wird,
-% kann das Programm Zeit und Ressourcen einsparen. 
-% Während manche Optimierungen vom Programmierer vorgenommen werden können, sind andere nur 
-% durch den Compiler möglich.
-% Der Compiler enthält zum Beispiel einen maschinenunabhängigen Codeoptimierer, der global Optimierungen
-% im Programm vornehmen kann, indem er verschiedenen Techniken wie die Datenflussanalyse anwendet~\cite{ullman2008}.
+% Es beginnt mit einem naiven Ansatz zur Optimierung von Ausdrücken und leitet zu \textit{E-Graphs} und \textit{Equality Saturation} über.
 
-\noindent Eine weitere Möglichkeit für Optimierungen ist die Verwendung von \textit{E-Graphs} und \textit{Equality Saturation}.
-Hierbei werden vor allem mathematische Ausdrücke in effizientere umgewandelt.
-Um diesen Prozess zu verstehen, startet dieses Kapitel zuerst mit einem naiven Ansatz und zeigt anhand dessen Probleme auf, die
-während der Optimierung auftreten können.
+Dieses Kapitel leitet mit einem naiven Ansatz zur Optimierung ein und diskutiert die daraus entstehenden Nachteile. Danach wir schrittweise zu \textit{E-Graphs}
+übergeleitet und schließlich der Prozess \textit{Equality Saturation} erklärt.
 
 \subsection{Naives Optimieren}
 
-Gegeben sei ein mathematischer Ausdruck, zum Beispiel: $a * 1$. Um diesen Ausdruck umzuformen, kann eine \textit{rewrite rule} eingesetzt werden.
-Eine \textit{rewrite rule} beschreibt die Umformung eines Ausdrucks in einen anderen. Als Beispiel sei hier folgende Regel gegeben: $x * 1 \Leftrightarrow x \;\; (1)$.
-Angewendet auf den obigen Ausdruck würde sich folgendes ergeben: $a * 1  \overset{(1)}{\Leftrightarrow} a$.
-Die Anwendung dieser \textit{rewrite rule} ist nur möglich, weil die Regel \textit{matcht}. Das bedeutet, dass der Ausdruck und die linke Seite der Regel identisch sind 
-(abgesehen vom Namen der Variablen). Die folgende \textit{rewrite rule} würde nicht \textit{matchen} und damit auch nicht angewendet werden können: $\frac{x}{x} \Leftrightarrow 1$.
-Mit diesen Bausteinen lässt sich bereits ein naiver Algorithmus anfertigen, der in Abbildung~\ref{alg:ausdruck1} dargestellt ist.
+Für das naive Optimieren von Ausdrücken wird zuerst das Konzept der \textit{rewrite rules} benötigt. Gegeben sei ein beliebiger mathematischer Ausdruck, z.B.
+$a * 1$. Um eine Umformung dieses Ausdrucks durchführen zu können, kann eine \textit{rewrite rule} auf diesen Ausdruck angewendet werden.
+Als Beispiel sei hier die folgende Regel gegeben: $x * 1 \Leftrightarrow x \;\; (1)$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
+beschreibt ein \textbf{Muster}, das dem Ausdruck entsprechen muss. Das wird als \textit{Matching} bezeichnet. Dabei spielt der Name der Variablen, in diesem Falle $x$, keine Rolle.
+Der rechte Teil vermittelt, in welche neue Form dieses Muster gebracht werden soll. Wendet man also Regel $(1)$ an,
+ergibt sich: $a * 1  \overset{(1)}{\Leftrightarrow} a$. 
+Eine Regel wie $\frac{x}{x} \Leftrightarrow 1 \;\; (2)$ \textit{matcht} nicht und würde damit auch nicht angewendet werden können.
+Mit diesen Bausteinen kann bereits ein naiver Algorithmus entworfen werden, der in Ansatz~\ref{alg:ausdruck1} skizziert wurde. 
+
+% Gegeben sei ein mathematischer Ausdruck, zum Beispiel: $a * 1$. Um diesen Ausdruck umzuformen, kann eine \textit{rewrite rule} eingesetzt werden.
+% Eine \textit{rewrite rule} beschreibt die Umformung eines Ausdrucks in einen anderen. Als Beispiel sei hier folgende Regel gegeben: $x * 1 \Leftrightarrow x \;\; (1)$.
+% Angewendet auf den obigen Ausdruck würde sich folgendes ergeben: $a * 1  \overset{(1)}{\Leftrightarrow} a$.
+
+% Die Anwendung dieser \textit{rewrite rule} ist nur möglich, weil die Regel \textit{matcht}. Das bedeutet, dass der Ausdruck und die linke Seite der Regel identisch sind 
+% (abgesehen vom Namen der Variablen). Die folgende \textit{rewrite rule} würde nicht \textit{matchen} und damit auch nicht angewendet werden können: $\frac{x}{x} \Leftrightarrow 1$.
+% Mit diesen Bausteinen lässt sich bereits ein naiver Algorithmus anfertigen, der in Abbildung~\ref{alg:ausdruck1} dargestellt ist.
 
 \begin{algorithm}[H]
   \caption{Naiver Algorithmus zur Optimierung von Ausdrücken}\label{alg:ausdruck1}
   \begin{algorithmic}
-    \Function{optimiere\_Ausdruck}{ausdruck}
+    \Function{optimize\_expression}{expression}
     \State $rules \gets [\ldots]$
     
-    \While{$ausdruck\_alt \neq ausdruck$}
-      \State $ausdruck\_alt \gets ausdruck$
+    \While{$old\_expression \neq expression$}
+      \State $old\_expression \gets expression$
 
       \For{rule in rules}
-        \If{match(ausdruck, rule)}
-        \State apply(ausdruck, rule)
+        \If{match(expression, rule)}
+        \State apply(expression, rule)
         \EndIf
       \EndFor
     \EndWhile
 
-    \State \Return ausdruck
+    \State \Return expression
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
+
+
+
+
 
 Dieser Algorithmus wendet solange \textit{rewrite rules} auf einen Ausdruck an, bis keine Veränderung mehr auftritt.
 Zwar zeichnet sich diese Lösung durch ihre Einfachheit aus, kommt aber auch mit Nachteilen.
 So läuft er bereits bei einfachen Beispielen in lokale Optima. 
 Als Beispiel dient hier der Ausdruck $(a * 2) / 2$, der mit den Regeln $(x * y) / z \Leftrightarrow x * (y / z), x / x \Leftrightarrow 1, x * 1 \Leftrightarrow x$ 
 zum Ausdruck $a$ umgeformt werden kann.
+
+
 Wird stattdessen eine weitere Regel eingefügt, zum Beispiel $x * 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
+
 Das Ergebnis hängt also von der Reihenfolge der verwendeten Regeln ab. Dieses Problem ist allgemein als das \textit{Phase Ordering Problem} bekannt~\cite{phaseorder-2009}.
 Ein weiteres Problem sind kurzsichtige Heuristiken, die dazu tendieren, die Optimalität von Ausdrücken nicht über mehrere Schritte, sondern nur für den momentanen Schritt
 zu verfolgen~\cite{phaseorder-2009}.
+
+
+
 
 \noindent Um diese Probleme zu umgehen, kann der vorherige Algorithmus um eine Liste erweitert werden (siehe~\footnote{\hspace{1.5mm}\url{https://www.cole-k.com/2023/07/24/e-graphs-primer/}}).
 Diese Liste speichert alle erzeugten Ausdrücke ohne Duplikate. Nun wird versucht, alle möglichen Regeln auf die Ausdrücke in der Liste anzuwenden. 
@@ -115,7 +127,7 @@ Ein E-Graph besteht aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{../fig/egraph_exp.png}
-  \caption{Beispiel eines E-Graphs, was die Ausdrücke $(a * 2) / 2$ und $(b * 2) / 2$ enthält}
+  \caption{Beispiel eines E-Graphs, der die Ausdrücke $(a * 2) / 2$ und $(b * 2) / 2$ enthält}
   \label{fig:egraphexp}
 \end{figure}
 
@@ -152,3 +164,25 @@ Der E-Graph gilt damit als \textit{saturiert}.
 In der zweiten Phase kann mithilfe einer Kostenfunktion der optimale Ausdruck aus dem E-Graph extrahiert werden.
 Obwohl der Extraktionsschritt NP-schwer ist, ist es in der Praxis dennoch möglich, durch Anwendung verschiedener Methoden ein optimales Ergebnis in kurzer Zeit zu erhalten
 ~\cite{phaseorder-2009}. 
+
+
+\begin{algorithm}[H]
+  \caption{Equality Saturation Workflow}\label{alg:eqsat}
+  \begin{algorithmic}
+    \Function{eqsat}{rules, egraph}
+    \State $rules \gets [\ldots]$
+    
+    \While{$ausdruck\_alt \neq ausdruck$}
+      \State $ausdruck\_alt \gets ausdruck$
+
+      \For{rule in rules}
+        \If{match(ausdruck, rule)}
+        \State apply(ausdruck, rule)
+        \EndIf
+      \EndFor
+    \EndWhile
+
+    \State \Return ausdruck
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
