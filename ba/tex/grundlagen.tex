@@ -2,18 +2,20 @@
 
 % Es beginnt mit einem naiven Ansatz zur Optimierung von Ausdrücken und leitet zu \textit{E-Graphs} und \textit{Equality Saturation} über.
 
-Dieses Kapitel leitet mit einem naiven Ansatz zur Optimierung ein und diskutiert die daraus entstehenden Nachteile. Danach wir schrittweise zu \textit{E-Graphs}
+Dieses Kapitel leitet mit einem naiven Ansatz zur Optimierung ein und diskutiert die daraus entstehenden Nachteile.
+Danach wir schrittweise zu \textit{E-Graphs}
 übergeleitet und schließlich der Prozess \textit{Equality Saturation} erklärt.
+Abschnitt~\ref{subsec:naiv} stützt sich dabei auf Beispiele aus~\cite{cole}.
 
-\subsection{Naives Optimieren}
+\subsection{Naives Optimieren}\label{subsec:naiv}
 
 Für das naive Optimieren von Ausdrücken wird zuerst das Konzept der \textit{rewrite rules} benötigt. Gegeben sei ein beliebiger mathematischer Ausdruck, z.B.
 $a * 1$. Um eine Umformung dieses Ausdrucks durchführen zu können, kann eine \textit{rewrite rule} auf diesen Ausdruck angewendet werden.
-Als Beispiel sei hier die folgende Regel gegeben: $x * 1 \Leftrightarrow x \;\; (1)$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
+Als Beispiel sei hier die folgende Regel gegeben: $[\mathbf{1}]: x * 1 \Leftrightarrow x$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
 beschreibt ein \textbf{Muster}, das dem Ausdruck entsprechen muss. Das wird als \textit{Matching} bezeichnet. Dabei spielt der Name der Variablen, in diesem Falle $x$, keine Rolle.
-Der rechte Teil vermittelt, in welche neue Form dieses Muster gebracht werden soll. Wendet man also Regel $(1)$ an,
-ergibt sich: $a * 1  \overset{(1)}{\Leftrightarrow} a$. 
-Eine Regel wie $\frac{x}{x} \Leftrightarrow 1 \;\; (2)$ \textit{matcht} nicht und würde damit auch nicht angewendet werden können.
+Der rechte Teil vermittelt, in welche neue Form dieses Muster gebracht werden soll. Wendet man also Regel $[1]$ an,
+ergibt sich: $a * 1  \overset{[2]}{\rightarrow} a$. 
+Eine Regel wie $\frac{x}{x} \Leftrightarrow 1$ \textit{matcht} nicht und würde damit auch nicht angewendet werden können.
 Mit diesen Bausteinen kann bereits ein naiver Algorithmus entworfen werden, der in Ansatz~\ref{alg:ausdruck1} skizziert wurde. 
 
 % Gegeben sei ein mathematischer Ausdruck, zum Beispiel: $a * 1$. Um diesen Ausdruck umzuformen, kann eine \textit{rewrite rule} eingesetzt werden.
@@ -28,10 +30,10 @@ Mit diesen Bausteinen kann bereits ein naiver Algorithmus entworfen werden, der 
   \caption{Naiver Algorithmus zur Optimierung von Ausdrücken}\label{alg:ausdruck1}
   \begin{algorithmic}
     \Function{optimize\_expression}{expression}
-    \State $rules \gets [\ldots]$
+    \State rules $\gets$ [\ldots]
     
-    \While{$old\_expression \neq expression$}
-      \State $old\_expression \gets expression$
+    \While{old\_expression $\neq$ expression}
+      \State old\_expression $\gets$ expression
 
       \For{rule in rules}
         \If{match(expression, rule)}
@@ -45,58 +47,71 @@ Mit diesen Bausteinen kann bereits ein naiver Algorithmus entworfen werden, der 
   \end{algorithmic}
 \end{algorithm}
 
+Der Algorithmus durchläuft solange die while-Schleife, bis keine Änderungen am Ausdruck mehr auftreten.
+Dabei werden alle \textit{rewrite rules} auf den Ausdruck angewendet, die \textit{matchen}.
+Diese Lösung zeichnet sich durch ihre Einfachheit aus, hat aber auch ihre Schwächen. So läuft der Algorithmus
+bereits bei einfachen Beispielen in lokale Optima.
+Als Beispiel sei hier der Ausdruck $(a * 2) / 2$ gegeben, der, durch Anwendung folgender Regeln, zum Ausdruck $a$ umgeformt werden kann: \\ \\
+$[\mathbf{2}]: (x * y) / z \Leftrightarrow x * (y / z)$, \\
+$[\mathbf{3}]:x / x \Leftrightarrow 1$, \\
+$[\mathbf{4}]:x * 1 \Leftrightarrow x$ 
 
+$(a * 2) / 2 \overset{[2]}{\Leftrightarrow} a * (2 / 2) \overset{[3]}{\Leftrightarrow} a * 1 \overset{[4]}{\Leftrightarrow} a$.
 
+Wird statt Regel $[2]$ eine weitere Regel $[5]$ angewendet, zum Beispiel $[\mathbf{5}]: x * 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
+Das Ergebnis hängt also davon ab, in welcher Reihenfolge die Regeln auf den Ausdruck angewendet werden. 
+Dieses Problem ist allgemein als das \textit{Phase Ordering Problem} bekannt~\cite{phaseorder-2009}.
+Selbst mit der Anwendung von Heuristiken würde dieses Problem bestehen bleiben, da auch sie dazu tendieren, kurzsichtige Entscheidungen zu treffen~\cite{phaseorder-2009}.
 
+\noindent Trotz der genannten Schwierigkeiten lässt sich das \textit{Phase Ordering Problem} umgehen. Der vorherige Algorithmus~\ref{alg:ausdruck1} wird dazu um eine Liste erweitert.
+Indem alle erzeugbaren Ausdrücke in einer Liste gespeichert werden (Duplikate sind hier ausgeschlossen), kann der Algorithmus in kein lokales Optimum laufen.
+Diese Idee setzt Algorithmus~\ref{alg:ausdruck2} um.
 
-Dieser Algorithmus wendet solange \textit{rewrite rules} auf einen Ausdruck an, bis keine Veränderung mehr auftritt.
-Zwar zeichnet sich diese Lösung durch ihre Einfachheit aus, kommt aber auch mit Nachteilen.
-So läuft er bereits bei einfachen Beispielen in lokale Optima. 
-Als Beispiel dient hier der Ausdruck $(a * 2) / 2$, der mit den Regeln $(x * y) / z \Leftrightarrow x * (y / z), x / x \Leftrightarrow 1, x * 1 \Leftrightarrow x$ 
-zum Ausdruck $a$ umgeformt werden kann.
+% \noindent Um diese Probleme zu umgehen, kann der vorherige Algorithmus um eine Liste erweitert werden 
+% Diese Liste speichert alle erzeugten Ausdrücke ohne Duplikate.
 
-
-Wird stattdessen eine weitere Regel eingefügt, zum Beispiel $x * 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
-
-Das Ergebnis hängt also von der Reihenfolge der verwendeten Regeln ab. Dieses Problem ist allgemein als das \textit{Phase Ordering Problem} bekannt~\cite{phaseorder-2009}.
-Ein weiteres Problem sind kurzsichtige Heuristiken, die dazu tendieren, die Optimalität von Ausdrücken nicht über mehrere Schritte, sondern nur für den momentanen Schritt
-zu verfolgen~\cite{phaseorder-2009}.
-
-
-
-
-\noindent Um diese Probleme zu umgehen, kann der vorherige Algorithmus um eine Liste erweitert werden (siehe~\footnote{\hspace{1.5mm}\url{https://www.cole-k.com/2023/07/24/e-graphs-primer/}}).
-Diese Liste speichert alle erzeugten Ausdrücke ohne Duplikate. Nun wird versucht, alle möglichen Regeln auf die Ausdrücke in der Liste anzuwenden. 
-Dies setzt der nächste Algorithmus in Abbildung~\ref{alg:ausdruck2} um.
+% Nun wird versucht, alle möglichen Regeln auf die Ausdrücke in der Liste anzuwenden. 
+% Dies setzt der nächste Algorithmus in Abbildung~\ref{alg:ausdruck2} um.
 
 \begin{algorithm}[H]
   \caption{Verbesserter, naiver Algorithmus zur Optimierung von Ausdrücken}\label{alg:ausdruck2}
   \begin{algorithmic}
-    \Function{optimiere\_Ausdruck}{ausdruck}
-    \State $rules \gets [\ldots]$
-    \State $ausdruecke \gets list()$
+    \Function{optimize\_expression}{expression}
+    \State rules $\gets$ [\ldots]
+    \State expression\_list $\gets$ list(expression)
     
-    \While{$len(ausdruecke) \neq laenge\_alt$}
-      \State $laenge\_alt \gets len(ausdruecke)$
+    \While{length(expression\_list) $\neq$ old\_length}
+      \State old\_length $\gets$ length(expression\_list)
 
-      \For{ausdruck in ausdruecke}
+      \For{expr in expression\_list}
         \For{rule in rules}
-          \If{match(ausdruck, rule)}
-          \State new\_ausdruck = apply(ausdruck, rule)
-          \State ausdruecke.add(new\_ausdruck)
+          \If{match(expr, rule)}
+          \State new\_expr = apply(expr, rule)
+          \State expression\_list.add(new\_expr)
           \EndIf
         \EndFor
       \EndFor
     \EndWhile
 
-    \State \Return ausdruecke.get\_best()
+    \State \Return expression\_list.get\_best()
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
 
-Am Ende der Ausführung steht eine komplette Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks zur Verfügung, aus der man den optimalen Ausdruck extrahieren kann.
-Zwar konnte hier das \textit{Phase Ordering Problem} umgangen werden, jedoch hat der Algorithmus eine exponentielle Laufzeit.
-\textit{E-Graphs} sind Datenstrukturen, die diese Probleme lösen können.
+Algorithmus~\ref{alg:ausdruck2} durchläuft ebenfalls eine while-Schleife bis sich keine Änderungen mehr ergeben. In jedem Schleifendurchlauf wird wiederrum die Liste durchlaufen.
+Für jeden Ausdruck der Liste wird festgestellt, ob eine Regel anwendbar ist, und in diesem Fall angewendet. Der Trick ist hierbei den neu erzeugten Ausdruck wieder zur Liste 
+hinzuzufügen. Somit kann am Ende aus einer Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks ein optimaler Ausdruck extrahiert werden.
+Durch das Umgehen des \textit{Phase Ordering Problems} treten indessen zwei neue Probleme auf.
+Der Speicherbedarf des Algorithmus (also die Größe der Liste) lässt sich durch die Konstruktion einer trivialen Situation exponentiell erhöhen.
+Dadurch würde auch die Extraktion des optimalen Ausdrucks exponentiell lange dauern.
+
+Sei der Ausdruck $(a * 2) / 2$ mit den entstehenden Regeln aus dem vorherigen Beispiel als Situation gegeben. Durch die Anwendung einer einfachen \textit{rewrite rule} wie 
+$[\mathbf{6}]: a \Leftrightarrow b$, würde sich die Größe der Liste bereits verdoppeln.
+Eine effizientere Lösung wäre der Einsatz von \textit{E-Graphs}.
+
+% Am Ende der Ausführung steht eine komplette Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks zur Verfügung, aus der man den optimalen Ausdruck extrahieren kann.
+% Zwar konnte hier das \textit{Phase Ordering Problem} umgangen werden, jedoch hat der Algorithmus eine exponentielle Laufzeit.
+% \textit{E-Graphs} sind Datenstrukturen, die diese Probleme lösen können.
 
 \subsection{E-Graphs}
 
@@ -167,22 +182,22 @@ Obwohl der Extraktionsschritt NP-schwer ist, ist es in der Praxis dennoch mögli
 
 
 \begin{algorithm}[H]
-  \caption{Equality Saturation Workflow}\label{alg:eqsat}
+  \caption{Traditioneller Equality Saturation Workflow}\label{alg:eqsat}
   \begin{algorithmic}
-    \Function{eqsat}{rules, egraph}
-    \State $rules \gets [\ldots]$
+    \Function{eqsat}{expr, rewrites}
+    \State egraph $\gets$ initial\_egraph(expr)
     
-    \While{$ausdruck\_alt \neq ausdruck$}
-      \State $ausdruck\_alt \gets ausdruck$
-
-      \For{rule in rules}
-        \If{match(ausdruck, rule)}
-        \State apply(ausdruck, rule)
-        \EndIf
+    \While{$\mathbf{not}$ egraph.is\_saturated\_or\_timeout()}
+      
+      \For{rw in rewrites}
+        \For{(subst, eclass) $\mathbf{in}$ egraph.ematch(rw.lhs)}
+          \State  eclass2 $\gets$ egraph.add(rw.rhs.subst(subst))
+          \State egraph.merge(eclass, eclass2)
+        \EndFor 
       \EndFor
     \EndWhile
 
-    \State \Return ausdruck
+    \State \Return egraph.extract\_best()
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
