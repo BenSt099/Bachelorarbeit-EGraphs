@@ -1,0 +1,20 @@
+\documentclass[border={0pt 24pt 0pt 0pt}]{standalone}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
+\tikzset{every picture/.style={remember picture}}
+\begin{document}
+\begin{math}
+    \begin{matrix}
+        ( & \tikz[baseline]{\node[draw=red,fill=red!20,anchor=base,circle,inner sep = 0pt,text=red!20](a1) {$a$}; } & * & 2) / 2 \\
+          & \tikz[baseline]{\node[draw=red,fill=red!20,anchor=base,circle,inner sep = 0pt,text=red!20](a2) {$a$}; } & * & (2 / 2) \\
+          & \tikz[baseline]{\node[draw=red,fill=red!20,anchor=base,circle,inner sep = 0pt,text=red!20](a3) {$a$}; } & * & 1
+    \end{matrix}
+\end{math}
+\begin{tikzpicture}[overlay,remember picture]
+\draw[red,-] (a1) -- (a2) node[anchor=north] {};
+\draw[red,-] (a2) -- (a3) node[anchor=north] {};
+\draw[red,->] (a3) -- +(270:0.4cm) node[anchor=north,text = black,draw=blue,dashed] {a, b};
+\end{tikzpicture}
+\end{document}

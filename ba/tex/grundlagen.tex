@@ -115,7 +115,8 @@ Eine effizientere Lösung wäre der Einsatz von \textit{E-Graphs}.
 
 \subsection{E-Graphs}
 
-Um ein grundlegendes Verständnis von \textit{E-Graphs} zu erlangen, werden zunächst einige wichtige Konzepte vorgestellt.
+Um ein grundlegendes Verständnis von \textit{E-Graphs} zu erlangen und den Unterschied zu den vorherigen Ansätzen besser nachvollziehen zu können,
+werden zunächst einige wichtige Konzepte im Zusammenhang mit \textit{E-Graphs} vorgestellt. 
 
 \subsubsection{Äquivalenzrelation}
 
@@ -136,6 +137,32 @@ Die Schuhe werden also bzgl. ihrer Größe in die Äquivalenzklassen \textit{Sch
 
 \subsubsection{Zusammenhang zu E-Graphs}
 
+Die vorherigen Ansätze basierten auf einer Liste von konkreten Ausdrücken. Dadurch musste für jede kleine Änderung, wie zum Beispiel $[\mathbf{6}]: a \Leftrightarrow b$ (siehe zweiter Ansatz),
+ein neuer Ausdruck eingefügt werden. Der neue Ansatz fußt auf zwei Ideen: \textbf{Sharing} und \textbf{Klassen}.
+Sharing bedeutet, dass Elemente, die in verschiedenen Ausdrücken vorkommen, also zum Beispiel eine Zahl oder eine Variable, nicht mehr im konkreten Ausdruck abgespeichert werden.
+Stattdessen wird dort ein Platzhalter (Pointer) eingefügt, der auf das Element zeigt. Abbildung~\ref{fig:sharing} zeigt eine Veranschaulichung des Prinzips.
+Zusätzlich werden Klassen eingefügt. Die Platzhalter zeigen jetzt nicht mehr auf einzelne Elemente, sondern auf eine Klasse, die Elemente enthält. Wird also Regel $[6]$ angewendet,
+verdoppelt sich die Liste nicht, denn die Klasse mit Element $a$ wird nur um ein weiteres Element $b$ erweitert (siehe Abbildung~\ref{fig:classes}). 
+
+{\captionsetup[figure]{oneside,margin={0.4cm,0cm}}
+\begin{minipage}[c]{0.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=1.6]{../fig/sharing.pdf}
+        \caption{Sharing bei einer Liste von Ausdrücken}
+        \label{fig:sharing}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[c]{0.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=1.6]{../fig/classes.pdf}
+        \caption{Kombination aus Sharing und Klassen bei einer Liste von Ausdrücken}
+        \label{fig:classes}
+    \end{figure}
+\end{minipage}}
+
+
 Ein E-Graph besteht aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. Abbildung~\ref{fig:egraphexp} zeigt einen beispielhaften E-Graph.
 \textit{E-Nodes} sind dabei weiß und \textit{E-Classes} beige eingefärbt.
 
@@ -150,6 +177,9 @@ Ein E-Graph besteht aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes
 Als Argumente von \textit{E-Nodes} werden \textit{E-Classes} übergeben. Im Beispiel~\ref{fig:egraphexp} wird dem \textit{E-Node} $*$ die \textit{E-Class} mit den beiden 
 \textit{E-Nodes} $a$ und $b$ und die \textit{E-Class} mit dem \textit{E-Node} $2$ übergeben. Es wird also ausgenutzt, dass $a$ und $b$ in der gleichen \textit{E-Class}
 sind. 
+
+
+
 
 \subsubsection{Implementierung von E-Graphs}
 
