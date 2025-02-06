@@ -5,7 +5,7 @@
 Dieses Kapitel leitet mit einem naiven Ansatz zur Optimierung ein und diskutiert die daraus entstehenden Nachteile.
 Danach wir schrittweise zu \textit{E-Graphs}
 übergeleitet und schließlich der Prozess \textit{Equality Saturation} erklärt.
-Abschnitt~\ref{subsec:naiv} stützt sich dabei auf Beispiele aus~\cite{cole}.
+Die folgenden beiden Abschnitte~\ref{subsec:naiv} und~\ref{subsec:egraphs} stützen sich auf~\cite{cole}. Viele Beispiele wurden aus dieser Quelle übernommen.
 
 \subsection{Naives Optimieren}\label{subsec:naiv}
 
@@ -113,7 +113,7 @@ Eine effizientere Lösung wäre der Einsatz von \textit{E-Graphs}.
 % Zwar konnte hier das \textit{Phase Ordering Problem} umgangen werden, jedoch hat der Algorithmus eine exponentielle Laufzeit.
 % \textit{E-Graphs} sind Datenstrukturen, die diese Probleme lösen können.
 
-\subsection{E-Graphs}
+\subsection{E-Graphs}\label{subsec:egraphs}
 
 Um ein grundlegendes Verständnis von \textit{E-Graphs} zu erlangen und den Unterschied zu den vorherigen Ansätzen besser nachvollziehen zu können,
 werden zunächst einige wichtige Konzepte im Zusammenhang mit \textit{E-Graphs} vorgestellt. 
@@ -162,9 +162,8 @@ verdoppelt sich die Liste nicht, denn die Klasse mit Element $a$ wird nur um ein
     \end{figure}
 \end{minipage}}
 
-
-Ein E-Graph besteht aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. Abbildung~\ref{fig:egraphexp} zeigt einen beispielhaften E-Graph.
-\textit{E-Nodes} sind dabei weiß und \textit{E-Classes} beige eingefärbt.
+Auf den beiden vorgestellten Prinzipien fußen auch \textit{E-Graphs}. \textit{E-Graphs} bestehen aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. 
+Abbildung~\ref{fig:egraphexp} zeigt einen beispielhaften E-Graph. \textit{E-Nodes} sind dabei weiß und \textit{E-Classes} beige eingefärbt.
 
 \begin{figure}[H]
   \centering
@@ -173,18 +172,24 @@ Ein E-Graph besteht aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes
   \label{fig:egraphexp}
 \end{figure}
 
-\textit{E-Classes} sind Äquivalenzklassen mit \textit{E-Nodes}, die äquivalent zueinander sind. Im Beispiel~\ref{fig:egraphexp} sind $a$ und $b$ äquivalent zueinander.
-Als Argumente von \textit{E-Nodes} werden \textit{E-Classes} übergeben. Im Beispiel~\ref{fig:egraphexp} wird dem \textit{E-Node} $*$ die \textit{E-Class} mit den beiden 
-\textit{E-Nodes} $a$ und $b$ und die \textit{E-Class} mit dem \textit{E-Node} $2$ übergeben. Es wird also ausgenutzt, dass $a$ und $b$ in der gleichen \textit{E-Class}
-sind. 
+\textit{E-Nodes} sind Knoten (ähnlich zum Element $a$ in Abbildung~\ref{fig:sharing}), die arithmetische Operationen, Zahlen oder Variablen enthalten können.
+% Dabei ist zu beachten, dass bei arithmetischen Operationen kein Sharing betrieben wird, da diese auf unterschiedliche  zeigen können.  
+Einer \textit{E-Node} werden als Argumente \textit{E-Classes} übergeben. In Beispiel~\ref{fig:egraphexp} wird der \textit{E-Node} $\mathbf{*}$ die 
+\textit{E-Class} mit den beiden \textit{E-Nodes} $\mathbf{a}$ und $\mathbf{b}$ und die \textit{E-Class} mit der \textit{E-Node} $\mathbf{2}$ übergeben. 
+\textit{E-Classes} stellen also Äquivalenzklassen dar, die äquivalente \textit{E-Nodes} enthalten.
 
-
-
+% \textit{E-Classes} sind Äquivalenzklassen mit \textit{E-Nodes}, die äquivalent zueinander sind. 
+% Im Beispiel~\ref{fig:egraphexp} sind $a$ und $b$ äquivalent zueinander.
+% Als Argumente von \textit{E-Nodes} werden \textit{E-Classes} übergeben.
+% Im Beispiel~\ref{fig:egraphexp} wird dem \textit{E-Node} $*$ die \textit{E-Class} mit den beiden \textit{E-Nodes} $a$ und $b$ und die \textit{E-Class} mit dem \textit{E-Node} $2$ übergeben. 
+% Es wird also ausgenutzt, dass $a$ und $b$ in der gleichen \textit{E-Class} sind. 
 
 \subsubsection{Implementierung von E-Graphs}
 
-\textit{E-Graphs} können auf unterschiedliche Weise implementiert werden. Die in dieser Arbeit benutzte stammt aus dem Paper~\cite{2021-egg}, das \textit{egg} vorstellt 
-(siehe verwandte Arbeiten~\ref{sub:verwandtearbeiten}). Ein \textbf{E-Graph} wird damit als Tuple $(\mathbf{U}, \mathbf{M}, \mathbf{H})$ mit folgenden Eigenschaften definiert:
+Es gibt verschiedene Ansätze für die Implementierung von \textit{E-Graphs}. Der Ansatz, auf dem diese Arbeit beruht, ist eine Zusammenstellung zweier Ansätze.
+Der erste stammt aus dem Paper~\cite{2021-egg}, in dem auch \textit{egg} vorgestellt wurde (siehe verwandte Arbeiten~\ref{sub:verwandtearbeiten}). Der zweite 
+ist einen Google Colab Notebook entnommen~\cite{devito}.
+Ein \textbf{E-Graph} wird nach~\cite{2021-egg} als Tuple $(\mathbf{U}, \mathbf{M}, \mathbf{H})$ mit folgenden Eigenschaften definiert:
 
 \begin{itemize}
   \item $\mathbf{U}$ Eine Union-Find-Datenstruktur, die eine Äquivalenzrelation über IDs abspeichert.
@@ -192,7 +197,7 @@ sind.
   \item $\mathbf{H}$ Eine (Hashcons)-map, die E-Nodes auf IDs von E-Classes abbildet.
 \end{itemize}
 
-Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde also wie folgt aussehen.
+Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde also wie folgt aussehen:
 
 \begin{itemize}
   \item $\mathbf{U}$: \{ID1\}, \{ID2\}, \{ID3\}, \{ID4, ID5\} 
@@ -200,19 +205,18 @@ Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde 
   \item $\mathbf{H}$: $/ \rightarrow ID1$, $* \rightarrow ID2$, $2 \rightarrow ID3$, $a \rightarrow ID4$, $b \rightarrow ID5$
 \end{itemize}
 
-
-
 \subsection{Equality Saturation}
 
-\textit{Equality Saturation} beschreibt eine iterative Methode, die solange \textit{rewrite rules} auf einen E-Graph anwendet, bis sich keine Änderungen mehr ergeben. 
-Der E-Graph gilt damit als \textit{saturiert}.
+Nachdem \textit{E-Graphs} eingeführt wurden stellt sich jetzt die Frage, wie damit ein optimaler Ausdruck gefunden werden kann.
+Hierzu kann die Methode der \textit{Equality Saturation} eingesetzt werden.
+\textit{Equality Saturation} beschreibt eine aus zwei Phasen bestehende, iterative Methode.
+In der ersten Phase werden \textit{rewrite rules} auf den \textit{E-Graph} angewendet, bis sich keine Änderungen an diesem mehr ergeben.
+Der E-Graph gilt nach dieser Phase als \textit{saturiert}.
 In der zweiten Phase kann mithilfe einer Kostenfunktion der optimale Ausdruck aus dem E-Graph extrahiert werden.
-Obwohl der Extraktionsschritt NP-schwer ist, ist es in der Praxis dennoch möglich, durch Anwendung verschiedener Methoden ein optimales Ergebnis in kurzer Zeit zu erhalten
-~\cite{phaseorder-2009}. 
-
+Algorithmus~\ref{alg:eqsat} zeigt den Prozess der \textit{Equality Saturation}.
 
 \begin{algorithm}[H]
-  \caption{Traditioneller Equality Saturation Workflow}\label{alg:eqsat}
+  \caption{Traditioneller Equality Saturation Workflow nach~\cite{2021-egg}}\label{alg:eqsat}
   \begin{algorithmic}
     \Function{eqsat}{expr, rewrites}
     \State egraph $\gets$ initial\_egraph(expr)
@@ -231,3 +235,7 @@ Obwohl der Extraktionsschritt NP-schwer ist, ist es in der Praxis dennoch mögli
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
+
+Mit Algorithmus~\ref{alg:eqsat} gibt es nun eine effiziente Lösung, mit der das \textit{Phase Ordering Problem} umgangen und Speicherbedarf gesenkt werden kann.
+Doch auch diese Methode kommt mit einem Haken. Der Extraktionsschritt ist ein NP-schweres Problem~\cite{phaseorder-2009}. In der Praxis ist dennoch möglich ein optimales
+Ergebnis in kurzer Zeit zu erhalten, wie die Bibliothek \textit{egg} demonstriert.  

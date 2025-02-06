@@ -2,14 +2,25 @@
 
 In diesem Kapitel werden Probleme beschrieben, die während der Entwicklung auftraten und wie diese gelöst werden konnten.
 
-\noindent\textbf{Kombination zweier Implementierungen}
+\noindent\textbf{Kombination zweier Implementierungen} Die Idee hinter der Kombination der beiden Implementierungen war.
 
 
 
 
-\noindent\textbf{DOT-Format} 
+
+\noindent\textbf{DOT-Format} Fpr die eigene Implementierung wurde eine Methode benötigt, die \textit{E-Graphs} visualisieren kann.
+Eine entsprechende Methode (egraph\_to\_dot()) gibt es in der Datei \textit{EGraph.py}. Obwohl sich im Rahmen dieser Arbeit an die
+PEP 8 Vorgaben gehalten wurde, bildet diese Methode eine Ausnahme. Sie ist über 100 Zeilen lang und Bedarf einer langen Erklärung.
+Auch die Abdeckung durch Tests ist nicht ideal, denn das Testen der Methode bedarf einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisierungen
+durch einen Menschen. Dieses Vorgehen hatte mehrere Gründe.
+
+Im Verlauf der Entwicklung hat sich herausgestellt, dass das \textit{DOT-Format} keine Reihenfolge zwingend einhält. Damit kann es unter Umständen zu
+einer falschen Darstellung kommen, da die Pfeile verkehrt herum auf die Klassen zeigen.
+Zudem ergibt sich ein Fehler in der Darstellung durch einen Spezialfall, der weiter unten erläutert wird.
 
 
+
+- PEP 8 als Quelle in references.bib
 
 
 \noindent\textbf{Spezialfall: Kreis im E-Graph}
