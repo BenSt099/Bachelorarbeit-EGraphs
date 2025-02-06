@@ -6,6 +6,7 @@ graphviz-output/
 
 # Ignore compiled thesis
 thesis.pdf
+master.pdf
 
 # Created by https://www.gitignore.io/api/linux,latex
 # Edit at https://www.gitignore.io/?templates=linux,latex
