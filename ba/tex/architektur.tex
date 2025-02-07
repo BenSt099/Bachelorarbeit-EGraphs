@@ -18,7 +18,9 @@ Die Klasse \textit{EGraph} enthält die Datenstruktur sowie einige weitere Funkt
 Sie ist abhängig zu vier weiteren Klassen. Die beiden Klassen \textit{ENode} und \textit{EClass} repräsentieren \textit{E-Nodes} und \textit{E-Classes}.
 Die Klasse \textit{RewriteRule} verkörpert eine \textit{rewrite rule}, die aus einem linken und einem rechten Ausdruck besteht. Beide Ausdrücke werden in einen AST umgewandelt, 
 um das Anwenden der Regel auf den E-Graph zu vereinfachen.
-Die letzte Abhängigkeit besteht zur Klasse \textit{AbstractSyntaxTree}.
+Die letzte Abhängigkeit besteht zur Klasse \textit{AbstractSyntaxTree}. Sie stellt einen AST (\textbf{Abstract Syntax Tree}) dar und benötigt dafür eine Klasse, 
+die die Knoten repräsentiert (\textit{AbstractSyntaxTreeNode}).
+Ein mathematischer Ausdruck, aus dem ein E-Graph entstehen soll, wird zuerst in einen AST umgewandelt, was später die Erstellung des E-Graphs vereinfacht.
 
 
 % Die erste Komponente bildet die Klasse \textit{EGraph}. Instanzen dieser Klasse implementieren die Datenstruktur E-Graph. Dazu sind fünf weitere Klassen nötig: 
@@ -66,24 +68,28 @@ Die Dokumentation wurde separat mit docusaurus erstellt und erklärt die Install
   \label{fig:architektur}
 \end{figure}
 
-
-
-
 \subsection{Kommunikation zwischen Server und Weboberfläche}
 
 % In diesem Abschnitt
 
-Abbildung~\ref{fig:ablauf} zeigt eine beispielhafte Interaktion zwischen Server, Weboberfläche und Benutzer.
+In diesem Abschnitt wird die Kommunikation zwischen Server, Weboberfläche und Benutzer stärker beleuchtet.
+Hierzu zeigt Abbildung~\ref{fig:ablauf} die leicht vereinfachte Erstellung eines E-Graphs durch den Benutzer.
 
-Im Beispiel wird die Erstellung eines E-Graphs durch den Benutzer gezeigt. Hierzu gibt der Benutzer einen Ausdruck ein und klickt auf den entsprechenden Button (Abb., Schritt 1).
-Das triggert die in JavaScript geschriebene Funktion \textit{create()}. Die Funktion überprüft zuerst, ob es bereits einen E-Graph gibt (Abb., Schritt 2-3) und fragt, ob der Benutzer
-diesen und die mit ihm verbundenen Daten löschen will (im Beispiel nicht gezeigt). Falls noch kein E-Graph vorhanden ist, wird nun die Funktion \textit{createEGraph()}
-aufgerufen. Sie schickt den Ausdruck an den Server (Abb., Schritt 4) und dieser kümmert sich um die Erstellung. Die Antwort des Servers (Abb., Schritt 5) gibt dem Benutzer 
+% Abbildung~\ref{fig:ablauf} zeigt eine beispielhafte Interaktion zwischen Server, Weboberfläche und Benutzer.
+
+Die Interaktion startet mit der Eingabe eines Ausdrucks und dem Klicken auf den entsprechenden Button (Abb., Schritt 1) durch den Benutzer.
+Das triggert die in JavaScript geschriebene Funktion \textit{create()}. 
+Die Funktion überprüft zuerst, ob es bereits einen E-Graph gibt (Abb., Schritt 2-3) und fragt, ob der Benutzer
+diesen und die mit ihm verbundenen Daten löschen will (im Beispiel nicht gezeigt). 
+Falls noch kein E-Graph vorhanden ist, wird nun die Funktion \textit{createEGraph()} aufgerufen. 
+Sie schickt den Ausdruck an den Server (Abb., Schritt 4) und dieser kümmert sich um die Erstellung. Die Antwort des Servers (Abb., Schritt 5) gibt dem Benutzer 
 Auskunft (Abb., Schritt 6), ob dieser Schritt erfolgreich war. 
 Anschließend muss der E-Graph und zugehörige \textit{rewrite rules} geladen werden, was durch die Funktion \textit{loadData()} passiert.
 Sie schickt eine Anfrage (Abb., Schritt 7), deren Antwort einen Status und die Daten enthält (Abb., Schritt 8). In den Daten befindet sich der entsprechende E-Graph im 
 DOT-Format (siehe Kapitel~\ref{sec:entscheidungen}), der sogleich als SVG gerendert und auf der Weboberfläche angezeigt wird (Abb., Schritt 9).
 In der nächsten Anfrage werden die Regeln geladen (Abb., Schritt 10-11) und anschließend auf der Weboberfläche dargestellt (Abb., Schritt 12).
+
+Die in der Abbildung dargestellte Vorgehensweise
 
 \begin{figure}[H]
   \centering
