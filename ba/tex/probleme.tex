@@ -1,29 +1,39 @@
 \section{Probleme}\label{sec:probleme}
 
-In diesem Kapitel werden Probleme beschrieben, die während der Entwicklung auftraten und wie diese gelöst werden konnten.
+In diesem Kapitel werden einige der Probleme, die während der Entwicklung auftraten, diskutiert und deren Ursachen sowie Lösungsansätze beleuchtet.
 
-\noindent\textbf{Kombination zweier Implementierungen} Die Idee hinter der Kombination der beiden Implementierungen war.
+\noindent\textbf{Kombination zweier Implementierungen} Wie in Kapitel~\ref{sec:grundlagen} erläutert, basiert die vorliegende Implementierung
+auf der Kombination zweier bestehender Ansätze. Für diese Entscheidung gab es mehrere Gründe.
+Einerseits basieren viele Implementierungen, darunter auch \textit{egg}, auf der Standarddefintion von \textit{E-Graphs} wie sie auch in Kapitel~\ref{sec:grundlagen} vorliegt.
+Das Google Colab Notebook, das als zweite Quelle dient, setzt aber bereits auf eine modifzierte Variante, was eventuell zu Verwirrung unter den Studentinnen und Studenten
+führen würde. Daher wurde die Implementierung von \textit{egg} der zweiten Quelle vorgezogen.
 
+Andererseits beschreibt das Paper, das die Hintergründe zu \textit{egg} beschreibt~\cite{2021-egg}, nicht genau, wie \textit{E-Matching} und \textit{Extraction} funktionieren.  
+Diese beiden Konzepte konnte allerdings das Notebook zur Verfügung stellen. Somit komplementieren sich die beiden Ansätze.
+Aus der Kombination resultierten jedoch auch einige Probleme. Neben der \textit{Darstellung der Datenstruktur} (siehe unten) mussten mehrere Sonderfälle in der \textit{add}-Methode
+berücksichtigt werden, sodass die Methode insgesamt länger wurde als in den beiden Ansätzen vorgesehen.
 
+\noindent\textbf{Darstellung der Datenstruktur} Nur eine der zwei Implementierungen, auf denen diese Arbeit fußt, verfügt über eine Methode zur Visualisierung der Datenstruktur.
+Die Methode ist kurz und effizient programmiert. Die Darstellung hingegen weist einige Schwächen auf, besonders im Hinblick auf Verständlichkeit und Klarheit.
+Diese beiden Aspekte sind jedoch für eine Anwendung, die von unerfahrenen oder fachfremden bedient werden soll, essenziell.
+Außerdem wurde die Methode durch die Kombination der beiden Implementierungen unbrauchbar.
+Dementsprechend wurde eine eigene Methode \textit{egraph\_to\_dot()} in der Datei \textit{EGraph.py} angefertigt.
 
+Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der \textit{E-Classes} im \textit{Dot}-Format zu kontrollieren.
+Damit kann es zu einer falschen Darstellung kommen, da eventuell die Pfeile einer \textit{E-Node} verkehrt herum auf die Klassen zeigen.
+Zusätzlich musste, aufgrund des Debugging-Features, Code eingefügt werden, der es ermöglicht, \textit{E-Classes} einzufärben.
+Diese Anforderungen und Sonderfälle resultierten schließlich in einer Methode mit recht kompliziertem Code, der 106 Zeilen lang ist.
 
+Daher wurde bei dieser Methode der \textit{PEP 8} Style Guide~\cite{pep} vernachlässigt sowie die Formatierung durch das Werkzeug \textit{Black}~\cite{black} unterlassen.
+Das Testen dieser Methode gestaltete sich ebenfalls schwierig, da der Output ein String im \textit{Dot}-Format ist. Entsprechend bedarf das Testen der Methode
+einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisierungen durch einen Menschen.
 
-\noindent\textbf{DOT-Format} Fpr die eigene Implementierung wurde eine Methode benötigt, die \textit{E-Graphs} visualisieren kann.
-Eine entsprechende Methode (egraph\_to\_dot()) gibt es in der Datei \textit{EGraph.py}. Obwohl sich im Rahmen dieser Arbeit an die
-PEP 8 Vorgaben gehalten wurde, bildet diese Methode eine Ausnahme. Sie ist über 100 Zeilen lang und Bedarf einer langen Erklärung.
-Auch die Abdeckung durch Tests ist nicht ideal, denn das Testen der Methode bedarf einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisierungen
-durch einen Menschen. Dieses Vorgehen hatte mehrere Gründe.
+Zuletzt trat ein weiterer Fehler in der Darstellung auf, wenn der Sonderfall (siehe Kreis im E-Graph, weiter unten) eintritt. 
+Dabei wurden zwei Pfeile, die beide auf die gleiche Klasse zeigen, nicht links und rechts der \textit{E-Node}, sondern beide auf der linken Seite gezeichnet.
+Allerdings handelt es sich hierbei nur um einen minimalen Fehler, der nicht zu einem Missverständnis der Themen beiträgt.
 
-Im Verlauf der Entwicklung hat sich herausgestellt, dass das \textit{DOT-Format} keine Reihenfolge zwingend einhält. Damit kann es unter Umständen zu
-einer falschen Darstellung kommen, da die Pfeile verkehrt herum auf die Klassen zeigen.
-Zudem ergibt sich ein Fehler in der Darstellung durch einen Spezialfall, der weiter unten erläutert wird.
-
-
-
-- PEP 8 als Quelle in references.bib
-
-
-\noindent\textbf{Spezialfall: Kreis im E-Graph}
+\noindent\textbf{Spezialfall: Kreis im E-Graph} \textit{E-Graphs} könne Kreise enthalten. Als Beispiel sei der \textit{E-Graph} gegeben, der nur $a$ enthält.
+Wendet man nun die Regel $x \Leftrightarrow x * 1$ darauf an, ergibt dies einen Kreis. Wendet man die Regel erneut an,  
 
 
 
