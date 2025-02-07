@@ -1,24 +1,63 @@
 \section{Architektur der Anwendung}\label{sec:architektur}
 
 Die im letzte Kapitel vorgestellten, theoretischen Konzepte sollen nun in die Praxis umgesetzt werden.
-Dazu erläutert dieses Kapitel die Architektur der Anwendung sowie ihre Funktionsweise.
-Die Anwendung besteht aus vier Hauptkomponenten: der Klasse \textit{EGraph} mit ihren Hilfsklassen, dem \textit{EGraphService}, dem Server (\textit{server.py}) und der
-Weboberfläche (\textit{index.html}). Abbildung~\ref{fig:architektur} gibt einen Überblick über den Zusammenhang zwischen den Komponenten. 
+Dazu wird in diesem Kapitel die Architektur hinter der Anwendung erläutert sowie die Funktionsweise der Komponenten erklärt.
 
 \subsection{Grundlegende Komponenten}
 
-Die erste Komponente bildet die Klasse \textit{EGraph}. Instanzen dieser Klasse implementieren die Datenstruktur E-Graph. Dazu sind fünf weitere Klassen nötig: 
-\textit{AbstractSyntaxTreeNode}, \textit{AbstractSyntaxTree}, \textit{RewriteRule}, \textit{ENode} und \textit{EClass}.
-Die Klasse \textit{AbstractSyntaxTree} stellt einen AST (\textbf{Abstract Syntax Tree}) dar und benötigt dafür eine Klasse, die die Knoten repräsentiert (\textit{AbstractSyntaxTreeNode}).
-Ein mathematischer Ausdruck, aus dem ein E-Graph entstehen soll, wird zuerst in einen AST umgewandelt, was später die Erstellung des E-Graphs vereinfacht.
-Die Klasse \textit{RewriteRule} verkörpert eine \textit{rewrite rule}, die aus einem linken und rechten Ausdruck besteht. Beide Ausdrücke werden in einen AST umgewandelt, um das
-Anwenden der Regel auf den E-Graph zu vereinfachen.
-Die beiden Klassen \textit{ENode} und \textit{EClass} fungieren als Datencontainer, auf die der E-Graph aufbaut.
+Die Anwendung kann in vier Hauptkomponenten eingeteilt werden: \textit{EGraph}, \textit{Service}, \textit{Server} und \textit{Weboberfläche}.
+Abbildung~\ref{fig:architektur} zeigt den Zusammenhang zwischen diesen Komponenten. 
 
-Die zweite Komponente stellt die Klasse \textit{EGraphService} dar. Über sie läuft die Interaktion zwischen dem Server und einer EGraph-Instanz.
-Außerdem regelt sie die Sicherheitsüberprüfungen der Eingabe, z.B. ob ein empfangener Ausdruck vom Server die entsprechende Form aufweist.
-Neben diesen Aufgaben ist der Service auch für das Debugging-Feature zuständig. Dieses Feature erlaubt es dem Benutzer, einen E-Graph während verschiedener Operationen
-zu beobachten und Informationen über die Vorgehensweise zu erhalten. 
+
+% Die Anwendung besteht aus vier Hauptkomponenten: der Klasse \textit{EGraph} mit ihren Hilfsklassen, dem \textit{EGraphService}, dem Server (\textit{server.py}) und der
+% Weboberfläche (\textit{index.html}). Abbildung~\ref{fig:architektur} gibt einen Überblick über den Zusammenhang zwischen den Komponenten. 
+
+Die erste Komponente (\textit{E-Graph}) ist für die Erstellung und Verwaltung der E-Graph Datenstruktur zuständig. Dafür existieren sechs Klassen:
+\textit{AbstractSyntaxTreeNode}, \textit{AbstractSyntaxTree}, \textit{RewriteRule}, \textit{ENode}, \textit{EClass} und \textit{EGraph}.
+Die Klasse \textit{EGraph} enthält die Datenstruktur sowie einige weitere Funktionen, wie zum Beispiel das Visualisieren dieser.
+Sie ist abhängig zu vier weiteren Klassen. Die beiden Klassen \textit{ENode} und \textit{EClass} repräsentieren \textit{E-Nodes} und \textit{E-Classes}.
+Die Klasse \textit{RewriteRule} verkörpert eine \textit{rewrite rule}, die aus einem linken und einem rechten Ausdruck besteht. Beide Ausdrücke werden in einen AST umgewandelt, 
+um das Anwenden der Regel auf den E-Graph zu vereinfachen.
+Die letzte Abhängigkeit besteht zur Klasse \textit{AbstractSyntaxTree}.
+
+
+% Die erste Komponente bildet die Klasse \textit{EGraph}. Instanzen dieser Klasse implementieren die Datenstruktur E-Graph. Dazu sind fünf weitere Klassen nötig: 
+% \textit{AbstractSyntaxTreeNode}, \textit{AbstractSyntaxTree}, \textit{RewriteRule}, \textit{ENode} und \textit{EClass}.
+
+% Die Klasse \textit{AbstractSyntaxTree} stellt einen AST (\textbf{Abstract Syntax Tree}) dar und benötigt dafür eine Klasse, die die Knoten repräsentiert (\textit{AbstractSyntaxTreeNode}).
+% Ein mathematischer Ausdruck, aus dem ein E-Graph entstehen soll, wird zuerst in einen AST umgewandelt, was später die Erstellung des E-Graphs vereinfacht.
+
+% Die Klasse \textit{RewriteRule} verkörpert eine \textit{rewrite rule}, die aus einem linken und einem rechten Ausdruck besteht. Beide Ausdrücke werden in einen AST umgewandelt, um das
+% Anwenden der Regel auf den E-Graph zu vereinfachen.
+
+% Die beiden Klassen \textit{ENode} und \textit{EClass} fungieren als Datencontainer, auf die der E-Graph aufbaut.
+
+
+Die zweite Komponente (\textit{Service}) ist für die Interaktion zwischen dem Server und der Datenstruktur verantwortlich. Die zuständige Klasse heißt \textit{EGraphService} und 
+eine Instanz wird beim Start des Servers erzeugt.
+Sie stellt dem Server Funktionen wie zum Beispiel das Debugging zur Verfügung und regelt die Sicherheitsüberprüfungen für Eingaben und Zustände. 
+
+
+% Die zweite Komponente stellt die Klasse \textit{EGraphService} dar. Über sie läuft die Interaktion zwischen dem Server und einer EGraph-Instanz.
+% Außerdem regelt sie die Sicherheitsüberprüfungen der Eingabe, z.B. ob ein empfangener Ausdruck vom Server die entsprechende Form aufweist.
+% Neben diesen Aufgaben ist der Service auch für das Debugging-Feature zuständig. Dieses Feature erlaubt es dem Benutzer, einen E-Graph während verschiedener Operationen
+% zu beobachten und Informationen über die Vorgehensweise zu erhalten. 
+
+Die dritte Komponente (\textit{Server}) stellt das Backend der Anwendung dar. Sie enthält eine Datei \textit{server.py}, in der ein mit FastAPI erstellter Webserver
+Anfragen der Weboberfläche entgegennimmt und zur Umsetzung der Anfragen mit den Service interagiert. Da zwischen dem Server und der Weboberfläche Daten ausgetauscht werden
+müssen, kommunizieren sie über das HTTP-Protokoll, während die Daten im JSON-Format übertragen werden.
+
+% Die dritte Komponente ist der Server (\textit{server.py}). Er bildet die Verbindung zwischen dem Service und der Weboberfläche. Für die Umsetzung wurde auf das Framework 
+% \textit{FastAPI} gesetzt (siehe Kapitel~\ref{sec:entscheidungen}). 
+
+Die vierte Komponente (\textit{Weboberfläche}) versieht die Anwendung mit einer Benutzeroberfläche, einer Dokumentation sowie der nötigen Kommunikation mit dem Server.
+Die Benutzeroberfläche besteht aus einer Website (\textit{index.html}), die lokal im Browser läuft. Die Website erhält ihre Funktionalität durch die Funktionen in der 
+Datei \textit{index.js}. Diese Datei schickt Anfragen und verarbeitet Antworten, rendert den E-Graph und generiert Inhalte auf der Website. 
+Die Dokumentation wurde separat mit docusaurus erstellt und erklärt die Installation der Anwendung, die Ausführung der Tests und die Bedienung der Benutzeroberfläche.  
+
+% Die vierte Komponente bildet die Weboberfläche (\textit{index.html}). Sie läuft lokal im Browser und dient zur Steuerung der Anwendung. Mittels JavaScript können Anfragen an den
+% Server abgeschickt und Antworten verarbeitet werden.
+
 
 \begin{figure}[H]
   \centering
@@ -27,16 +66,14 @@ zu beobachten und Informationen über die Vorgehensweise zu erhalten.
   \label{fig:architektur}
 \end{figure}
 
-Die dritte Komponente ist der Server (\textit{server.py}). Er bildet die Verbindung zwischen dem Service und der Weboberfläche. Für die Umsetzung wurde auf das Framework 
-\textit{FastAPI} gesetzt (siehe Kapitel~\ref{sec:entscheidungenundprobleme}). 
 
-Die vierte Komponente bildet die Weboberfläche (\textit{index.html}). Sie läuft lokal im Browser und dient zur Steuerung der Anwendung. Mittels JavaScript können Anfragen an den
-Server abgeschickt und Antworten verarbeitet werden.
+
 
 \subsection{Kommunikation zwischen Server und Weboberfläche}
 
-Zwischen dem Server und der Weboberfläche müssen Daten ausgetauscht werden. Dazu kommunizieren sie das HTTP-Protokoll, während die Daten im 
-JSON-Format übertragen werden. Abbildung~\ref{fig:ablauf} zeigt eine beispielhafte Interaktion zwischen Server, Weboberfläche und Benutzer.
+% In diesem Abschnitt
+
+Abbildung~\ref{fig:ablauf} zeigt eine beispielhafte Interaktion zwischen Server, Weboberfläche und Benutzer.
 
 Im Beispiel wird die Erstellung eines E-Graphs durch den Benutzer gezeigt. Hierzu gibt der Benutzer einen Ausdruck ein und klickt auf den entsprechenden Button (Abb., Schritt 1).
 Das triggert die in JavaScript geschriebene Funktion \textit{create()}. Die Funktion überprüft zuerst, ob es bereits einen E-Graph gibt (Abb., Schritt 2-3) und fragt, ob der Benutzer
@@ -45,7 +82,7 @@ aufgerufen. Sie schickt den Ausdruck an den Server (Abb., Schritt 4) und dieser 
 Auskunft (Abb., Schritt 6), ob dieser Schritt erfolgreich war. 
 Anschließend muss der E-Graph und zugehörige \textit{rewrite rules} geladen werden, was durch die Funktion \textit{loadData()} passiert.
 Sie schickt eine Anfrage (Abb., Schritt 7), deren Antwort einen Status und die Daten enthält (Abb., Schritt 8). In den Daten befindet sich der entsprechende E-Graph im 
-DOT-Format (siehe Kapitel~\ref{sec:entscheidungenundprobleme}), der sogleich als SVG gerendert und auf der Weboberfläche angezeigt wird (Abb., Schritt 9).
+DOT-Format (siehe Kapitel~\ref{sec:entscheidungen}), der sogleich als SVG gerendert und auf der Weboberfläche angezeigt wird (Abb., Schritt 9).
 In der nächsten Anfrage werden die Regeln geladen (Abb., Schritt 10-11) und anschließend auf der Weboberfläche dargestellt (Abb., Schritt 12).
 
 \begin{figure}[H]

@@ -12,18 +12,32 @@ title Komponenten der Anwendung
 
 allowmixing
 
+frame E-Graph #LightBlue {
 class AbstractSyntaxTreeNode
 class AbstractSyntaxTree
 class RewriteRule
 class ENode
 class EClass
 class EGraph
+}
+
+frame Service #LightBlue {
 class EGraphService
-component [server.py] as server
+}
+
+frame Server #LightBlue{
+file [ server.py ] as server
+}
+
+frame Weboberfläche #LightBlue {
 file "index.html" as index
+file "index.js" as javascript
+component "dokumentation" as docs
+}
 
 hide members
 
+index<-left->javascript
 EGraphService<--server
 EGraph<--EGraphService
 AbstractSyntaxTreeNode<--AbstractSyntaxTree
@@ -33,13 +47,6 @@ EClass<--EGraph
 ENode<--EGraph
 RewriteRule<--EGraph
 server<-down->index: Kommunikation durch HTTP, \n Daten im JSON-Format
-
-'note bottom of [AbstractSyntaxTree]
-'Wandelt mathematischen Ausdruck 
-'zuerst in AST um und wird dann der
-'Klasse **EGraph** für die Weiterver- 
-'arbeitung übergeben.
-'end note
 
 note right of [server]
 Ein mit <<FastAPI>> erstellter 
