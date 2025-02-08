@@ -55,7 +55,7 @@ müssen, kommunizieren sie über das HTTP-Protokoll, während die Daten im JSON-
 Die vierte Komponente (\textit{Weboberfläche}) versieht die Anwendung mit einer Benutzeroberfläche, einer Dokumentation sowie der nötigen Kommunikation mit dem Server.
 Die Benutzeroberfläche besteht aus einer Website (\textit{index.html}), die lokal im Browser läuft. Die Website erhält ihre Funktionalität durch die Funktionen in der 
 Datei \textit{index.js}. Diese Datei schickt Anfragen und verarbeitet Antworten, rendert den E-Graph und generiert Inhalte auf der Website. 
-Die Dokumentation wurde separat mit docusaurus erstellt und erklärt die Installation der Anwendung, die Ausführung der Tests und die Bedienung der Benutzeroberfläche.  
+Die Dokumentation wurde separat mit \textit{Docusaurus}~\footnote{\hspace{1.5mm}\url{https://docusaurus.io/}} erstellt und erklärt die Installation der Anwendung, die Ausführung der Tests und die Bedienung der Benutzeroberfläche.  
 
 % Die vierte Komponente bildet die Weboberfläche (\textit{index.html}). Sie läuft lokal im Browser und dient zur Steuerung der Anwendung. Mittels JavaScript können Anfragen an den
 % Server abgeschickt und Antworten verarbeitet werden.
@@ -79,21 +79,36 @@ Hierzu zeigt Abbildung~\ref{fig:ablauf} die leicht vereinfachte Erstellung eines
 
 Die Interaktion startet mit der Eingabe eines Ausdrucks und dem Klicken auf den entsprechenden Button (Abb., Schritt 1) durch den Benutzer.
 Das triggert die in JavaScript geschriebene Funktion \textit{create()}. 
-Die Funktion überprüft zuerst, ob es bereits einen E-Graph gibt (Abb., Schritt 2-3) und fragt, ob der Benutzer
-diesen und die mit ihm verbundenen Daten löschen will (im Beispiel nicht gezeigt). 
-Falls noch kein E-Graph vorhanden ist, wird nun die Funktion \textit{createEGraph()} aufgerufen. 
-Sie schickt den Ausdruck an den Server (Abb., Schritt 4) und dieser kümmert sich um die Erstellung. Die Antwort des Servers (Abb., Schritt 5) gibt dem Benutzer 
-Auskunft (Abb., Schritt 6), ob dieser Schritt erfolgreich war. 
-Anschließend muss der E-Graph und zugehörige \textit{rewrite rules} geladen werden, was durch die Funktion \textit{loadData()} passiert.
-Sie schickt eine Anfrage (Abb., Schritt 7), deren Antwort einen Status und die Daten enthält (Abb., Schritt 8). In den Daten befindet sich der entsprechende E-Graph im 
-DOT-Format (siehe Kapitel~\ref{sec:entscheidungen}), der sogleich als SVG gerendert und auf der Weboberfläche angezeigt wird (Abb., Schritt 9).
-In der nächsten Anfrage werden die Regeln geladen (Abb., Schritt 10-11) und anschließend auf der Weboberfläche dargestellt (Abb., Schritt 12).
+Die Funktion \textit{create()} überprüft zuerst, ob der Service bereits einen E-Graph geladen hat (Abb., Schritt 2-3). Wenn dies der Fall ist, wird der Benutzer
+gefragt, ob er diesen und alle mit ihm verbundenen Daten löschen möchte. Im Beispiel ist dieser Schritt nicht gezeigt.
+Wenn der Benutzer dies bestätigt oder noch kein E-Graph im Service geladen ist, wird die Funktion \textit{createEGraph()} aufgerufen. 
+Sie schickt per \textit{POST}-Request den Inhalt des Eingabefeldes an den Server (Abb., Schritt 4), der sich um die Erstellung kümmert.
+Nach der Erstellung gibt die Antwort des Servers (Abb., Schritt 5) dem Benutzer Auskunft (Abb., Schritt 6), ob das Erstellen des E-Graphs erfolgreich war.
+Im nächsten Schritt muss die Benutzeroberfläche aktualisiert werden, um den E-Graph und die zugehörigen \textit{rewrite rules} darzustellen.
+Dafür ist die Funktion \textit{loadData()} verantwortlich, die auch bei einem erneuten Laden der Website dafür sorgt, dass die Inhalte weiterhin angezeigt werden.
+In zwei Schritten lädt sie einmal den E-Graph und danach die \textit{rewrite rules}.
+Zunächst wird also eine \textit{GET}-Anfrage an den Server geschickt (Abb., Schritt 7), deren Antwort einen Status und die angeforderten Daten beinhaltet (Abb., Schritt 8).
+In den Daten befindet sich der entsprechende E-Graph im \textit{DOT}-Format, der sogleich als SVG gerendert und auf 
+der Weboberfläche angezeigt wird (Abb., Schritt 9).
+Abschließend werden die Regeln durch eine weitere \textit{GET}-Anfrage geladen (Abb., Schritt 10-11). Zuletzt werden sie auf der Benutzeroberfläche gerendert (Abb., Schritt 12).
 
-Die in der Abbildung dargestellte Vorgehensweise
+% Die Funktion überprüft zuerst, ob es bereits einen E-Graph gibt (Abb., Schritt 2-3) und fragt, ob der Benutzer
+% diesen und die mit ihm verbundenen Daten löschen will (im Beispiel nicht gezeigt). 
+% Falls noch kein E-Graph vorhanden ist, wird nun die Funktion \textit{createEGraph()} aufgerufen. 
+% Sie schickt den Ausdruck an den Server (Abb., Schritt 4) und dieser kümmert sich um die Erstellung. Die Antwort des Servers (Abb., Schritt 5) gibt dem Benutzer 
+% Auskunft (Abb., Schritt 6), ob dieser Schritt erfolgreich war. 
+% Anschließend muss der E-Graph und zugehörige \textit{rewrite rules} geladen werden, was durch die Funktion \textit{loadData()} passiert.
+% Sie schickt eine Anfrage (Abb., Schritt 7), deren Antwort einen Status und die Daten enthält (Abb., Schritt 8). 
+% In den Daten befindet sich der entsprechende E-Graph im 
+% \textit{DOT}-Format (siehe Kapitel~\ref{sec:entscheidungen}), der sogleich als SVG gerendert und auf der Weboberfläche angezeigt wird (Abb., Schritt 9).
+% In der nächsten Anfrage werden die Regeln geladen (Abb., Schritt 10-11) und anschließend auf der Weboberfläche dargestellt (Abb., Schritt 12).
+
+Insgesamt spiegelt die in der Abbildung dargestellte Vorgehensweise den Kommunikationsverlauf bei anderen Funktionen wider.
+Dabei wurde versucht, die Kommunikation mit dem Server möglichst gering und effizient zu halten, wodurch auch auf ein JavaScript-Framework verzichtet wurde (siehe Kapitel~\ref{sec:entscheidungen}).
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{../fig/query.png}
-  \caption{Beispielablauf der Kommunikation zwischen Server, Weboberfläche und Benutzer}
+  \caption{Ablaufdiagramm der Kommunikation für die Erstellung eines E-Graphs zwischen Server, Weboberfläche und Benutzer}
   \label{fig:ablauf}
 \end{figure}
