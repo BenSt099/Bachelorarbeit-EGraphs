@@ -1,28 +1,20 @@
 \section{Entwicklung der Anwendung}\label{sec:entwicklung}
 
-In Kapitel~\ref{sec:architektur} wurde die Architektur der Anwendung vorgestellt. Dieses Kapitel bietet einem Einblick in die Entwicklungsphase
-der Anwendung.
+In Kapitel~\ref{sec:grundlagen} und~\ref{sec:architektur} wurden die notwendigen Grundlagen und die Architektur vermittelt.
+Darauf aufbauend wird in den folgenden Abschnitten ein tieferer Einblick in die Entwicklungsphase vorgenommen und dazu passend Teile des Codes vorgestellt.
+Dazu ist dieses Kapitel in vier Abschnitte gegliedert, in denen jeweils eine Komponente der Anwendung behandelt wird.
 
-\subsection{E-Graphs}
+\subsection{Erste Komponente: E-Graph}
 
-Um die Erstellung von E-Graphs zu vereinfachen, erfolgt der Aufbau in mehreren Schritten.
-Im ersten Schritt wird ein gegebenener mathematischer Ausdruck in einen \textbf{Abstract Syntax Tree} (AST) umgewandelt.
-Im zweiten Schritt wird der E-Graph erstellt, indem der AST rekursiv traversiert und jeder Knoten dem E-Graph hinzugefügt wird. 
+Die Erstellung eines E-Graphs beginnt mit einem mathematischen Ausdruck, aus dem ein \textbf{Abstract Syntax Tree} (AST) aufgebaut wird.
+Der AST wird später traversiert, um jeden Knoten dem E-Graph hinzuzufügen. Dieser Zwischenschritt vereinfacht die Erzeugung von E-Graphs und
+kann gleichzeitig als Validierungsphase genutzt werden, da hier bereits feststeht, ob der Ausdruck der korrekten Form entspricht.
 
-\subsubsection{AST}
+\subsubsection{AbstractSyntaxTree \& AbstractSyntaxTreeNode}
 
-Für einen \textbf{Abstract Syntax Tree} werden die Klassen \textit{AbstractSyntaxTreeNode} (siehe Listing~\ref{lst:astnode}) und 
-\textit{AbstractSyntaxTree} (siehe Listing~\ref{lst:ast}) benötigt.
-
-% \begin{lstlisting}[language=Python, escapechar=|, caption=Klasse \textit{AbstractSyntaxTreeNode}, label={lst:astnode}]
-% class AbstractSyntaxTreeNode:
-%     def __init__(self):
-%         self.left = None |\label{line:sp}|
-%         self.key = str()
-%         self.right = None
-% \end{lstlisting}
-
-% einen linken Zeiger (Zeile~\ref{line:sp}),
+Ein AST erfordert die Klassen \textit{AbstractSyntaxTreeNode} (Listing~\ref{lst:astnode}) und 
+\textit{AbstractSyntaxTree} (Listing~\ref{lst:ast}). Die Klasse \textit{AbstractSyntaxTreeNode} repräsentiert
+einen Knoten im AST. Sie hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTreeNode}, label={lst:astnode}]
 class AbstractSyntaxTreeNode:
@@ -32,22 +24,20 @@ class AbstractSyntaxTreeNode:
         self.right = None
 \end{lstlisting}
 
-Die Klasse \textit{AbstractSyntaxTreeNode} repräsentiert einen Knoten im AST. Sie hat drei Attribute: einen linken Zeiger, einen rechten Zeiger
-und einen Schlüssel. Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl sein. Die Zeiger können auf einen weiteren Teilbaum zeigen, auf einen einzelnen Knoten
-oder auf None. Mithilfe dieser Klasse kann nachher ein ganzer Baum dargestellt werden. Dazu braucht man nur den Wurzelknoten des Baumes abspeichern, denn damit
-kann auf den gesamten Baum zugegriffen werden. 
+Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl sein. Die Zeiger können auf einen weiteren Teilbaum zeigen, auf einen einzelnen Knoten
+oder auf nichts. Mithilfe dieser Klasse kann nachher ein ganzer Baum dargestellt werden. Dazu braucht man nur den Wurzelknoten des Baumes abspeichern, um über dessen Kinder
+Zugriff auf den gesamten Baum zu bekommen. 
 
-Die Klasse \textit{AbstractSyntaxTree} ist für das Erstellen des AST aus einem Ausdruck zuständig. 
-Daher wird die Klasse mit einem Ausdruck initialisiert, der sogleich durch die 
-Methode \textit{\_process\_expression(expression)} in einen AST umgewandelt wird. Der AST wird dann im Attribut \textit{root\_node} abgespeichert.
+Über die Klasse \textit{AbstractSyntaxTree} kann aus einem Ausdruck ein AST erstellt werden.
+Entsprechend wird die Klasse mit einem Ausdruck initialisiert, der direkt durch die Methode \textit{\_process\_expression(self, expression)} verarbeitet wird.
+Die Methode gibt den Wurzelknoten des erstellten AST zurück, der im Attribut \textit{root\_node} der Klasse abgespeichert wird.
+Anschließend wird der AST in ein String-Format gebracht und im zweiten Attribut \textit{string\_representation} abgespeichert.
+Das Umwandeln eines AST in einen String übernimmt die Methode~(Z. \ref{astpreorder}) \textit{\_preorder(self, ast\_node)}. Sie startet mit dem Wurzelknoten (\textit{root\_node})
+und durchläuft den AST in Preorder-Traversierung. Dabei werden die Schlüssel der Knoten an einen String angehangen. Zusätzlich wird eine öffnende Klammer
+angehangen, wenn ein Knoten zwei Kinder hat und eine schließende Klammer, wenn beide Kinder bearbeitet wurden. Dadurch kann der eingegebene Ausdruck zurückerhalten werden, falls
+dieser dem korrekten Format entsprach.
 
-Das zweite Attribut, \textit{string\_representation}, enthält den AST im String-Format. Dies dient primär Debug-Zwecken.
-Eine String-Repräsentation kann durch die erste Methode~(Z. \ref{astpreorder}) \textit{\_preorder(self, ast\_node)} erreicht werden,
-indem man den erstellten AST in Preorder-Traversierung durchgeht und dabei die Schlüssel der Knoten an einen String anhängt.
-Zusätzlich wird eine öffnende Klammer angehängt, wenn der Knoten zwei Kinder hat (also eine arithmetische Operation repräsentiert) und eine schließende Klammer,
-wenn beide Kinder abgearbeitet wurden. Somit erhält man den eingegebenen Ausdruck exakt zurück, falls dieser korrekt eingegeben wurde.
-
-\begin{lstlisting}[language=Python, escapechar=|, caption=Klasse \textit{AbstractSyntaxTree}, label={lst:ast}]
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{AbstractSyntaxTree}, label={lst:ast}]
 class AbstractSyntaxTree:
 
     # ... __init__ und __str__  weggelassen 
@@ -96,15 +86,15 @@ class AbstractSyntaxTree:
         return root_ast_node
 \end{lstlisting}
 
-Die zweite Methode~(Z. \ref{astprocess}) \textit{\_process\_expression(expression)} bekommt einen mathematischen Ausdruck als String übergeben und initialisiert drei lokale Variablen.
+Die Methode~(Z. \ref{astprocess}) \textit{\_process\_expression(self, expression)} initialisiert drei lokale Variablen.
 Die erste Variable \textit{root\_ast\_node} speichert den Wurzelknoten des Baumes, den die Methode später zurückgibt. Die zweite Variable \textit{stack} speichert an der 
 Position \textbf{Top of Stack} (TOS) den aktuell zu bearbeitenden Knoten. Die dritte Variable \textit{word} ist ein leerer String, der als kurzzeitiger Zwischenspeicher verwendet wird,
-wenn Variablen, Zahlen oder Operationen mehrere Zeichen lang sind.
-Der String wird Zeichen für Zeichen von links nach rechts durchgegangen, wobei sieben Fälle unterschieden werden.
+wenn Variablen, Zahlen oder Operationen aus mehreren Zeichen bestehen.
+Der String wird von links nach rechts Zeichen für Zeichen verarbeitet, wobei sieben Fälle unterschieden werden.
 
 Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
 dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
-Nach einer öffnenden Klammer wird normalerweise eine arithmetische Operation erwartet. 
+Nach einer öffnenden Klammer wird eine arithmetische Operation erwartet. 
 Daher behandelt Fall zwei~(Z. \ref{ast1}) die vier Operationen ($+, *, -, /$), indem die jeweilige Operation dem Knoten, der gerade TOS ist,
 als Schlüssel zugewiesen wird. Da Shift-Operationen ($<<, >>$) zwei Zeichen lang sind, werden sie in Fall drei~(Z. \ref{ast2}) behandelt.
 Zu Fall drei kommt es, wenn in \textit{word} bereits eines der Shift-Zeichen ($<, >$) eingelesen wurde und nun das nächste eingelesen wird.
@@ -119,24 +109,25 @@ Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{wor
 Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
 Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
 
-\subsubsection{E-Graph}
+\subsubsection{ENode}
 
-Aus dem Ausdruck wurde im letzten Abschnitt ein AST erzeugt. Nun soll dieser in einen E-Graph umgewandelt werden. Ein E-Graph besteht aus EClasses und ENodes.
-Die Klasse \textit{ENode} repräsentiert später einen Knoten aus dem AST. Daher enthält sie auch einen Schlüssel sowie eine Liste mit Argumenten. Die Argumente werden 
-EClass-IDs sein.
+Die Implementierung einer \textit{E-Node} kann ohne weitere Modifikationen implementiert werden. Hierzu dient die Klasse \textit{ENode} (Listing~\ref{lst:enode}).
+Ihre werden zwei Parameter übergeben, ein Schlüssel und eine Liste von EClass-IDs als Strings, die sie als ihre Attribute speichert.
 
-\begin{lstlisting}[language=Python, caption=Klasse \textit{ENode}]
+\begin{lstlisting}[language=Python, caption=Klasse \textit{ENode}, label={lst:enode}]
 class ENode:
     def __init__(self, key, arguments):
         self.key = key
         self.arguments = arguments
 \end{lstlisting}
 
-Die Klasse \textit{EClass} bekommt bei der Initialisierung eine individuelle \textbf{EClass-ID} sowie ein Set der Knoten, die in dieser EClass vorhanden sind. Außerdem
-wird ein \textit{parent}-Set für die Elternklassen dieser EClass benötigt.
+\subsubsection{EClass}
 
-\begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}]
-import uuid
+Für Erzeugung von \textit{E-Classes} ist die Klasse \textit{EClass} (Listing~\ref{lst:eclass}) verantwortlich. Durch die Initialisierung wird eine UUID als die EClass-ID generiert 
+und im Attribut \textit{id} gespeichert. Zusätzlich werden zwei Sets erzeugt, eines für die E-Nodes, die die Klasse enthält, und eines für die Elternklassen.
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}, label={lst:eclass}]
+# ... 
 
 class EClass:
     def __init__(self):
@@ -145,12 +136,13 @@ class EClass:
         self.parents = set()
 \end{lstlisting}
 
-Die Klasse \textit{RewriteRule} besteht aus zwei Ausdrücken. Der linke Ausdruck (\textit{expr\_lhs}) beschreibt ein Muster, welches, wenn es im EGrgaph vorkommt, in den
-rechten Ausdruck (\textit{expr\_rhs}) umgeschrieben werden soll.
-Beide Ausdrücke werden mithilfe von AST abgespeichert.
+\subsubsection{RewriteRule}
 
-\begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}]
-import AbstractSyntaxTree
+Die Klasse \textit{RewriteRule} (Listing~\ref{lst:rr}) dient als Repräsentant einer \textit{rewrite rule}. Als Parameter bekommt sie einen Namen der Regel, einen linken sowie einen 
+rechten Ausdruck übergeben. Die beiden Ausdrücke werden in AST umgewandelt. Die Attribute \textit{expr\_lhs} und \textit{expr\_rhs} speichern deshalb nur die Wurzelknoten der ASTs.
+
+\begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}, label={lst:rr}]
+# ... 
 
 class RewriteRule:
     def __init__(self, name, expr_lhs, expr_rhs):
@@ -158,15 +150,16 @@ class RewriteRule:
         self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
         self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
 
-    def __str__(self):
-        return f"[{self.name}: {self.expr_lhs} => {self.expr_rhs}]"
+    # ... 
 \end{lstlisting}
 
+\subsubsection{EGraph}
 
-Mit diesen beiden Hauptbestandteilen kann jetzt ein \textbf{E-Graph} implementiert werden. 
-Die zugehörigen Methoden werden in den Abschnitten \ref{subsub:egg} und \ref{subsub:colab} vorgestellt.
+Mit den bereits definierten Klassen kann jetzt die wichtigste Klasse der Komponente definiert werden. Die Init-Methode der Klasse \textit{EGraph} (Listing~\ref{lst:egraph})
+legt eine Union-Find Datenstruktur \textit{u} und zwei Dictionaries \textit{m} und \textit{h} an. Die weiteren vier Attribute werden erst im Verlauf der Entwicklung wichtig und 
+an den entsprechenden Stellen erläutert.
 
-\begin{lstlisting}[language=Python, caption=Klasse \textit{EGraph}]
+\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:egraph}]
 # ... 
 
 class EGraph:
@@ -182,32 +175,33 @@ class EGraph:
     # ...
 \end{lstlisting} 
 
-Bis jetzt hat die Klasse \textit{EGraph} noch keine Funktionalität, um tatsächlich ihre Aufgabe zu erfüllen. Die folgenden zwei Abschnitte 
-behandeln zwei Quellen, mit deren Hilfe diese Funktionalität erreicht werden konnte.
-
-\subsubsection{egg-Implementierung}\label{subsub:egg}
-
-In der Einleitung (Abschnitt \ref{sub:verwandtearbeiten}) wurde bereits die in Rust geschriebene Bibliothek \textbf{egg} vorgestellt, die auf einem Paper (\cite{2021-egg}) basiert.
-Für diese Implementierung wurden verschiedene, grundlegende Methoden übernommen, darunter \textit{add}, \textit{merge}, \textit{repair}, \textit{rebuild}, \textit{canonicalize} und
-\textit{find}. Abgesehen von einigen wenigen Änderungen wurden die Methoden aus dem Paper weitestgehend übernommen.
 
 
 
-\subsubsection{Colab-Implementierung}\label{subsub:colab}
-
-Das erwähnte Paper behandelt die grundlegenden Funktionen eines E-Graphs. Allerdings werden andere Aspekte nicht beleuchtet. Hierzu wurde auf ein Google Colab Notebook zurückgegriffen \cite{devito},
-welches weiterführende Konzepte aufzeigt.
 
 
+% Bis jetzt hat die Klasse \textit{EGraph} noch keine Funktionalität, um tatsächlich ihre Aufgabe zu erfüllen. Die folgenden zwei Abschnitte 
+% behandeln zwei Quellen, mit deren Hilfe diese Funktionalität erreicht werden konnte.
 
-\subsection{Service \& Server}
+% \subsubsection{egg-Implementierung}\label{subsub:egg}
 
-Für die Interaktion zwischen E-Graphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
-die Erstellung und Benutzung von E-Graphs regelt.
+% In der Einleitung (Abschnitt \ref{sub:verwandtearbeiten}) wurde bereits die in Rust geschriebene Bibliothek \textbf{egg} vorgestellt, die auf einem Paper (\cite{2021-egg}) basiert.
+% Für diese Implementierung wurden verschiedene, grundlegende Methoden übernommen, darunter \textit{add}, \textit{merge}, \textit{repair}, \textit{rebuild}, \textit{canonicalize} und
+% \textit{find}. Abgesehen von einigen wenigen Änderungen wurden die Methoden aus dem Paper weitestgehend übernommen.
 
-\subsubsection{Service}
 
 
+% \subsubsection{Colab-Implementierung}\label{subsub:colab}
+
+% Das erwähnte Paper behandelt die grundlegenden Funktionen eines E-Graphs. Allerdings werden andere Aspekte nicht beleuchtet. Hierzu wurde auf ein Google Colab Notebook zurückgegriffen \cite{devito},
+% welches weiterführende Konzepte aufzeigt.
+
+
+
+\subsection{Zweite Komponente: Service}
+
+% Für die Interaktion zwischen E-Graphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
+% die Erstellung und Benutzung von E-Graphs regelt.
 
 
 \begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{EGraphService.py}]
@@ -269,7 +263,7 @@ class EGraphService:
 
 
 
-\subsubsection{Server}
+\subsection{Dritte Komponente: Server}
 
 \begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{server.py}]
 # ... 
@@ -298,9 +292,31 @@ async def add_rule(request: Request):
 \end{lstlisting} 
 
 
-\subsection{Benutzeroberfläche}
+\subsection{Vierte Komponente: Weboberfläche}
 
-Die Benutzeroberfläche besteht aus einer Website, die im Browser läuft. Näheres zu dieser Entscheidung kann in Kapitel \ref{sec:entscheidungenundprobleme} nachgelesen werden.
+
+\subsubsection{Benutzeroberfläche}
+
+\afterpage{\clearpage}
+\begin{sidewaysfigure}[h!]
+% \begin{figure}[H]
+\centering
+\includegraphics[scale=0.45]{../fig/website.png}
+\caption{Website beim Start des Servers}
+\label{fig:website}
+% \end{figure}
+\end{sidewaysfigure}
+
+
+\subsubsection{JavaScript}
+
+\subsubsection{Dokumentation}
+
+
+
+
+
+% Die Benutzeroberfläche besteht aus einer Website, die im Browser läuft. Näheres zu dieser Entscheidung kann in Kapitel \ref{sec:entscheidungenundprobleme} nachgelesen werden.
 
 
 

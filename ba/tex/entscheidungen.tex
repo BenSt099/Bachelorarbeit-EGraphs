@@ -82,28 +82,28 @@ Im Rahmen dieser Arbeit erschien eine Website, die lokal im Browser läuft, am s
     % \item Im Gegensatz zu \textit{Django} bietet \textit{FastAPI}~\footnote{\hspace{1.5mm}\url{https://fastapi.tiangolo.com/}} nur essenzielle Funktionen an, was das Aufsetzen eines Servers deutlich vereinfacht.
 \end{itemize}
 
-\subsection{Frameworks für die Website}
+\subsection{Eingesetzte Frameworks}
 
-Zur Erstellung von Websiten gibt es eine große Anzahl an JavaScript-Frameworks. Unter diesen ein Framework auszuwählen ist zeitintensiv. Zudem sind die meisten Frameworks zu umfangreich oder besitzen weitere
-Abhängigkeiten.
+Die Gestaltung der Benutzeroberfläche basiert auf dem CSS-Framework \textit{Bootstrap}~\footnote{\hspace{1.5mm}\url{https://getbootstrap.com/}} in der Version \textit{5.3.3}.
+\textit{Bootstrap} ist leicht zu integrieren und vielfach erprobt worden. Dazu bietet es bereits fertige und optimierte Bausteine, die für Konsistenz sorgen und auf Accessibility getestet sind.
 
-% -> docusaurus
+% Für die Gestaltung der Benutzeroberfläche wurde auf das CSS-Framework \textit{Bootstrap}~\footnote{\hspace{1.5mm}\url{https://getbootstrap.com/}} in der Version 5.3.3 zurückgegriffen.
+% \textit{Bootstrap} kam bereits auf zahlreichen Websiten zum Einsatz und ist daher vielfach erprobt worden.
+% Zudem enthält es viele bereits fertige und optimierte Bausteine, die nicht nur für Konsistenz sorgen, sondern auch für Accessibility ausgelegt sind. 
 
-% Für die Website wurde kein JavaScript-Framework ausgewählt. Stattdessen wurde auf eine eigene Implementierung gesetzt. Das liegt daran, dass die meisten Frameworks zu umfangreich sind oder weitere
-% Abhängigkeiten haben. Zudem ist die Auwahl eines Frameworks aufgrund der Anzahl an zur Verfügung stehenden Frameworks eine zeitintensive Aufgabe.
+Die Dokumentation wurde mit \textit{Docusaurus}~\footnote{\hspace{1.5mm}\url{https://docusaurus.io/}} in der Version \textit{3.7} erstellt. \textit{Docusaurus} ist ein Static-Site Generator, der sich leicht in
+bestehende Infrastruktur einfügen lässt. Er unterstützt nativ Internationalisierung und die Dokumentation kann in Markdown geschrieben werden. Damit eignet sich \textit{Docusaurus} für diese Arbeit.
 
-
-
-Für die Gestaltung der Benutzeroberfläche wurde auf das CSS-Framework \textit{Bootstrap}~\footnote{\hspace{1.5mm}\url{https://getbootstrap.com/}} in der Version 5.3.3 zurückgegriffen.
-\textit{Bootstrap} kam bereits auf zahlreichen Websiten zum Einsatz und ist daher vielfach erprobt worden.
-Zudem enthält es viele bereits fertige und optimierte Bausteine, die nicht nur für Konsistenz sorgen, sondern auch für Accessibility ausgelegt sind. 
-
-
-
+Für die Kommunikation zwischen Server und Benutzeroberfläche wurde kein Framework gewählt. Stattdessen wurden die notwendigen Funktionen von Hand geschrieben. Dies erlaubt eine bessere Kontrolle sowie die
+Reduzierung von unnötigem Code. Zusätzlich sind die meisten JavaScript-Frameworks zu umfangreich für den Zweck der Arbeit und eines der vielen Frameworks auszuwählen ist zeitintensiv. Daher wurde darauf verzichtet.
 
 \subsection{JSON-Format}
 
-Für die Kommunikation zwischen Server und Benutzeroberfläche stehen verschiedene Formate zur Verfügung. Die Entscheidung für das \textit{JSON}-Format wurde getroffen, 
-da es sowohl von JavaScript als auch von Python nativ unterstützt wird. Außerdem ist es eines der am häufigsten verwendeten Formate in Browsern.
-Zudem können die in diesem Format kodierten Daten im Browser dargestellt werden, unter anderem
-zum Beispiel durch die Developer Tools von Firefox. Dieses Feature macht das Debugging deutlich einfacher. 
+Für den Transport von Daten zwischen Server und Benutzeroberfläche stehen verschiedene Formate zur Verfügung. In dieser Arbeit wurde das \textit{JSON}-Format eingesetzt,
+weil es sowohl von Python als auch von JavaScript nativ unterstützt wird. Daten im \textit{JSON}-Format können in Python ohne großen Aufwand in ein Dictionary und in JavaScript in ein Objekt umgewandelt werden.
+Zusätzlich eignet sich dieses Format zur Darstellung in Browsern, zum Beispiel in den Entwicklungswerkzeugen der meisten Browser, was das Debugging vereinfacht.
+
+% Für die Kommunikation zwischen Server und Benutzeroberfläche stehen verschiedene Formate zur Verfügung. Die Entscheidung für das \textit{JSON}-Format wurde getroffen, 
+% da es sowohl von JavaScript als auch von Python nativ unterstützt wird. Außerdem ist es eines der am häufigsten verwendeten Formate in Browsern.
+% Zudem können die in diesem Format kodierten Daten im Browser dargestellt werden, unter anderem
+% zum Beispiel durch die Developer Tools von Firefox. Dieses Feature macht das Debugging deutlich einfacher. 
