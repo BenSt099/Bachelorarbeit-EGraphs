@@ -12,7 +12,7 @@ Der zweite Abschnitt thematisiert die Qualität der entwickelten Software.
 %     \item Weist die produzierte Software eine hohe Qualität auf?
 % \end{enumerate}
 
-\subsection{Ziel der Bachelorarbeit}
+\subsection{Ziel der Bachelorarbeit}\label{sub:ziel}
 
 Das Ziel der Bachelorarbeit wurde in der Einleitung bereits definiert. Dort heißt es: 
 \glqq Das Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die Studentinnen und Studenten Wissen zu den Themen \textit{E-Graphs} und \textit{Equality Saturation}
@@ -67,37 +67,41 @@ Bei der Bewertung von Software kann ihre Qualität als zuverlässiger Faktor mit
 unterschiedlich definiert. Eine gute Orientierung bietet der \textit{ISO/IEC 25010:2011 Standard}~\footnote{\hspace{1.5mm}\url{https://www.innoq.com/de/blog/2021/10/quality-value-chain-evolution/}}. 
 In diesem sind folgende Qualitätsmerkmale aufgelistet:
 
-\noindent\textbf{Übertragbarkeit} Die eingesetzten Komponenten laufen problemlos auf verschiedenen Plattformen inklusive der drei größten Betriebssysteme Windows, MacOS und Linux.
-Durch den Einsatz von Python als Hauptprogrammiersprache, mit der auch der Server erstellt wurde, kann auf eine sehr gute Plattformunabhängigkeit geschlossen werden.
-Die Benutzeroberfläche der Anwendung läuft als lokale Website im Browser des Benutzers, was ebenfalls keine Hürde darstellt. Zuletzt können vier der fünf Dependencies mit Python
-heruntergeladen werden. Die fünfte Dependency, \textit{Grahviz}, ist auf allen gängigen Plattformen vertreten und bereits intensiv erprobt worden. 
+\noindent\textbf{Übertragbarkeit} Die Anwendung läuft problemlos auf allen gängigen Plattformen. Das liegt erstens daran, dass nur Open-Source-Software eingesetzt wurde,
+wodurch Schwierigkeiten beim Beschaffen von Lizenzen vermieden werden können. 
+Zweitens basieren vier der fünf Dependencies auf Python und die fünfte, \textit{Grahviz}, wird für alle gängigen Plattformen angeboten. Da Python plattformunabhängig ist, gilt dies auch
+für die Dependencies.
+Drittens läuft die Benutzeroberfläche im Browser, der als Dependency vorausgesetzt werden kann.
+Somit kann auf eine Plattformunabhängigkeit der Anwendung geschlossen werden.
 
-\noindent\textbf{Wartbarkeit} Die Software hat eine klare Struktur, die es ermöglicht neue Strukturen ohne zu viel Aufwand zu implementieren.
-Der Code wurde mit \textit{Black}~\footnote{\hspace{1.5mm}\url{https://black.readthedocs.io/en/stable/}} formatiert und richtet sich nach \textit{PEP 8}~\footnote{\hspace{1.5mm}\url{https://peps.python.org/pep-0008/}}.
+\noindent\textbf{Wartbarkeit} Die Architektur der Anwendung folgt einem logischen Aufbau mit klar definierten Abhängigkeiten, was das Hinzufügen neuer Funktionen erlaubt.
+Der Code wurde mit \textit{Black}~\cite{black} formatiert und richtet sich nach \textit{PEP 8}~\cite{pep}. Jede Funktion oder Methode, die in Python oder JavaScript geschrieben wurde, 
+ist mit einem Kommentar versehen, der Parameter, Rückgabewerte und Zweck erläutert. Weiterhin ist die Anwendung mit X Unit-Tests und zahlreichen händischen Simulationen abgedeckt, die eine breites Spektrum an 
+möglichen Eingaben und Zuständen simulieren.
 
-Die Anwendung ist durch Unit-Tests abgedeckt, die eine breite Palette an möglichen Eingaben und Zuständen simulieren.
-Insgesamt wurden {\color{red} X} Tests geschrieben. Einfache \textit{Getter}-Methoden wurden dabei nicht getestet.
+\noindent\textbf{Sicherheit} Für das Ausführen der Anwendung werden keine erweiterten Berechtigungen des Nutzers eingefordert. Bei der Verwendung der Software werden keine persönlichen Daten gespeichert 
+oder weitergegeben und die Kommunikation findet ausschließlich im lokalen Netzwerk statt.
+Zusätzlich wurde der gesamte Code der Anwendung auf \textit{GitHub} veröffentlicht, wodurch eine unabhängige Prüfung auf Sicherheitslücken und mögliche, illegale Aktivitäten der Software vorgenommen werden kann.
 
-Jede Funktion bzw. Methode im Python- oder JavaScript-Code ist mit einem Kommentar versehen, der Parameter (falls vorhanden), Rückgabewerte (falls vorhanden) und
-Sinn erklären. Darüber hinaus enthalten alle Dateien einschließlich der Testdateien einen Kommentar, der den Inhalt der Datei erläutert.
-
-\noindent\textbf{Sicherheit} Die Anwendung speichert keine persönlichen Daten und die Kommunikation findet ausschließlich auf dem eigenen Computer statt. Die Anwendung erfordert keine
-erhöhten Nutzerberechtigungen  
-
-
-\noindent\textbf{Zuverlässigkeit}
+\noindent\textbf{Zuverlässigkeit} 
 
 
-\noindent\textbf{Funktionale Eignung}
 
 
-\noindent\textbf{Leistungseffizienz}
+\noindent\textbf{Funktionale Eignung} In Abschnitt~\ref{sub:ziel} wurde bereits dargelegt, dass die im Exposé festgehaltenen Anforderungen an die Software erreicht worden sind.
+Die Anwendung bietet Studentinnen und Studenten die Möglichkeit, sich auf interaktive Weise mit E-Graphs und Equality Saturation auseinander zu setzen.
+Durch das Debugging-Feature kann der E-Graph in jedem Stadium beobachtet werden. Hilfreiche Statusmeldungen erklären dem Benutzer die Abläufe.
 
 
-\noindent\textbf{Kompatibilität}
+\noindent\textbf{Leistungseffizienz} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht prioritisiert, da die Software in der Lehre eingesetzt werden sollte
+und somit andere Anforderungen wie zum Beispiel die Benutzbarkeit erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Auch die Übertragung eines E-Graphs ins DOT-Format 
+geschieht mit Aufwand. Trotzdem ist die Software in der Lage, Darstellungen flüssig zu rendern und dem Benutzer eine verzögerungsfreie Interaktion mit E-Graphs zu ermöglichen.
 
+\noindent\textbf{Kompatibilität} Die Software setzt auf bekannte Standards wie dem JSON- und dem DOT-Format und kann daher, mit eventuellen Modifikationen, auch mit anderen Systemen Daten austauschen.
+Außerdem ist die Kommunikation zwischen Server und Weboberfläche so gestaltet, dass auch andere Systeme wie zum Beispiel eine REST-API oder eine andere Benutzeroberfläche an die Anwendung anbinden könnten.
 
-\noindent\textbf{Benutzbarkeit} Die Benutzeroberfläche integriert Komponenten aus dem Framework \textit{Bootstrap}~\footnote{\hspace{1.5mm}\url{https://getbootstrap.com/}}, das auf 
-Benutzerfreundlichkeit und Kompatibilität ausgelegt ist. Zudem kann über die Benutzeroberfläche die Bedienungsanleitung eingesehen werden.
-
-Über die Benutzeroberfläche kann der Benutzer außerdem auf die Bedienungsanleitung der Website zugreifen. In dieser ist genau erklärt, wie die Anwendung gesteuert werden kann. 
+\noindent\textbf{Benutzbarkeit} Die Weboberfläche setzt auf eine Website, die mithilfe des Frameworks \textit{Bootstrap}~\cite{bootstrap} übersichtlich gestaltet werden konnte.
+Über die Website lässt sich die Dokumentation abrufen, die als Bedienungsanleitung fungiert und dem Benutzer mit Beispielen behilflich ist.
+Bei der Visualisierung von E-Graphs wurde besonders großen Wert auf die Benutzerfreundlichkeit gelegt. Nicht nur lassen sich andere Strukturen der Website für eine bessere Übersicht 
+einklappen, sondern die Darstellung eines E-Graphs lässt sich vergrößern, verkleinern und herumschieben. Es ist auch möglich die Grafik in einem neuen Tab zu öffnen, damit auch Benutzer
+mit einem kleineren Bildschirm die Anwendung nutzen können.
