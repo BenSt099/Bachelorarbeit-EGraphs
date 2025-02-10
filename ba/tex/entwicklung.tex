@@ -175,10 +175,36 @@ class EGraph:
     # ...
 \end{lstlisting} 
 
+Die nächsten sieben Methoden statten den E-Graph mit Basisfunktionalität aus.
 
+\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
+def _add(self, enode):
+    enode = self._canonicalize(enode)
+    # ... 
+    elif enode in self.h.keys():
+        return self.h[enode]
+    # ... 
+    else:
+        self.version += 1
+        eclass_id = self._new_singleton_eclass(enode)
+        for child in enode.arguments:
+            self.m[child].parents.add((enode, eclass_id))
+        self.h[enode] = eclass_id
+        return eclass_id
+\end{lstlisting} 
 
-
-
+\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
+def add_node(self, ast_node):
+    if ast_node is not None:
+        if ast_node.left is not None and ast_node.right is not None:
+            return self._add(ENode(ast_node.key, [self.add_node(ast_node.left), self.add_node(ast_node.right)],))
+        elif ast_node.left is not None:
+            return self._add(ENode(ast_node.key, [self.add_node(ast_node.left)]))
+        elif ast_node.right is not None:
+            return self._add(ENode(ast_node.key, [self.add_node(ast_node.right)]))
+        else:
+            return self._add(ENode(ast_node.key, []))
+\end{lstlisting} 
 
 % Bis jetzt hat die Klasse \textit{EGraph} noch keine Funktionalität, um tatsächlich ihre Aufgabe zu erfüllen. Die folgenden zwei Abschnitte 
 % behandeln zwei Quellen, mit deren Hilfe diese Funktionalität erreicht werden konnte.
@@ -265,16 +291,29 @@ class EGraphService:
 
 \subsection{Dritte Komponente: Server}
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{server.py}]
+% Die dritte Komponente (Server ) stellt das Backend der Anwendung dar. Sie enthält ei-
+% ne Datei server.py, in der ein mit FastAPI erstellter Webserver Anfragen der Webober-
+% fläche entgegennimmt und zur Umsetzung der Anfragen mit den Service interagiert. Da
+% zwischen dem Server und der Weboberfläche Daten ausgetauscht werden müssen, kom-
+% munizieren sie über das HTTP-Protokoll, während die Daten im JSON-Format übertragen
+% werden.
+
+Für die Kommunikation zwischen den beiden Komponenten Service und Weboberfläche ist die Komponente Server verantwortlich.
+In der Datei \textit{server.py} (Listing~\ref{lst:server}) ist ein FastAPI-Server implementiert.
+Der Server beginnt mit der Initialisierung einer Instanz in Z.~\ref{serverinit}. Dabei wird die Funktion \textit{lifespan} aufgerufen, die beim Starten und Herunterfahren des
+Servers nutzerdefinierte Aktionen ausführen kann. In diesem Fall wird der Browser mit der Adresse des Servers geöffnet (Z.~\ref{serveropen}).
+Als nächstes wird eine Instanz des EGraphService erzeugt (Z.~\ref{serverservice}).
+
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Datei \textit{server.py}, label={lst:server}]
 # ... 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    open_new(r"http://127.0.0.1:8000")
+    open_new(r"http://127.0.0.1:8000") |\label{serveropen}|
     yield
 
-app = FastAPI(lifespan=lifespan)
-E-Graphservice = E-GraphService()
+app = FastAPI(lifespan=lifespan) |\label{serverinit}|
+egraphService = EGraphService() |\label{serverservice}|
 
 @app.get("/getrules")
 def get_rules():
@@ -285,10 +324,12 @@ def get_rules():
 async def add_rule(request: Request):
     payload = await request.body()
     json_data = json.loads(payload)
-    result, msg, data = egraphService.add_rule(json_data["lhs"], json_data["rhs"])
-    return {"response": str(result), "msg": msg, "payload": data}
+    result, msg = egraphService.add_rule(json_data["lhs"], json_data["rhs"])
+    return {"response": str(result), "msg": msg}
 
 # ... 
+
+app.mount("/", StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True), name="static")
 \end{lstlisting} 
 
 
@@ -297,15 +338,24 @@ async def add_rule(request: Request):
 
 \subsubsection{Benutzeroberfläche}
 
-\afterpage{\clearpage}
-\begin{sidewaysfigure}[h!]
-% \begin{figure}[H]
+% \afterpage{\clearpage}
+% \begin{sidewaysfigure}[h!]
+% % \begin{figure}[H]
+% \centering
+% \includegraphics[scale=0.45]{../fig/website.png}
+% \caption{Website beim Start des Servers}
+% \label{fig:website}
+% % \end{figure}
+% \end{sidewaysfigure}
+
+\newpage
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.45]{../fig/website.png}
+\includegraphics[scale=0.42, angle=90]{../fig/website.png}
 \caption{Website beim Start des Servers}
 \label{fig:website}
-% \end{figure}
-\end{sidewaysfigure}
+\end{figure}
+\newpage
 
 
 \subsubsection{JavaScript}
