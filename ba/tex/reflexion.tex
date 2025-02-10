@@ -2,7 +2,7 @@
 
 Im vorliegenden Kapitel wird eine kritische Reflexion der Arbeit vorgenommen. 
 Der Fokus der Untersuchung liegt dabei auf der Arbeit an sich und auf der Anwendung.
-Dementsprechend beschäftigt sich der erste Abschnitt mit der Frage, ob das Ziel der Bachelorarbeit erreicht wurde.
+Dementsprechend beschäftigt sich der erste Abschnitt mit der Frage, inwiefern das Ziel der Bachelorarbeit erreicht wurde.
 Der zweite Abschnitt thematisiert die Qualität der entwickelten Software.
 
 % In diesem Abschnitt wird eine kritische Reflexion zur Entwicklung der Anwendung vorgenommen. Dazu werden die zwei folgenden, konkreten Fragen beantwortet:
@@ -14,7 +14,7 @@ Der zweite Abschnitt thematisiert die Qualität der entwickelten Software.
 
 \subsection{Ziel der Bachelorarbeit}\label{sub:ziel}
 
-Das Ziel der Bachelorarbeit wurde in der Einleitung bereits definiert. Dort heißt es: 
+Das Ziel wurde in der Einleitung bereits definiert. Dort heißt es: 
 \glqq Das Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die Studentinnen und Studenten Wissen zu den Themen \textit{E-Graphs} und \textit{Equality Saturation}
 vermittelt. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit den Themen auseinander setzen zu können.
 Die Grundlage der theoretischen Ebene bildet diese Arbeit, in der notwendige Hintergrundkenntnisse erarbeitet werden. Außerdem wird ein Einblick in die Implementierung gegeben. 
@@ -25,15 +25,10 @@ Für grö{\ss}tmöglichen Nutzen soll die Anwendung zudem plattformunabhängig s
 Die Entwicklung einer Lernanwendung wurde in dieser Arbeit durchgeführt. Damit können sich Studentinnen und Studenten auf praktische Weise mit den Themen 
 \textbf{E-Graphs} und \textbf{Equality Saturation} auseinander setzen. Kapitel~\ref{sec:grundlagen} dieser Arbeit kann genutzt werden, um sich mit den
 theoretischen Grundlagen vertraut zu machen. 
-Wie in Kapitel~\ref{sec:entscheidungenundprobleme} bereits festgestellt wurde, macht die Anwendung nur von \textit{Open-Source-Software} Gebrauch. Außerdem ist
-sie plattformunabhängig (siehe~\ref{softwarequalität} Qualität der Software).
-
-
-
-
-Das Exposé dient als Plan für eine Arbeit, dem sowohl Prüfer als auch Prüfling zugestimmt haben. Somit wird dem Prüfling eine Orientierung
-und dem Prüfer ein objektives Maß für die Vollständigkeit der Arbeit gegeben. Im Exposé wurden dabei folgende Ziele definiert, die die Anwendung
-erfüllen muss.
+Wie in Kapitel~\ref{sec:entscheidungen} bereits festgestellt wurde, macht die Anwendung nur von \textit{Open-Source-Software} Gebrauch. Außerdem ist
+sie plattformunabhängig (siehe~\ref{softwarequalität}).
+Als zusätzliches, objektives Maß für die Vollständigkeit kann das Exposé herangezogen werden.
+Im Exposé wurden dabei folgende Ziele definiert, die die Anwendung erfüllen muss:
 
 \begin{tcolorbox}[enhanced, frame hidden, borderline west = {1.5pt}{0pt}{gray-700},lower separated=false,fontupper=\sffamily]
 \begin{enumerate}[topsep=0pt,itemsep=-0.5ex,partopsep=1ex,parsep=1ex]
@@ -61,6 +56,27 @@ erfüllen muss.
 Somit kann abschließend resümiert werden, dass das vorher festgelegte Ziel der Bachelorarbeit erreicht wurde.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Qualität der Software}\label{softwarequalität}
 
 Bei der Bewertung von Software kann ihre Qualität als zuverlässiger Faktor miteinbezogen werden. Qualität kann unter verschiedenen Gesichtspunkten gemessen werden und wird
@@ -83,14 +99,16 @@ möglichen Eingaben und Zuständen simulieren.
 oder weitergegeben und die Kommunikation findet ausschließlich im lokalen Netzwerk statt.
 Zusätzlich wurde der gesamte Code der Anwendung auf \textit{GitHub} veröffentlicht, wodurch eine unabhängige Prüfung auf Sicherheitslücken und mögliche, illegale Aktivitäten der Software vorgenommen werden kann.
 
-\noindent\textbf{Zuverlässigkeit} 
-
+\noindent\textbf{Zuverlässigkeit} Die Anwendung basiert auf einem publizierten Paper~\cite{2021-egg}, indem auch die Vorgehensweise für die Bibliothek \textit{egg} erklärt wird.
+Aufgrund der Tatsache, dass E-Graphs basierend auf dem Paper implementiert wurden, lässt sich mit Gewissheit sagen, dass zumindest in den grundlegenden Funktionen kein logischer Fehler sein kann.
 
 
 
 \noindent\textbf{Funktionale Eignung} In Abschnitt~\ref{sub:ziel} wurde bereits dargelegt, dass die im Exposé festgehaltenen Anforderungen an die Software erreicht worden sind.
 Die Anwendung bietet Studentinnen und Studenten die Möglichkeit, sich auf interaktive Weise mit E-Graphs und Equality Saturation auseinander zu setzen.
-Durch das Debugging-Feature kann der E-Graph in jedem Stadium beobachtet werden. Hilfreiche Statusmeldungen erklären dem Benutzer die Abläufe.
+
+
+
 
 
 \noindent\textbf{Leistungseffizienz} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht prioritisiert, da die Software in der Lehre eingesetzt werden sollte
@@ -105,3 +123,5 @@ Außerdem ist die Kommunikation zwischen Server und Weboberfläche so gestaltet,
 Bei der Visualisierung von E-Graphs wurde besonders großen Wert auf die Benutzerfreundlichkeit gelegt. Nicht nur lassen sich andere Strukturen der Website für eine bessere Übersicht 
 einklappen, sondern die Darstellung eines E-Graphs lässt sich vergrößern, verkleinern und herumschieben. Es ist auch möglich die Grafik in einem neuen Tab zu öffnen, damit auch Benutzer
 mit einem kleineren Bildschirm die Anwendung nutzen können.
+Des Weiteren kann ein E-Graph durch das Debugging-Feature in jedem Stadium beobachtet werden. Hilfreiche Statusmeldungen erklären dem Benutzer die Abläufe.
+Es ist auch möglich, eine Session bzw. die \textit{rewrite rules} in einer Datei zu speichern und später hochzuladen, sodass dem Benutzer Zeit erspart wird.
