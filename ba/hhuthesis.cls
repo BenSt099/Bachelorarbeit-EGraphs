@@ -321,7 +321,7 @@
   die vorliegende \@degree{}arbeit selbstst\"andig verfasst und keine anderen
   als die angegebenen Quellen und Hilfsmittel benutzt zu haben.
   Alle Stellen, die aus den Quellen entnommen wurden,
-  sind als solche kenntlich gemacht worden. Bei der Erstellung wurde auf den Einsatz von generativer Künstlicher Intelligenz verzichtet.
+  sind als solche kenntlich gemacht worden. 
   Diese Arbeit hat in gleicher oder \"ahnlicher Form
   noch keiner Pr\"ufungsbeh\"orde vorgelegen.
 
@@ -335,12 +335,40 @@
   \end{centering}
 }
 
+%% Design official statement of independend and autonomous work
+\newcommand{\@makeaideclaration}{%
+  \@beginparpenalty\@lowpenalty
+  \hspace{0pt}
+  \vfill
+  \begin{center}%
+    \bfseries \large Erkl\"arung zur Nutzung generativer K\"unstlicher Intelligenz
+    \@endparpenalty\@M
+  \end{center}%
+
+  Hiermit versichere ich, dass bei der
+  vorliegenden \@degree{}arbeit auf den Einsatz von generativer Künstlicher Intelligenz verzichtet wurde.
+
+  \vspace{2cm}
+
+  \begin{centering}
+    \begin{tabular}{lc}
+    D\"usseldorf, den \@due \hspace*{1.8cm} & \underline{\hspace{6cm}}\\
+    & \@author
+    \end{tabular}
+  \end{centering}
+  \vfill
+  \hspace{0pt}
+  \newpage
+}
+
 \if@titlepage
   \newcommand\makedeclaration{
     \begin{titlepage}%
       \null\vfil
       \vskip 60\p@
       \@makedeclaration
+      \newpage
+      \@makeaideclaration
       \vfil\null
     \end{titlepage}%
   }
@@ -355,13 +383,15 @@
       \if@twocolumn
         \ifnum \col@number=\@ne
           \@makedeclaration
+          \@makeaideclaration
         \else
-          \twocolumn[\@makedeclaration]%
+          \twocolumn[\@makedeclaration\@makeaideclaration]%
         \fi
       \else
         \newpage
         \global\@topnum\z@   % Prevents figures from going at top of page.
         \@makedeclaration
+        \@makeaideclaration
       \fi
       \thispagestyle{plain}\@thanks
     \endgroup
@@ -403,7 +433,8 @@
   \cleardoublepage
 
   \makedeclaration % Declaration of Authorship
-  \cleardoublepage
+  %\@makeaideclaration
+  %\cleardoublepage
 
   \begin{abstract}
     \input{abstract.tex}

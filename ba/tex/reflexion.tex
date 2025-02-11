@@ -21,30 +21,7 @@ theoretischen Grundlagen vertraut zu machen.
 Wie in Kapitel~\ref{sec:entscheidungen} bereits festgestellt wurde, macht die Anwendung nur von \textit{Open-Source-Software} Gebrauch. Außerdem ist
 sie plattformunabhängig (siehe~\ref{softwarequalität}).
 Als zusätzliches, objektives Maß für die Vollständigkeit kann das Exposé herangezogen werden.
-Im Exposé wurden dabei folgende Funktionen definiert, die in die Anwendung integriert werden ,üssen:
-
-\begin{tcolorbox}[enhanced, frame hidden, borderline west = {1.5pt}{0pt}{gray-700},lower separated=false,fontupper=\sffamily]
-\begin{enumerate}[topsep=0pt,itemsep=-0.5ex,partopsep=1ex,parsep=1ex]
-    \item {\sffamily\itshape \textbf{GUI} Die Anwendung stellt eine Benutzeroberfläche in Form einer HTML-Website zur Verfügung, die lokal im Browser läuft.
-        Alle Funktionen sowie der theoretische Teil können darüber abgefragt werden.}
-    \item {\sffamily\itshape \textbf{E-Graph} Mit der Anwendung ist es möglich, durch Eingabe eines mathematischen Terms, einen E-Graph schrittweise zu erzeugen und in der GUI durch eine SVG-Datei anzeigen zu lassen.}
-    \item {\sffamily\itshape \textbf{Mathematische Terme} Terme bestehen aus Variablen (Buchstaben wie $x, y, z$), Operationen ($+, *, -, /, <<, >>$) und Zahlen.}
-    \item {\sffamily\itshape \textbf{Rewrite Rules} Der Benutzer hat die Möglichkeit, Rewrite Rules zu definieren und diese unabhängig voneinander auf den E-Graph anzuwenden. Die dabei entstehenden
-        Veränderungen spiegelt der E-Graph wieder, d.h. die Darstellung wird aktualisiert.}
-    \item {\sffamily\itshape \textbf{Default Rewrite Rules} Wenn der Benutzer die Anwendung startet, sollen bereits einige vordefinierte Rewrite Rules eingespeichert werden, um dem Benutzer Arbeit zu sparen und
-        ihm gleichzeitig als Beispiel dienen.}
-    \item {\sffamily\itshape \textbf{Historie} Mithilfe der GUI ist es möglich, zwischen verschiedenen Versionen des E-Graphs zu wechseln und diese anzuzeigen.}
-    \item {\sffamily\itshape \textbf{Extraktion} Der finale, optimierte Term kann aus dem E-Graph extrahiert werden.}
-    \item {\sffamily\itshape \textbf{Export} Dem Benutzer ist es möglich, den momentan angezeigten E-Graph in ein Dateiformat wie PDF oder SVG zu exportieren.}
-    \item {\sffamily\itshape \textbf{Sessions} Aus Effizienzgründen kann der Benutzer seine jeweilige Session in einem für Menschen lesbaren Dateiformat abspeichern und bei einem erneuten Start der Anwendung wieder
-        laden. Eine Session besteht dabei aus: dem mathematischen Term, den eingegebenen Rewrite Rules inklusive der momentan angewendeten und dem evtl. bereits extrahierten, optimalen Term.}
-    \item{\sffamily\itshape \textbf{Hilfe} Durch die Benutzeroberfläche kann der Nutzer auf eine Dokumentation zurückgreifen, in der die Bedienung der Anwendung erklärt wird.}
-\end{enumerate}\vspace{-2mm}
-    
-\begin{flushright}
-    --- Kapitel Methodik, Exposé
-\end{flushright}
-\end{tcolorbox}
+Im Exposé~\cite{expose} wurden dabei folgende Funktionen definiert, die in die Anwendung integriert werden müssen.
 
 Aus Kapitel~\ref{sec:entwicklung} geht hervor, dass diese Funktionen in der Arbeit umgesetzt werden konnten. Darüber hinaus wurden zwei weitere Feature-Requests eingearbeitet und 
 die optionale Funktion, die Anwendung auch auf Englisch verfügbar zu machen, konnte umgesetzt werden.
@@ -84,7 +61,7 @@ Die Anwendung bietet Studentinnen und Studenten die Möglichkeit, sich auf inter
 
 
 
-\noindent\textbf{Leistungseffizienz} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht prioritisiert, da die Software in der Lehre eingesetzt werden sollte
+\noindent\textbf{Performance} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht prioritisiert, da die Software in der Lehre eingesetzt werden sollte
 und somit andere Anforderungen wie zum Beispiel die Benutzbarkeit erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Auch die Übertragung eines E-Graphs ins DOT-Format 
 geschieht mit Aufwand. Trotzdem ist die Software in der Lage, Darstellungen flüssig zu rendern und dem Benutzer eine verzögerungsfreie Interaktion mit E-Graphs zu ermöglichen.
 
