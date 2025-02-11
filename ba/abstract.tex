@@ -1,22 +1,21 @@
-% Fassen Sie die Fragestellung, Motivation und Ergebnisse Ihrer Arbeit
-% hier in wenigen Worten zusammen. Die Zusammenfassung sollte den Umfang einer Seite nicht überschreiten.
+In der Lehre können Studentinnen und Studenten Inhalte auf unterschiedliche Weise vermittelt bekommen. Ziel ist dabei das Verstehen und Anwenden des Gelernten zu fördern.
+Eine Möglichkeit der Wissensvermittlung besteht darin, den Lernenden ein Werkzeug zur Verfügung zu stellen, mit dem sie das Gelernte interaktiv anwenden können.
 
+Gegenstand dieser Arbeit ist die Entwicklung einer Software, mit deren Hilfe die Konzepte \textbf{E-Graphs} und \textbf{Equality Saturation} vertieft werden können.
+Dazu wurde zuerst grundlegendes, theoretisches Wissen über die beiden Konzepte erläutert. Anschließend wurde auf Grundlage zweier Ansätze die Datenstruktur \textit{E-Graph}
+sowie das Verfahren \textit{Equality Saturation} in Python implementiert. Darauf aufbauend wurde ein Server konstruiert und eine entsprechende Weboberfläche gestaltet.
 
-% Studentinnen und Studenten können Lehrinhalte auf unterschiedliche Weise vermittelt werden.
-% Ziel dabei ist das Verstehen und Anwenden des Gelernten zu fördern.
-% Eine Möglichkeit der Wissensvermittlung besteht darin, den Studentinnen und Studenten ein
-% Werkzeug an die Hand zu geben, mit dem sie das Gelernte interaktiv anwenden können.
-% Die in dieser Bachelorarbeit entwickelte Anwendung für die Lehre soll genau dieses Ziel erreichen, 
-% indem sie die Interaktion mit \textbf{E-Graphs} und \textbf{Equality Saturation} möglich macht.
+Während der Entwicklung wurden mehrere Probleme identifiziert. Zum einen traten durch die Kombination der zwei Ansätze Kompatibilitätsschwierigkeiten auf, wodurch bei manchen
+Methoden Sonderfälle berücksichtigt werden mussten. Zum anderen wurde festgestellt, dass das eingesetzte DOT-Format, in das E-Graphs für die Visualisierung umgewandelt werden sollten, 
+kaum Kontrolle über die Reihenfolge von Komponenten erlaubt. Somit musste die Vorgehensweise angepasst werden, was in komplexerem Code endete.
 
-% \textbf{E-Graphs} lassen sich für die Optimierung von mathematischen Ausdrücken nutzen.
-% Hierbei wird mit einem initialen Ausdruck gestartet, der durch Anwenden verschiedener 
-% \textit{rewrite rules} in andere Ausdrücke umgeformt werden kann.
-% Diese Ausdrücke lassen sich alle kompakt in einem \textbf{E-Graph} speichern. Aus diesem
-% kann anschließend durch \textbf{Equality Saturation} ein optimaler Ausdruck extrahiert werden.
+Die entstandene Anwendung erlaubt Studentinnen und Studenten die Erzeugung von E-Graphs, das Umformen dieser durch Anwendung von \textit{rewrite rules} und das Durchführen
+des Verfahrens der \textbf{Equality Saturation}. Die dahinter liegenden Mechanismen können währenddessen mithilfe des Debugging-Features Schritt für Schritt beobachtet und verstanden werden.
+Die schlicht gestaltete Benutzeroberfläche und die beigefügte Dokumentation erleichtern den Einstieg in die Software. 
 
-% Im Zuge dieser Arbeit wurde die Datenstruktur \textit{E-Graph} auf Grundlage zweier bereits existierender Implementierungen
-% in \textit{Python} implementiert. Die Interaktion mit diesem regelt eine lokal laufende Website.
-% Mit diesem Werkzeug ist es Studentinnen und Studenten möglich, die Umformung durch Anwenden von \textit{rewrite rules}
-% zu beobachten sowie den Prozess der \textbf{Equality Saturation} selbst durchzuführen.
+Durch die Entwicklung der Software konnte aufgezeigt werden, dass Lernsoftware plattformunabhängig und Open-Source sein sollte, um Lizenzprobleme und Installationshürden zu vermeiden.
+Auch die Verwendung des Browsers zur Interaktion mit Nutzern und die schrittweise Visualisierung von Veränderungen des E-Graphs haben sich bewährt. 
+Zusammenfassend konnte eine Vorgehensweise präsentiert werden, die auch bei anderer Lernsoftware zum Einsatz kommen kann.
 
+Weiterentwicklungen der Software könnten sich auf die Implementierung von \textit{EClass Analysis} und den damit verbundenen Techniken oder auf die Optimierung der Erzeugung von
+Visualisierungen fokussieren. Denkbar wäre auch, dass Anwendern detailiertere Debugging-Informationen zum \textit{E-Matching}-Verfahren zur Verfügung gestellt wird.
