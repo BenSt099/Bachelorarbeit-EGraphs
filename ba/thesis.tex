@@ -116,6 +116,22 @@
     tabsize=2
 }
 
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  keywordstyle=\color{blue-500}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{red-500}\ttfamily,
+  stringstyle=\color{green-500}\ttfamily,
+  sensitive=true
+}
+
+
 \lstset{style=codestyleBA}
 
 \usepackage{tcolorbox}
@@ -128,6 +144,7 @@
 \renewcommand{\listalgorithmname}{Algorithmenverzeichnis}
 
 \usepackage{setspace}
+\usepackage{wrapfig}
 
 \raggedbottom
 

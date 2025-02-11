@@ -175,36 +175,38 @@ class EGraph:
     # ...
 \end{lstlisting} 
 
-Die nächsten sieben Methoden statten den E-Graph mit Basisfunktionalität aus.
+to be continued...
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
-def _add(self, enode):
-    enode = self._canonicalize(enode)
-    # ... 
-    elif enode in self.h.keys():
-        return self.h[enode]
-    # ... 
-    else:
-        self.version += 1
-        eclass_id = self._new_singleton_eclass(enode)
-        for child in enode.arguments:
-            self.m[child].parents.add((enode, eclass_id))
-        self.h[enode] = eclass_id
-        return eclass_id
-\end{lstlisting} 
+% Die nächsten sieben Methoden statten den E-Graph mit Basisfunktionalität aus.
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
-def add_node(self, ast_node):
-    if ast_node is not None:
-        if ast_node.left is not None and ast_node.right is not None:
-            return self._add(ENode(ast_node.key, [self.add_node(ast_node.left), self.add_node(ast_node.right)],))
-        elif ast_node.left is not None:
-            return self._add(ENode(ast_node.key, [self.add_node(ast_node.left)]))
-        elif ast_node.right is not None:
-            return self._add(ENode(ast_node.key, [self.add_node(ast_node.right)]))
-        else:
-            return self._add(ENode(ast_node.key, []))
-\end{lstlisting} 
+% \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
+% def _add(self, enode):
+%     enode = self._canonicalize(enode)
+%     # ... 
+%     elif enode in self.h.keys():
+%         return self.h[enode]
+%     # ... 
+%     else:
+%         self.version += 1
+%         eclass_id = self._new_singleton_eclass(enode)
+%         for child in enode.arguments:
+%             self.m[child].parents.add((enode, eclass_id))
+%         self.h[enode] = eclass_id
+%         return eclass_id
+% \end{lstlisting} 
+
+% \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
+% def add_node(self, ast_node):
+%     if ast_node is not None:
+%         if ast_node.left is not None and ast_node.right is not None:
+%             return self._add(ENode(ast_node.key, [self.add_node(ast_node.left), self.add_node(ast_node.right)],))
+%         elif ast_node.left is not None:
+%             return self._add(ENode(ast_node.key, [self.add_node(ast_node.left)]))
+%         elif ast_node.right is not None:
+%             return self._add(ENode(ast_node.key, [self.add_node(ast_node.right)]))
+%         else:
+%             return self._add(ENode(ast_node.key, []))
+% \end{lstlisting} 
 
 % Bis jetzt hat die Klasse \textit{EGraph} noch keine Funktionalität, um tatsächlich ihre Aufgabe zu erfüllen. Die folgenden zwei Abschnitte 
 % behandeln zwei Quellen, mit deren Hilfe diese Funktionalität erreicht werden konnte.
@@ -226,83 +228,83 @@ def add_node(self, ast_node):
 
 \subsection{Zweite Komponente: Service}
 
+to be continued...
+
 % Für die Interaktion zwischen E-Graphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
 % die Erstellung und Benutzung von E-Graphs regelt.
 
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{EGraphService.py}]
-# ... 
 
-class EGraphService:
-    def __init__(self):
-        self.rrc = 0
-        self.dict_of_rules = {}
-        self.applied_rules = set()
-        self.egraph = None
-        self.expr = None
-        self.egraphs = [[]]
-        self.current_major = 0
-        self.current_minor = 0
+% \begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{EGraphService.py}]
+% # ... 
 
-# ... 
-\end{lstlisting} 
+% class EGraphService:
+%     def __init__(self):
+%         self.rrc = 0
+%         self.dict_of_rules = {}
+%         self.applied_rules = set()
+%         self.egraph = None
+%         self.expr = None
+%         self.egraphs = [[]]
+%         self.current_major = 0
+%         self.current_minor = 0
 
-
-
+% # ... 
+% \end{lstlisting} 
 
 
-\begin{lstlisting}[language=Python, caption=Methoden für das Debugging aus der Datei \textit{EGraphService.py}]
-# ... 
 
-    def move_backward(self):
-        if self.current_minor == 0:
-            if self.current_major == 0:
-                pass
-            else:
-                self.current_major -= 1
-                self.current_minor = len(self.egraphs[self.current_major]) - 1
-        else:
-            self.current_minor -= 1
 
-    def move_forward(self):
-        if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
-            if self.current_major == len(self.egraphs) - 1:
-                pass
-            else:
-                self.current_minor = 0
-                self.current_major += 1
-        else:
-            self.current_minor += 1
 
-    def move_fastbackward(self):
-        if self.current_major != 0:
-            self.current_major -= 1
-            self.current_minor = len(self.egraphs[self.current_major]) - 1
+% \begin{lstlisting}[language=Python, caption=Methoden für das Debugging aus der Datei \textit{EGraphService.py}]
+% # ... 
 
-    def move_fastforward(self):
-        if self.current_major != len(self.egraphs) - 1:
-            self.current_major += 1
-            self.current_minor = len(self.egraphs[self.current_major]) - 1
+%     def move_backward(self):
+%         if self.current_minor == 0:
+%             if self.current_major == 0:
+%                 pass
+%             else:
+%                 self.current_major -= 1
+%                 self.current_minor = len(self.egraphs[self.current_major]) - 1
+%         else:
+%             self.current_minor -= 1
 
-# ... 
-\end{lstlisting} 
+%     def move_forward(self):
+%         if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
+%             if self.current_major == len(self.egraphs) - 1:
+%                 pass
+%             else:
+%                 self.current_minor = 0
+%                 self.current_major += 1
+%         else:
+%             self.current_minor += 1
+
+%     def move_fastbackward(self):
+%         if self.current_major != 0:
+%             self.current_major -= 1
+%             self.current_minor = len(self.egraphs[self.current_major]) - 1
+
+%     def move_fastforward(self):
+%         if self.current_major != len(self.egraphs) - 1:
+%             self.current_major += 1
+%             self.current_minor = len(self.egraphs[self.current_major]) - 1
+
+% # ... 
+% \end{lstlisting} 
 
 
 
 \subsection{Dritte Komponente: Server}
 
-% Die dritte Komponente (Server ) stellt das Backend der Anwendung dar. Sie enthält ei-
-% ne Datei server.py, in der ein mit FastAPI erstellter Webserver Anfragen der Webober-
-% fläche entgegennimmt und zur Umsetzung der Anfragen mit den Service interagiert. Da
-% zwischen dem Server und der Weboberfläche Daten ausgetauscht werden müssen, kom-
-% munizieren sie über das HTTP-Protokoll, während die Daten im JSON-Format übertragen
-% werden.
+Als dritte Komponente ist der Server für die Kommunikation zwischen Service und Weboberfläche zuständig.
+Die Komponente wurde in der Datei \textit{server.py} (Listing~\ref{lst:server}) als Webserver, der das Framework FastAPI nutzt, realisiert. 
+Zu Beginn werden zwei Instanzen initialisiert. Die erste Instanz ist der Webserver (Z.~\ref{serverinit}), die zweite der EGraphService (Z.~\ref{serverservice}).
+Der Webserverinstanz wird die Funktion \textit{lifespan} übergeben, die beim Starten und Herunterfahren des Servers benutzerdefinierte Aktionen ausführen kann.
+In diesem Fall wird der Browser unter der Adresse \url{http://127.0.0.1:8000} geöffnet (Z.~\ref{serveropen}).
 
-Für die Kommunikation zwischen den beiden Komponenten Service und Weboberfläche ist die Komponente Server verantwortlich.
-In der Datei \textit{server.py} (Listing~\ref{lst:server}) ist ein FastAPI-Server implementiert.
-Der Server beginnt mit der Initialisierung einer Instanz in Z.~\ref{serverinit}. Dabei wird die Funktion \textit{lifespan} aufgerufen, die beim Starten und Herunterfahren des
-Servers nutzerdefinierte Aktionen ausführen kann. In diesem Fall wird der Browser mit der Adresse des Servers geöffnet (Z.~\ref{serveropen}).
-Als nächstes wird eine Instanz des EGraphService erzeugt (Z.~\ref{serverservice}).
+Als nächstes werden verschiedene Endpunkte bzw. Pfadoperationen definiert, die durch den Webserver zur Verfügung gestellt werden. Schließlich wird durch den \textit{mount}-Befehl 
+statische Dateien unter dem \textit{static/} Pfad freigegeben (Z.~\ref{serverend}). Die Angabe des Pfades musste angepasst werden, da es sonst zu Problemen mit
+den Tests gekommen wäre (siehe Kapitel~\ref{sec:probleme}).
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Datei \textit{server.py}, label={lst:server}]
 # ... 
@@ -315,28 +317,32 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan) |\label{serverinit}|
 egraphService = EGraphService() |\label{serverservice}|
 
-@app.get("/getrules")
-def get_rules():
-    result, msg, data = egraphService.get_all_rules()
-    return {"response": str(result), "msg": msg, "payload": data}
+# ... 
 
-@app.post("/addrule")
-async def add_rule(request: Request):
+@app.post("/addrule") |\label{serverendpoint}|
+async def add_rule(request: Request): |\label{serverrequestbody}|
     payload = await request.body()
-    json_data = json.loads(payload)
-    result, msg = egraphService.add_rule(json_data["lhs"], json_data["rhs"])
-    return {"response": str(result), "msg": msg}
+    json_data = json.loads(payload) |\label{serverjson}|
+    result, msg = egraphService.add_rule(json_data["lhs"], json_data["rhs"]) |\label{serveraction}|
+    return {"response": str(result), "msg": msg} |\label{serverresponse}|
 
 # ... 
 
-app.mount("/", StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True), name="static")
+app.mount("/", StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True), name="static") |\label{serverend}|
 \end{lstlisting} 
 
+Die Definition eines Endpunktes erfolgt nach einem Muster. Zuerst wird die HTTP-Methode und der Pfad definiert, unter dem der Endpunkt erreicht werden kann (Z.~\ref{serverendpoint}).
+Als zweites folgt der Name der Funktion mit eventuellem \textit{Request-Body} (Z.~\ref{serverrequestbody}).
+Die JSON-Daten aus dem Body werden anschließend in ein Dictionary umgewandelt (Z.~\ref{serverjson}).
+Weiterhin werden die Daten an den Service übergeben, der die Aktion ausführt (Z.~\ref{serveraction}).
+Zum Schluss wird eine Response im JSON-Format zurückgegeben (Z.~\ref{serverresponse}).
+Alle anderen Funktionen werden nach diesem Muster bereitgestellt. Das sorgt für eine klare Trennung, wodurch neue Funktionen ohne große Änderungen hinzugefügt werden können.
 
 \subsection{Vierte Komponente: Weboberfläche}
 
+Die vierte Komponente besteht aus einer Benutzeroberfläche, dem dazugehörigen JavaScript-Code für die Interaktion mit dem Server und einer Dokumentation.
 
-\subsubsection{Benutzeroberfläche}
+\subsubsection{Benutzeroberfläche und JavaScript}
 
 % \afterpage{\clearpage}
 % \begin{sidewaysfigure}[h!]
@@ -348,6 +354,95 @@ app.mount("/", StaticFiles(directory=realpath(f"{realpath(__file__)}/../static")
 % % \end{figure}
 % \end{sidewaysfigure}
 
+Die Benutzeroberfläche~\ref{fig:website} startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation und die About-Seite aufgerufen werden.
+Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment rendert den E-Graph als SVG. Das zweite Element ist für \textit{rewrite rules} zuständig, während das dritte 
+die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
+
+
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-10mm}
+    \begin{center}
+      \includegraphics[scale=0.5]{../fig/rewriterulecontrol.png}
+    \end{center}
+    \caption{Kontrollsegment für \textit{rewrite rules}}
+    \label{fig:segment2}
+\end{wrapfigure}
+
+Das Kontrollsegment in Abbildung~\ref{fig:segment2} besteht aus drei Untersegmenten. Das erste Untersegment lässt Benutzer eine Regel eingeben und abschicken.
+Im zweiten Untersegment können die Regeln, die momentan in der Anwendung abgespeichert sind, in einer Datei gesichert werden. Nach einem Neustart der Anwendung können
+diese durch den \textit{Upload}-Button automatisch hinzugefügt werden.  
+Das dritte Untersegment listet alle Regeln auf. Soll eine oder mehrere Regeln angewendet werden, können diese ausgewählt und durch den Button \textit{Apply} auf den E-Graph angewendet werden.
+Der Button \textit{Saturate} führt eine Saturierung des E-Graphs durch, indem alle Regeln solange auf den E-Graph angewendet werden, bis sich keine Änderungen mehr ergeben.
+
+Beim Drücken des Buttons \textit{Apply} wird die Funktion \textit{applyRewriteRules} ausgeführt (Listing~\ref{lst:apply}).
+Sie übermittelt die ausgewählten Regeln an den Server. Sollte der Kontaktversuch scheitern, wird eine Fehlermeldung in der Statusanzeige erscheinen. Ansonsten wird die 
+Nachricht des Servers eingeblendet.
+\vspace{5mm}
+
+
+\begin{lstlisting}[language=JavaScript, escapechar=|, caption=Funktion \textit{applyRewriteRules()} aus der Datei \textit{index.js}, label={lst:apply}]
+function applyRewriteRules() {
+    let rrNumbers = [];
+    // ...
+    contactServer("/applyrule",
+        JSON.stringify({"payload": rrNumbers}), "POST").then(
+        function (value) {
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']);
+            } else {
+                addMessageToStatusBar("[INFO]", value['msg']);
+            }
+        }, function () {
+            addMessageToStatusBar("[ERROR]",
+                "Failed to contact server.");
+        });
+}
+\end{lstlisting} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Die Hauptfunktionalität wird durch die Funktion \textit{contactServer} bereitgestellt~\ref{lst:js}. Sie kontaktiert den Server und übermittelt, falls vorhanden, Daten im JSON-Format.
+Die Rückgabe erfolgt ebenfalls im JSON-Format (Z.~\ref{js:return}).
+
+\begin{lstlisting}[language=JavaScript, escapechar=|, caption=Auszug aus der Datei \textit{index.js}, label={lst:js}]
+async function contactServer(path, payload, httpMethod) {
+    let request;
+    if (payload == null) {
+        request = new Request("http://127.0.0.1:8000" + path, {
+            method: httpMethod
+        });
+    } else {
+        request = new Request("http://127.0.0.1:8000" + path, {
+            method: httpMethod,
+            body: payload,
+        });
+    }
+    return (await fetch(request)).json(); |\label{js:return}|
+}
+\end{lstlisting} 
+    
+
+% \begin{wrapfigure}{r}{0.5\textwidth}
+%     \begin{center}
+%       \includegraphics[width=0.48\textwidth]{birds}
+%     \end{center}
+%     \caption{Birds}
+% \end{wrapfigure}
+
+
 \newpage
 \begin{figure}[H]
 \centering
@@ -358,15 +453,35 @@ app.mount("/", StaticFiles(directory=realpath(f"{realpath(__file__)}/../static")
 \newpage
 
 
-\subsubsection{JavaScript}
+
+
+% \begin{wrapfigure}{r}{0.4\textwidth}
+%     %\vspace{-10mm}
+%     \begin{center}
+%       \includegraphics[scale=0.5]{../fig/control1.png}
+%     \end{center}
+%     \caption{Kontrollsegment, Teil 1}
+%     \label{fig:segment31}
+% \end{wrapfigure}
+
+% \begin{wrapfigure}{r}{0.4\textwidth}
+%     %\vspace{-10mm}
+%     \begin{center}
+%       \includegraphics[scale=0.5]{../fig/control2.png}
+%     \end{center}
+%     \caption{Kontrollsegment, Teil 2}
+%     \label{fig:segment32}
+% \end{wrapfigure}
+
+
 
 \subsubsection{Dokumentation}
 
+to be continued...
+
+% Die Dokumentation setzt auf das Framework \textit{Docusaurus}~\cite{docusaurus}.
 
 
-
-
-% Die Benutzeroberfläche besteht aus einer Website, die im Browser läuft. Näheres zu dieser Entscheidung kann in Kapitel \ref{sec:entscheidungenundprobleme} nachgelesen werden.
 
 
 
