@@ -2,9 +2,15 @@
 sidebar_position: 1
 ---
 
-# EGraphs Dokumentation
+# E-Graphs Dokumentation
 
-Das Ziel dieser Bachelorarbeit ist es, ein sinnvolles Werkzeug für die Lehre zu erstellen, um Studentinnen und Studenten die Themen E-Graphs und Equality Saturation näherzubringen. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit E-Graphs auseinandersetzen zu können. Die theoretische Ebene soll den Studenten die notwendigen Hintergrundkenntnisse vermitteln sowie einen Einblick in die Implementierung geben. Die praktische Ebene soll Schritt für Schritt aufzeigen, wie der E-Graph aufgebaut wird, und wie an diesem Equality Saturation durchgeführt werden kann. Für größtmöglichen Nutzen soll die Anwendung plattformunabhängig sein und möglichst nur von Open-Source-Software (OSS) Gebrauch machen. Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgangen und zeitgleich die Hürden für Erweiterungen gesenkt.
+Das Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die
+Studentinnen und Studenten Wissen zu den Themen E-Graphs und Equality Saturation vermittelt. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als
+auch praktischer Ebene mit den Themen auseinander setzen zu können. Die Grundlage der theoretischen Ebene bildet diese Arbeit, in der notwendige Hintergrundkenntnisse
+erarbeitet werden. Außerdem wird ein Einblick in die Implementierung gegeben. Die praktische Ebene besteht aus der Anwendung, mit deren Hilfe Schritt für Schritt aufgezeigt
+wird, wie E-Graphs und Equality Saturation funktionieren. Für größtmöglichen Nutzen soll
+die Anwendung zudem plattformunabhängig sein und möglichst nur von Open-Source-Software (OSS) Gebrauch machen. Damit wird das Problem der 
+unterschiedlichen Betriebssysteme der Studenten umgangen und zeitgleich die Hürden für Erweiterungen gesenkt.
 
 - [Installation der Anwendung](/docs/installation/)
 - [Benutzung der Anwendung](/docs/benutzung/)

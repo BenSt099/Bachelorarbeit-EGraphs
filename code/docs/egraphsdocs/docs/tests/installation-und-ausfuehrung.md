@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Tests ausführen
 
-Für die Komponenten der Anwendung wurden Tests geschrieben, um deren Qualitätzu garantieren. Diese Tests befinden sich im Ordner `tests`.
+Für die Komponenten der Anwendung wurden Tests geschrieben, um deren Qualität zu garantieren. Diese Tests befinden sich im Ordner `tests`.
 
 ## Installation der Dependencies
 
@@ -27,7 +27,7 @@ pip install httpx==0.27.2
 
 ## Ausführung
 
-Öffnen Sie ein Terminal im Ordner `EGraphs` und führen Sie folgenden Befehl aus:
+Öffnen Sie ein Terminal im Ordner `code` und führen Sie folgenden Befehl aus:
 
 ```bash
 pytest

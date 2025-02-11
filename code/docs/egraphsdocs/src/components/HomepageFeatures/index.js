@@ -8,17 +8,17 @@ const FeatureList = [
     Svg: require('@site/static/img/arrow-down-circle.svg').default,
     description: (
       <>
-       Learn how to install the required dependencies and how to start the software.
+       Lernen Sie, die nötigen Dependencies zu installieren und die Software zu starten. 
       </>
     ),
   },
   {
-    title: 'Usage',
+    title: 'Benutzung',
     Svg: require('@site/static/img/alphabet.svg').default,
     description: (
       <>
-        This documentation explains everything you need to know about managing the software, creating EGraphs and Rewrite Rules,
-        manipulating EGraphs and go through the Equality Saturation process step for step.
+        Hier erfahren Sie alles was Sie für die Bedienung der Anwendung wissen müssen. Sie werden in der Lage sein, 
+        E-Graphs zu erstellen, Rewrite Rules anzuwenden und Equality Saturation durchzuführen.
       </>
     ),
   },
@@ -27,7 +27,7 @@ const FeatureList = [
     Svg: require('@site/static/img/bookmark-check.svg').default,
     description: (
       <>
-        This software is covered by Unit-Tests. Learn how to run them.
+        Die Software ist durch Unit-Tests abgedeckt. Die Dokumentation erklärt Ihnen wie sie auszuführen sind.
       </>
     ),
   },

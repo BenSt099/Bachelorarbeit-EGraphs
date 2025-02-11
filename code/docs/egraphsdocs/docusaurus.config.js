@@ -10,8 +10,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'EGraphs Docs',
-  tagline: 'Documentation for EGraphs Software',
+  title: 'E-Graphs Docs',
+  tagline: 'Dokumentation für die E-Graphs Software',
   favicon: 'img/logo.png',
 
   // Set the production url of your site here
@@ -31,7 +31,7 @@ const config = {
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
-  i18n: {
+  /*i18n: {
     defaultLocale: 'de',
     locales: ['en', 'de'],
     path: 'i18n',
@@ -41,6 +41,11 @@ const config = {
         path: 'en'
       }
     }
+  },*/
+
+  i18n: {
+    defaultLocale: 'de',
+    locales: ['de'],
   },
 
   presets: [
@@ -82,9 +87,9 @@ const config = {
     ({
       // Replace with your project's social card
       navbar: {
-        title: 'EGraphs Docs',
+        title: 'E-Graphs Docs',
         logo: {
-          alt: 'EGraphs Docs Logo',
+          alt: 'E-Graphs Docs Logo',
           src: 'img/logo.png',
         },
         items: [
@@ -96,7 +101,7 @@ const config = {
             to: '/documentation/docs/intro',
           },*/
           {to: '/documentation/docs/intro', label: 'Dokumentation', position: 'left'},
-          {type: 'localeDropdown'},
+          //{type: 'localeDropdown'},
           {
             href: 'https://github.com/BenSt099/Bachelorarbeit-EGraphs',
             label: 'GitHub',
@@ -143,7 +148,7 @@ const config = {
             ],
           },*/
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} EGraphs. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} E-Graphs. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
