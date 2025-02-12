@@ -17,6 +17,68 @@
   url       = {https://doi.org/10.1007/978-3-642-56792-6_6}
 }
 
+@article{eqsatexploration,
+  author     = {Pal, Anjali and Saiki, Brett and Tjoa, Ryan and Richey, Cynthia and Zhu, Amy and Flatt, Oliver and Willsey, Max and Tatlock, Zachary and Nandi, Chandrakana},
+  title      = {Equality Saturation Theory Exploration \`{a} la Carte},
+  year       = {2023},
+  issue_date = {October 2023},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {7},
+  number     = {OOPSLA2},
+  url        = {https://doi.org/10.1145/3622834},
+  doi        = {10.1145/3622834},
+  abstract   = {Rewrite rules are critical in equality saturation, an increasingly popular technique
+                in optimizing compilers, synthesizers, and verifiers. Unfortunately,
+                developing high-quality rulesets is difficult and error-prone. Recent
+                work on automatically inferring rewrite rules does not scale to large
+                terms or grammars, and existing rule inference tools are monolithic and
+                opaque. Equality saturation users therefore struggle to guide inference and
+                incrementally construct rulesets. As a result, most users still
+                manually develop and maintain rulesets.
+                
+                This paper proposes Enumo, a new domain-specific language for
+                programmable theory exploration. Enumo provides a small set of core
+                operators that enable users to strategically guide rule inference and
+                incrementally build rulesets. Short Enumo programs easily replicate
+                results from state-of-the-art tools, but Enumo programs can also scale
+                to infer deeper rules from larger grammars than prior approaches. Its
+                composable operators even facilitate developing new strategies for
+                ruleset inference. We introduce a new fast-forwarding strategy that does not require
+                evaluating terms in the target language, and can thus support domains
+                that were out of scope for prior work.
+                
+                We evaluate Enumo and fast-forwarding across a variety of domains. Compared to
+                state-of-the-art techniques, enumo can synthesize better rulesets over a
+                diverse set of domains, in some cases matching the effects of
+                manually-developed rulesets in systems driven by equality saturation.},
+  journal    = {Proc. ACM Program. Lang.},
+  month      = oct,
+  articleno  = {258},
+  numpages   = {29},
+  keywords   = {Rewrite rules, equality saturation, program synthesis}
+}
+
+@misc{yang2021,
+  title         = {Equality Saturation for Tensor Graph Superoptimization},
+  author        = {Yichen Yang and Phitchaya Mangpo Phothilimtha and Yisu Remy Wang and Max Willsey and Sudip Roy and Jacques Pienaar},
+  year          = {2021},
+  eprint        = {2101.01332},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2101.01332}
+}
+
+@misc{wang2020,
+  title         = {SPORES: Sum-Product Optimization via Relational Equality Saturation for Large Scale Linear Algebra},
+  author        = {Yisu Remy Wang and Shana Hutchison and Jonathan Leang and Bill Howe and Dan Suciu},
+  year          = {2020},
+  eprint        = {2002.07951},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.DB},
+  url           = {https://arxiv.org/abs/2002.07951}
+}
+
 @article{2021-egg,
   author     = {Willsey, Max and Nandi, Chandrakana and Wang, Yisu Remy and Flatt, Oliver and Tatlock, Zachary and Panchekha, Pavel},
   title      = {egg: Fast and Extensible Equality Saturation},
@@ -34,25 +96,6 @@
   articleno  = {23},
   numpages   = {29},
   keywords   = {equality saturation, e-graphs}
-}
-
-@article{2023-egglog,
-  author     = {Zhang, Yihong and Wang, Yisu Remy and Flatt, Oliver and Cao, David and Zucker, Philip and Rosenthal, Eli and Tatlock, Zachary and Willsey, Max},
-  title      = {Better Together: Unifying Datalog and Equality Saturation},
-  year       = {2023},
-  issue_date = {June 2023},
-  publisher  = {Association for Computing Machinery},
-  address    = {New York, NY, USA},
-  volume     = {7},
-  number     = {PLDI},
-  url        = {https://doi.org/10.1145/3591239},
-  doi        = {10.1145/3591239},
-  abstract   = {We present egglog, a fixpoint reasoning system that unifies Datalog and equality saturation (EqSat). Like Datalog, egglog supports efficient incremental execution, cooperating analyses, and lattice-based reasoning. Like EqSat, egglog supports term rewriting, efficient congruence closure, and extraction of optimized terms. We identify two recent applications -- a unification-based pointer analysis in Datalog and an EqSat-based floating-point term rewriter -- that have been hampered by features missing from Datalog but found in EqSat or vice-versa. We evaluate our system by reimplementing those projects in egglog. The resulting systems in egglog are faster, simpler, and fix bugs found in the original systems.},
-  journal    = {Proc. ACM Program. Lang.},
-  month      = {jun},
-  articleno  = {125},
-  numpages   = {25},
-  keywords   = {Datalog, Program optimization, Rewrite systems, Equality saturation}
 }
 
 @inproceedings{phaseorder-2009,

@@ -1,20 +1,27 @@
 \section{Einleitung}\label{sec:einleitung}
 
+In den folgenden Abschnitten wird das Thema der Arbeit motiviert sowie ihr Ziel definiert.
+Danach wird auf verwandte Arbeiten eingegangen.
+Abschließend wird im letzten Abschnitt der Aufbau der Arbeit geschildert.
+
 \subsection{Motivation}
 
 \noindent In der Informatik nimmt das Optimieren von Ausdrücken eine wichtige Rolle ein. 
 Ausdrücke können in Form von mathematischen Termen vorkommen oder als Programmcode auftreten.
-Häufig ist der Compiler für diese Aufgabe zuständig, da manche Optimierungen nicht durch den Programmierer vorgenommen werden können. 
+Häufig ist der Compiler für diese Optimierung zuständig, da manche Optimierungen nicht durch den Programmierer vorgenommen werden können. 
 Der Compiler kann verschiedene Techniken anwenden, zum Beispiel Teile des Zwischencodes (engl. \textit{Intermediate Representation}) durch effizientere zu ersetzen.
-Findet diese Ersetzung sequentiell statt, tritt das sogenannte \textit{Phase Ordering Problem} auf. Dabei endet die Kette an Optimierungen in einem lokalen Optimum~\cite{phaseorder-2009}.
+Findet diese Ersetzung sequentiell statt, tritt das sogenannte \textit{Phase Ordering Problem} auf. 
+Dabei werden Ersetzungen basierend auf dem momentan optimalsten Ergebnis vorgenommen, ohne zukünftige Verbesserungen miteinzubeziehen.
+Die Kette an Optimierungen endet entsprechend in einem lokalen Optimum~\cite{phaseorder-2009}.
 Neben Backtracking- und Brute-Force-Methoden sind \textit{E-Graphs} eine Möglichkeit, dieses Problem zu umgehen. 
 
 \noindent Die Abkürzung \textit{E-Graph} steht für \textit{Equality-} oder \textit{Equivalence-Graph} und beschreibt eine Datenstruktur, die es
 erlaubt, äquivalente Ausdrücke kompakt abzuspeichern.
-Ursprünglich wurden sie in der automatisierten Beweisführung eingesetzt~\cite{2021-egg}. Heute findet sie, auch dank \textit{Equality Saturation}, Anwendung in Compilern.
-Als Beispiel dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, das \textit{E-Graphs} für die Optimierung verwendet.
+Ursprünglich wurden sie in der automatisierten Beweisführung eingesetzt~\cite{2021-egg}. Heute finden sie, auch dank \textit{Equality Saturation}, Anwendung in Compilern, in 
+Deep Learning Verfahren~\cite{yang2021} und in Linearer Algebra~\cite{wang2020}.
+Als Beispiel aus dem Compilerbau dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, das \textit{E-Graphs} für die Optimierung verwendet.
 
-\noindent \textit{E-Graphs} und \textit{Equality Saturation} sind nicht-triviale Konzepte, die indessen an Wichtigkeit zunehmen. 
+\noindent \textit{E-Graphs} und \textit{Equality Saturation} sind nicht-triviale Konzepte, die in den letzte Jahren wieder an Wichtigkeit zugenommen haben~\cite[S.~2]{eqsatexploration}.
 Das schrittweise Heranführen von Studentinnen und Studenten an diese Themen erfordert eine Methode, die interaktiv funktioniert, da das Anwenden des Gelernten 
 das Erlernen von Konzepten erleichtert. Damit soll sich diese Bachelorarbeit beschäftigen. 
 
@@ -45,18 +52,21 @@ Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgan
 
 \subsection{Verwandte Arbeiten}\label{sub:verwandtearbeiten}
 
+Die folgenden Arbeiten haben sich bereits mit den Themen E-Graphs und Equality Saturation beschäftigt und bieten die Grundlage dieser Arbeit.
+
 \noindent\textbf{egg} Das Akronym \textit{egg} bildet sich aus den Wörtern \textit{e-graphs good} und ist eine in der Programmiersprache \textit{Rust} geschriebene Bibliothek.
 Die Bibliothek implementiert die Datenstruktur \textit{E-Graph} und stellt Funktionen zur Manipulation dieser zur Verfügung.
 Neben der Erzeugung von \textit{E-Graphs} kann auch \textit{Equality Saturation} auf diesen ausgeführt werden.
-Das gesamte Projekt wurde in einem Paper vorgestellt, auf das sich diese Arbeit teilweise stützt~\cite{2021-egg}.
+Da \textit{egg} keine Möglichkeit zur schrittweisen Ausführung von Befehlen bietet, wurde auf eine eigene Implementierung gesetzt. Die Implementierung stützt sich dabei auf ein Paper~\cite{2021-egg}, in dem 
+das Projekt und insbesondere auch der Pseudocode vorgestellt werden.
 
-\noindent\textbf{egglog} Das weiterführende System \textit{egglog} basiert auf \textit{egg} und \textit{Datalog}. 
-\textit{Datalog} ist eine \glqq [...] rekursive Abfragesprache für Datenbanken [...] \grqq~\cite{2023-egglog}.
-Es gibt eine Webdemo, mit der das System ausprobiert werden kann~\footnote{\hspace{1.5mm}\url{https://egraphs-good.github.io/egglog/}}.
-Auch dieses Projekt wurde in einem Paper vorgestellt~\cite{2023-egglog}.
-
+\noindent\textbf{Intro to EGraphs} In diesem Google Colab Notebook~\cite{devito} wurde ein Prototyp basierend auf dem Paper zu \textit{egg} erstellt.
+Das Notebook stammt von Zachary Devito und zeigt auch die Implementierung von Methoden, zu denen es im Paper zu \textit{egg} keine weiteren Informationen gibt. 
+Daher wurde einige der Methoden in dieser Arbeit übernommen.
 
 \subsection{Aufbau der Arbeit}
+
+In diesem Kapitel wurde ein Blick auf die Motivation der Arbeit, ihr Ziel und themenverwandte Arbeiten geworfen. Die restlichen Kapitel sind wie folgt aufgebaut.
 
 \noindent {\itshape Kapitel \ref{sec:grundlagen} - Grundlagen}\vspace{-2mm}
 
@@ -84,15 +94,10 @@ In Kapitel fünf wird ein detailierter Einblick in die Vorgehensweise während d
 
 \vspace{6mm}
 
-\noindent {\itshape Kapitel \ref{sec:probleme} - Komplikationen während der Entwicklung}\vspace{-2mm}
-
-Im sechsten Kapitel werden Probleme thematisiert, zu denen es während dieser Arbeit kam. Die Ursachen der Probleme werden dabei untersucht und mögliche Lösungsansätze präsentiert. 
-
-\vspace{6mm}
-
 \noindent {\itshape Kapitel \ref{sec:reflexion} - Reflexion der Arbeit}\vspace{-2mm}
 
-Gegenstand des siebten Kapitels ist eine kritische Reflexion der Arbeit. Hierzu wird analysiert, inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren dies gemessen werden kann.
+Gegenstand des sechsten Kapitels ist eine kritische Reflexion der Arbeit. Hierzu wird analysiert, welche Komplikationen während der Arbeit auftraten,
+inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren dies gemessen werden kann.
 
 \vspace{6mm}
 

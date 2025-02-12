@@ -186,15 +186,14 @@ Einer \textit{E-Node} werden als Argumente \textit{E-Classes} übergeben. In Bei
 
 \subsubsection{Implementierung von E-Graphs}
 
-Es gibt verschiedene Ansätze für die Implementierung von \textit{E-Graphs}. Der Ansatz, auf dem diese Arbeit beruht, ist eine Zusammenstellung zweier Ansätze.
-Der erste stammt aus dem Paper~\cite{2021-egg}, in dem auch \textit{egg} vorgestellt wurde (siehe verwandte Arbeiten~\ref{sub:verwandtearbeiten}). Der zweite 
-ist einen Google Colab Notebook entnommen~\cite{devito}.
+Es gibt verschiedene Ansätze für die Implementierung von \textit{E-Graphs}. Der Ansatz, auf dem diese Arbeit beruht, ist eine Kombination aus zwei Quellen 
+(siehe verwandte Arbeiten~\ref{sub:verwandtearbeiten}).
 Ein \textbf{E-Graph} wird nach~\cite{2021-egg} als Tuple $(\mathbf{U}, \mathbf{M}, \mathbf{H})$ mit folgenden Eigenschaften definiert:
 
 \begin{itemize}
   \item $\mathbf{U}$ Eine Union-Find-Datenstruktur, die eine Äquivalenzrelation über IDs abspeichert.
   \item $\mathbf{M}$ Eine (Hash)-map, die IDs von E-Classes auf E-Classes abbildet. 
-  \item $\mathbf{H}$ Eine (Hashcons)-map, die E-Nodes auf IDs von E-Classes abbildet.
+  \item $\mathbf{H}$ Eine (Hash)-map, die E-Nodes auf IDs von E-Classes abbildet.
 \end{itemize}
 
 Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde also wie folgt aussehen:

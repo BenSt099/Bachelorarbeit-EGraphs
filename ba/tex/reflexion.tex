@@ -1,31 +1,92 @@
 \section{Reflexion der Arbeit}\label{sec:reflexion}
 
 Im vorliegenden Kapitel wird eine kritische Reflexion der Arbeit vorgenommen. 
-Der Fokus der Untersuchung liegt dabei auf der Arbeit an sich und auf der Anwendung.
-Dementsprechend beschäftigt sich der erste Abschnitt mit der Frage, inwiefern das Ziel der Bachelorarbeit erreicht wurde.
-Der zweite Abschnitt thematisiert die Qualität der entwickelten Software.
+Der Fokus der Untersuchung liegt dabei auf der Arbeit als solche und auf der Software.
+Dementsprechend werden im ersten Abschnitt Komplikationen während der Entwicklungsphase thematisiert sowie mögliche Lösungsansätze beschrieben.
+Im zweiten Abschnitt wird auf die Frage eingegangen, inwiefern das Ziel der Bachelorarbeit erreicht wurde.
+Eine Analyse der Softwarequalität wird im dritten Abschnitt durchgeführt.
+
+\subsection{Komplikationen während der Entwicklung}\label{sec:probleme}
+
+In diesem Abschnitt werden einige der Probleme, die während der Entwicklung auftraten, diskutiert und deren Ursachen sowie Lösungsansätze beleuchtet.
+
+\noindent\textbf{Kombination zweier Implementierungen} Wie in Kapitel~\ref{sec:grundlagen} erläutert, basiert die vorliegende Implementierung
+auf der Kombination zweier bestehender Ansätze. Für diese Entscheidung gab es mehrere Gründe.
+Einerseits basieren viele Implementierungen, darunter auch \textit{egg}, auf der Standarddefintion von \textit{E-Graphs} wie sie auch in Kapitel~\ref{sec:grundlagen} vorliegt.
+Das Google Colab Notebook, das als zweite Quelle dient, setzt aber bereits auf eine modifzierte Variante, was eventuell zu Verwirrung unter den Studentinnen und Studenten
+führen würde. Daher wurde die Implementierung von \textit{egg} der zweiten Quelle vorgezogen.
+
+Andererseits beschreibt das Paper, das die Hintergründe zu \textit{egg} beschreibt~\cite{2021-egg}, nicht genau, wie \textit{E-Matching} und \textit{Extraction} funktionieren.  
+Diese beiden Konzepte konnte allerdings das Notebook zur Verfügung stellen. Somit komplementieren sich die beiden Ansätze.
+Aus der Kombination resultierten jedoch auch einige Probleme. Neben der \textit{Darstellung der Datenstruktur} (siehe unten) mussten mehrere Sonderfälle in der \textit{add}-Methode
+berücksichtigt werden, sodass die Methode insgesamt länger wurde als in den beiden Ansätzen vorgesehen.
+
+\noindent\textbf{Darstellung der Datenstruktur} Nur eine der zwei Implementierungen, auf denen diese Arbeit fußt, verfügt über eine Methode zur Visualisierung der Datenstruktur.
+Die Methode ist kurz und effizient programmiert. Die Darstellung hingegen weist einige Schwächen auf, besonders im Hinblick auf Verständlichkeit und Klarheit.
+Diese beiden Aspekte sind jedoch für eine Anwendung, die von unerfahrenen oder fachfremden bedient werden soll, essenziell.
+Außerdem wurde die Methode durch die Kombination der beiden Implementierungen unbrauchbar.
+Dementsprechend wurde eine eigene Methode \textit{egraph\_to\_dot()} in der Datei \textit{EGraph.py} angefertigt.
+
+Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der \textit{E-Classes} im \textit{Dot}-Format zu kontrollieren.
+Damit kann es zu einer falschen Darstellung kommen, da eventuell die Pfeile einer \textit{E-Node} verkehrt herum auf die Klassen zeigen.
+Zusätzlich musste, aufgrund des Debugging-Features, Code eingefügt werden, der es ermöglicht, \textit{E-Classes} einzufärben.
+Diese Anforderungen und Sonderfälle resultierten schließlich in einer Methode mit recht kompliziertem Code, der 106 Zeilen lang ist.
+
+Daher wurde bei dieser Methode der \textit{PEP 8} Style Guide~\cite{pep} vernachlässigt sowie die Formatierung durch das Werkzeug \textit{Black}~\cite{black} unterlassen.
+Das Testen dieser Methode gestaltete sich ebenfalls schwierig, da der Output ein String im \textit{Dot}-Format ist. Entsprechend bedarf das Testen der Methode
+einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisierungen durch einen Menschen.
+
+\noindent\textbf{Spezialfall: Kreis im E-Graph} Ein E-Graph muss kein \textbf{Directed Acyclic Graph} (DAG) sein, d.h. er kann unter Umständen auch Kreise enthalten. 
+Dementsprechend kann ein E-Graph auch unendlich viele äquivalente Ausdrücke repräsentieren.
+Als Beispiel sei der E-Graph gegeben, der nur den Ausdruck $a$ enthält. Wendet man die Regel $x \Leftrightarrow x * 1$ auf diesen an, entsteht ein Kreis im E-Graph.
+Wendet man die Regel erneut an, tritt ein Fehler in der Darstellung auf. Dabei werden zwei Pfeile, die beide auf die gleiche E-Class zeigen, nicht von der linken Kante und der rechten
+Kante der E-Node aus gezeichnet, sondern beide starten auf der linken Seite. Es handelt sich hierbei um einen Sonderfall, der nur in dieser Situation auftritt und nicht zu einem 
+Missverständnis des Themas beiträgt. Der Fehler lässt sich durch die Korrektur der entsprechenden Methode beseitigen.
+
+\noindent\textbf{Pfadangabe im Server} Während dem Testen des Servers hat sich herausgestellt, dass die Pfadangabe zu den statischen Dateien unter Testbedingungen fehlschlägt.
+Dementsprechend muss der Pfad erst berechnet werden, und kann nicht durch die Angabe \textit{static/} erreicht werden. Die Lösung stammt aus einem Issue auf 
+\textit{GitHub}~\footnote{\hspace{1.5mm}\url{https://github.com/fastapi/fastapi/issues/3550}}.
 
 \subsection{Ziel der Bachelorarbeit}\label{sub:ziel}
 
-Das Ziel wurde in der Einleitung bereits definiert. Dort heißt es: 
-\glqq Das Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die Studentinnen und Studenten Wissen zu den Themen \textit{E-Graphs} und \textit{Equality Saturation}
-vermittelt. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit den Themen auseinander setzen zu können.
-Die Grundlage der theoretischen Ebene bildet diese Arbeit, in der notwendige Hintergrundkenntnisse erarbeitet werden. Außerdem wird ein Einblick in die Implementierung gegeben. 
-Die praktische Ebene besteht aus der Anwendung, mit deren Hilfe Schritt für Schritt aufgezeigt wird, wie \textit{E-Graphs} und \textit{Equality Saturation} funktionieren.
-Für grö{\ss}tmöglichen Nutzen soll die Anwendung zudem plattformunabhängig sein und möglichst nur von \textit{Open-Source-Software} (OSS) Gebrauch machen [\ldots]\grqq 
-(Kapitel~\ref{sec:einleitung}, Ziel der Arbeit).
-
-Die Entwicklung einer Lernanwendung wurde in dieser Arbeit durchgeführt. Damit können sich Studentinnen und Studenten auf praktische Weise mit den Themen 
+Das Ziel wurde in der Einleitung bereits definiert (Kapitel~\ref{sec:einleitung}, Ziel der Arbeit).
+Wie dort gefordert, wurde die Entwicklung einer Lernanwendung in dieser Arbeit durchgeführt. Damit können sich Studentinnen und Studenten auf praktische Weise mit den Themen 
 \textbf{E-Graphs} und \textbf{Equality Saturation} auseinander setzen. Kapitel~\ref{sec:grundlagen} dieser Arbeit kann genutzt werden, um sich mit den
 theoretischen Grundlagen vertraut zu machen. 
 Wie in Kapitel~\ref{sec:entscheidungen} bereits festgestellt wurde, macht die Anwendung nur von \textit{Open-Source-Software} Gebrauch. Außerdem ist
-sie plattformunabhängig (siehe~\ref{softwarequalität}).
-Als zusätzliches, objektives Maß für die Vollständigkeit kann das Exposé herangezogen werden.
-Im Exposé~\cite{expose} wurden dabei folgende Funktionen definiert, die in die Anwendung integriert werden müssen.
+sie plattformunabhängig (siehe Abschnitt~\ref{softwarequalität}).
 
-Aus Kapitel~\ref{sec:entwicklung} geht hervor, dass diese Funktionen in der Arbeit umgesetzt werden konnten. Darüber hinaus wurden zwei weitere Feature-Requests eingearbeitet und 
-die optionale Funktion, die Anwendung auch auf Englisch verfügbar zu machen, konnte umgesetzt werden.
-Somit kann abschließend resümiert werden, dass das Ziel der Bachelorarbeit erreicht wurde.
+Als zusätzliches, objektives Maß für die Vollständigkeit kann das Exposé herangezogen werden.
+Im Exposé~\cite{expose} wurden dabei neun Funktionen definiert, die in der Anwendung vorhanden sein müssen.
+
+Die erste Funktion fordert eine Benutzeroberfläche im Browser. Diese Benutzeroberfläche wurde mit \textit{Bootstrap} gestaltet und läuft durch \textit{FastAPI} als lokale Website 
+im Browser. Die zweite Funktion definiert die Erzeugung eines E-Graphs und die Visualisierung von diesem als SVG in der Benutzeroberfläche. Mit der Anwendung kann ein E-Graph erstellt
+werden, der durch eine Methode ins DOT-Format umgewandelt wird und anschließend durch die Einbindung von JavaScript-Bibliotheken (siehe Kapitel~\ref{sec:entscheidungen}) als SVG in der Benutzeroberfläche dargestellt werden kann.
+Durch die dritte Funktion soll es möglich sein, rewrite rules zu erstellen und diese unabhängig voneinander auf den E-Graph anwenden zu können.  
+Mit der Benutzeroberfläche ist das Erzeugen von rewrite rules möglich. Dabei erlaubt der Einsatz von Checkboxen eine individuelle Auswahl der Regeln, die somit unabhängig
+voneiander auf den E-Graph angewendet werden können.
+
+Daran anschließend fordert die vierte Funktion das Vorhandensein von einigen vordefinierten Regeln, die dem Benutzer als Beispiel dienen sollen.
+Diese Funktion wurde in der entsprechenden Methode im Server eingebaut (vgl. Code in \textit{server.py}).
+Die fünfte Funktion beschreibt die Möglichkeit, dem Benutzer eine Historie des E-Graphs anzeigen zu können, sodass Modifikationen am E-Graph erneut durchgeführt werden können.
+Mithilfe des Debugging-Features (siehe Kapitel~\ref{sec:entwicklung}) können die am Graph durchgeführten Veränderungen detailiert nachvollzogen werden.
+Durch die sechste Funktion soll es möglich sein, einen optimalen Term aus dem E-Graph zu extrahieren. Durch das Übernehmen der entsprechende Extract-Methode aus~\cite{devito}, 
+is die Anwendung dazu in der Lage.
+
+Die nächste Funktion fordert den Export des E-Graphs in ein gängiges Format. Durch Einbinden von \textit{Graphviz} kann der Benutzer den E-Graph in drei Dateiformate (SVG, PDF, PNG) exportieren.
+Die achte Funktion soll es dem Benutzer erlauben, seine Eingaben während der Sitzung in einer Datei zu speichern, um später am selben Punkt weiter machen zu können.
+Die Anwendung stellt daher eine Up- und Download-Funktion zur Verfügung, die Sitzungen in einer Datei abspeichert und das spätere Hochladen erlaubt.
+Durch die letzte Funktion soll der Benutzer die Möglichkeit haben, über die Benutzeroberfläche auf die Dokumentation zugreifen zu können. Die Dokumentation wurde mit \textit{docusaurus}
+umgesetzt und die Benutzeroberfläche integriert (siehe Kapitel~\ref{sec:entwicklung}).
+
+Darüber hinaus wurden zwei weitere Feature-Requests eingearbeitet. 
+Beim ersten ging es um die Vereinfachung der Erstellung von rewrite rules. Hierzu wurde eine Upload- und Download-Funktion in die Anwendung integriert, wodurch
+Regeln in einer separaten Datei gespeichert und später wieder hochgeladen werden können, ohne dass sie erneut händisch eingegeben werden müssen.
+Der zweite Feature-Request betraf das Anwenden der Regeln auf den E-Graph. Hierzu wurde eine Saturate-Funktion hinzugefügt, die solange alle zur Verfügung stehenden
+Regeln auf den E-Graph anwendet, bis dieser saturiert ist.
+
+Somit kann abschließend resümiert werden, dass die im Exposé festgehaltenen Funktion umgesetzt und die Feature-Requests der Anwendung hinzugefügt wurden.
+Damit ist das Ziel der Bachelorarbeit erreicht worden.
 
 \subsection{Qualität der Software}\label{softwarequalität}
 
@@ -42,7 +103,7 @@ Somit kann auf eine Plattformunabhängigkeit der Anwendung geschlossen werden.
 
 \noindent\textbf{Wartbarkeit} Die Architektur der Anwendung folgt einem logischen Aufbau mit klar definierten Abhängigkeiten, was das Hinzufügen neuer Funktionen erlaubt.
 Der Code wurde mit \textit{Black}~\cite{black} formatiert und richtet sich nach \textit{PEP 8}~\cite{pep}. Jede Funktion oder Methode, die in Python oder JavaScript geschrieben wurde, 
-ist mit einem Kommentar versehen, der Parameter, Rückgabewerte und Zweck erläutert. Weiterhin ist die Anwendung mit X Unit-Tests und zahlreichen händischen Simulationen abgedeckt, die eine breites Spektrum an 
+ist mit einem Kommentar versehen, der Parameter, Rückgabewerte und Zweck erläutert. Weiterhin ist die Anwendung mit 100 Unit-Tests und zahlreichen händischen Simulationen abgedeckt, die eine breites Spektrum an 
 möglichen Eingaben und Zuständen simulieren.
 
 \noindent\textbf{Sicherheit} Für das Ausführen der Anwendung werden keine erweiterten Berechtigungen des Nutzers eingefordert. Bei der Verwendung der Software werden keine persönlichen Daten gespeichert 
@@ -50,8 +111,8 @@ oder weitergegeben und die Kommunikation findet ausschließlich im lokalen Netzw
 Zusätzlich wurde der gesamte Code der Anwendung auf \textit{GitHub} veröffentlicht, wodurch eine unabhängige Prüfung auf Sicherheitslücken und mögliche, illegale Aktivitäten der Software vorgenommen werden kann.
 
 \noindent\textbf{Zuverlässigkeit} Die Anwendung basiert auf einem publizierten Paper~\cite{2021-egg}, indem auch die Vorgehensweise für die Bibliothek \textit{egg} erklärt wird.
-Aufgrund der Tatsache, dass E-Graphs basierend auf dem Paper implementiert wurden, lässt sich mit Gewissheit sagen, dass zumindest in den grundlegenden Funktionen kein logischer Fehler sein kann.
-
+Die Tatsache, dass E-Graphs basierend auf dem Paper implementiert wurden, lässt einen logischen Fehler in der Software höchst unwahrscheinlich wirken.
+Die erstellten Unit-Tests geben weitere Gewissheit über die praktische Umsetzung.
 
 
 \noindent\textbf{Funktionale Eignung} In Abschnitt~\ref{sub:ziel} wurde bereits dargelegt, dass die im Exposé festgehaltenen Anforderungen an die Software erreicht worden sind.

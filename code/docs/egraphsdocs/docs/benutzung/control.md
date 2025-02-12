@@ -12,7 +12,15 @@ Der kleine schwarze Pfeil rechts oben minimiert dieses Segment.
 
 ### Create
 
+Geben Sie im Eingabefeld einen Term ein, der den Syntax-Regeln entspricht (siehe [rewrite rules](/docs/benutzung/rewriterules/)) und drücken Sie anschließend auf
+den Button **Create**. Ein neuer E-Graph wird erstellt.
+
+**Bemerkung**: Falls sich vorher bereits einen E-Graph erzeugt haben, wird das Programm Sie fragen, ob Sie diesen und alle anderen Daten löschen möchten. 
+
 ### Debug
+
+Dieses Feature ermöglicht es Ihnen, 
+
 
 ### Extract
 
