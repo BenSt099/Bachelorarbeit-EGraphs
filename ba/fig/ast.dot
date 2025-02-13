@@ -1,16 +1,16 @@
 digraph {
     graph [nodesep=0.5, ranksep=0.5]
-    node [fillcolor=white fontname="Times-Bold" fontsize=20 shape=rect]
-    div [label="/"]
-    mul [label="*"]
-    a [label="a"]
-    two1 [label="2"]
-    two2 [label="2"]
+    node [fillcolor=white fontname="Times-Bold" fontsize=20 shape=record, style="rounded, filled"]
+    div [label="<div1> | \/ | <div2>"]
+    mul [label="<mul1> | * | <mul2>"]
+    a [label="<a1> | a | <a2>"]
+    two1 [label="<two11> | 2 | <two12>"]
+    two2 [label="<two21> | 2 | <two22>"]
     
-    div -> mul;
-    div -> two1;
-    mul -> a;
-    mul-> two2;
+    div:div1 -> mul;
+    div:div2 -> two1;
+    mul:mul1 -> a;
+    mul:mul2 -> two2;
 
     // dot -Tsvg ast.dot -o outfile.svg
 }
