@@ -241,71 +241,62 @@ class EGraph:
 
 \subsection{Zweite Komponente: Service}
 
+Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
+Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
+da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
 
+Der Service wurde in der Klasse \textit{EGraphService} implementiert. Die Initialisierung der Klasse erfolgt in Listing~\ref{lst:serviceinit}.
 
+\begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{EGraphService.py}, label={lst:serviceinit}]
+# Importe und is_valid_expression(expression) ausgelassen 
 
+class EGraphService:
+    def __init__(self):
+        self.rrc = 0
+        self.dict_of_rules = {}
+        self.applied_rules = set()
+        self.egraph = None
+        self.expr = None
+        self.egraphs = [[]]
+        self.current_major = 0
+        self.current_minor = 0
 
-% Für die Interaktion zwischen E-Graphs und Benutzer sind zwei Komponenten wichtig: ein Server, der Anfragen der Benutzeroberfläche beantwortet sowie ein Service, der im Hintergrund
-% die Erstellung und Benutzung von E-Graphs regelt.
+# weitere Methoden weggelassen
+\end{lstlisting} 
 
+Darauf aufbauend bilden die vier Methoden in Listing~\ref{lst:servicemove} die Grundlage des Debugging-Features.
 
+\begin{lstlisting}[language=Python, escapechar=|, caption=Methoden für das Debugging aus der Datei \textit{EGraphService.py}, label={lst:servicemove}]
+    def move_backward(self):
+        if self.current_minor == 0:
+            if self.current_major == 0:
+                pass
+            else:
+                self.current_major -= 1
+                self.current_minor = len(self.egraphs[self.current_major]) - 1
+        else:
+            self.current_minor -= 1
 
-% \begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{EGraphService.py}]
-% # ... 
+    def move_forward(self):
+        if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
+            if self.current_major == len(self.egraphs) - 1:
+                pass
+            else:
+                self.current_minor = 0
+                self.current_major += 1
+        else:
+            self.current_minor += 1
 
-% class EGraphService:
-%     def __init__(self):
-%         self.rrc = 0
-%         self.dict_of_rules = {}
-%         self.applied_rules = set()
-%         self.egraph = None
-%         self.expr = None
-%         self.egraphs = [[]]
-%         self.current_major = 0
-%         self.current_minor = 0
+    def move_fastbackward(self):
+        if self.current_major != 0:
+            self.current_major -= 1
+            self.current_minor = len(self.egraphs[self.current_major]) - 1
 
-% # ... 
-% \end{lstlisting} 
-
-
-
-
-
-% \begin{lstlisting}[language=Python, caption=Methoden für das Debugging aus der Datei \textit{EGraphService.py}]
-% # ... 
-
-%     def move_backward(self):
-%         if self.current_minor == 0:
-%             if self.current_major == 0:
-%                 pass
-%             else:
-%                 self.current_major -= 1
-%                 self.current_minor = len(self.egraphs[self.current_major]) - 1
-%         else:
-%             self.current_minor -= 1
-
-%     def move_forward(self):
-%         if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
-%             if self.current_major == len(self.egraphs) - 1:
-%                 pass
-%             else:
-%                 self.current_minor = 0
-%                 self.current_major += 1
-%         else:
-%             self.current_minor += 1
-
-%     def move_fastbackward(self):
-%         if self.current_major != 0:
-%             self.current_major -= 1
-%             self.current_minor = len(self.egraphs[self.current_major]) - 1
-
-%     def move_fastforward(self):
-%         if self.current_major != len(self.egraphs) - 1:
-%             self.current_major += 1
-%             self.current_minor = len(self.egraphs[self.current_major]) - 1
-
-% # ... 
-% \end{lstlisting} 
+    def move_fastforward(self):
+        if self.current_major != len(self.egraphs) - 1:
+            self.current_major += 1
+            self.current_minor = len(self.egraphs[self.current_major]) - 1
+\end{lstlisting} 
 
 
 
