@@ -1,5 +1,8 @@
 \section{Entwicklung der Anwendung}\label{sec:entwicklung}
 
+
+
+
 In Kapitel~\ref{sec:grundlagen} und~\ref{sec:architektur} wurden die notwendigen Grundlagen und die Architektur vermittelt.
 Darauf aufbauend wird in den folgenden Abschnitten ein tieferer Einblick in die Entwicklungsphase vorgenommen und dazu passend Teile des Codes vorgestellt.
 Dazu ist dieses Kapitel in vier Abschnitte gegliedert, in denen jeweils eine Komponente der Anwendung behandelt wird.
@@ -108,6 +111,19 @@ Wenn jedoch das Zeichen ein schließende Klammer ist, wird \textit{word} geleert
 Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{word} jedoch leer. Der TOS-Knoten wird ebenfalls vom Stack genommen.
 Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
 Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-10mm}
+    \begin{center}
+      \includegraphics[scale=1.2]{../fig/ast.pdf}
+    \end{center}
+    \caption{Der Abstract Syntax Tree für den Ausdruck $(a * 2) / 2$}
+    \label{fig:astexp}
+\end{wrapfigure}
+
+
+
+
 
 \subsubsection{ENode}
 
@@ -298,18 +314,15 @@ class EGraph:
 
 \subsection{Dritte Komponente: Server}
 
-Als dritte Komponente ist der Server für die Kommunikation zwischen Service und Weboberfläche zuständig.
-Die Komponente wurde in der Datei \textit{server.py} (Listing~\ref{lst:server}) als Webserver, der das Framework FastAPI nutzt, realisiert. 
-Zu Beginn werden zwei Instanzen initialisiert. Die erste Instanz ist der Webserver (Z.~\ref{serverinit}), die zweite der EGraphService (Z.~\ref{serverservice}).
-Der Webserverinstanz wird die Funktion \textit{lifespan} übergeben, die beim Starten und Herunterfahren des Servers benutzerdefinierte Aktionen ausführen kann.
+Als dritte Komponente der Anwendung ermöglicht der Server die Kommunikation zwischen Service und Weboberfläche. 
+Die Datei \textit{server.py} (Listing~\ref{lst:server}) enthält den Server, der mit dem Framework FastAPI realisiert wurde.
+
+\noindent Zu Beginn werden zwei Instanzen initialisiert. Die erste Instanz ist der Server selbst (Z.~\ref{serverinit}), die zweite der EGraphService (Z.~\ref{serverservice}).
+Der Serverinstanz wird die Funktion \textit{lifespan} übergeben, die beim Starten und Herunterfahren des Servers benutzerdefinierte Aktionen ausführen kann.
 In diesem Fall wird der Browser unter der Adresse \url{http://127.0.0.1:8000} geöffnet (Z.~\ref{serveropen}).
 
-Als nächstes werden verschiedene Endpunkte bzw. Pfadoperationen definiert, die durch den Webserver zur Verfügung gestellt werden. Schließlich wird durch den \textit{mount}-Befehl 
-statische Dateien unter dem \textit{static/} Pfad freigegeben (Z.~\ref{serverend}). Die Angabe des Pfades musste angepasst werden, da es sonst zu Problemen mit
-den Tests gekommen wäre (siehe Kapitel~\ref{sec:probleme}).
-
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Datei \textit{server.py}, label={lst:server}]
-# ... 
+# Importe ausgelassen 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -319,32 +332,41 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan) |\label{serverinit}|
 egraphService = EGraphService() |\label{serverservice}|
 
-# ... 
+# Funktion get_rules() weggelassen
 
 @app.post("/addrule") |\label{serverendpoint}|
 async def add_rule(request: Request): |\label{serverrequestbody}|
-    payload = await request.body()
-    json_data = json.loads(payload) |\label{serverjson}|
-    result, msg = egraphService.add_rule(json_data["lhs"], json_data["rhs"]) |\label{serveraction}|
+    payload = await request.body() |\label{serverawait}|
+    data = json.loads(payload) |\label{serverjson}|
+    result, msg = egraphService.add_rule(data["lhs"], data["rhs"]) |\label{serveraction}|
     return {"response": str(result), "msg": msg} |\label{serverresponse}|
 
-# ... 
+# weitere Funktionen für mehr Übersichtlichkeit weggelassen 
 
 app.mount("/", StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True), name="static") |\label{serverend}|
 \end{lstlisting} 
 
-Die Definition eines Endpunktes erfolgt nach einem Muster. Zuerst wird die HTTP-Methode und der Pfad definiert, unter dem der Endpunkt erreicht werden kann (Z.~\ref{serverendpoint}).
-Als zweites folgt der Name der Funktion mit eventuellem \textit{Request-Body} (Z.~\ref{serverrequestbody}).
-Die JSON-Daten aus dem Body werden anschließend in ein Dictionary umgewandelt (Z.~\ref{serverjson}).
-Weiterhin werden die Daten an den Service übergeben, der die Aktion ausführt (Z.~\ref{serveraction}).
-Zum Schluss wird eine Response im JSON-Format zurückgegeben (Z.~\ref{serverresponse}).
-Alle anderen Funktionen werden nach diesem Muster bereitgestellt. Das sorgt für eine klare Trennung, wodurch neue Funktionen ohne große Änderungen hinzugefügt werden können.
+Nach der Initialisierung der Instanzen folgen die Endpunkte bzw. Pfadoperationen, die der Benutzeroberfläche durch den Server zur Verfügung gestellt werden.
+Am Beispiel der Funktion \textit{add\_rule} (Z.~\ref{serverendpoint}) soll der typische Aufbau eines Endpunktes erläutert werden.
+
+Als erstes wird die Funktion mit der HTTP-Methode \textit{post} annotiert, die auch den Pfad enthält (Z.~\ref{serverendpoint}).
+Dadurch wird festgelegt, welche Struktur eine Anfrage haben muss.
+Als zweites folgt die Funktionsdefinition (Z.~\ref{serverrequestbody}). Dabei wird ein \textit{Request} erwartet (Z.~\ref{serverawait}), der die entsprechenden Daten enthält. 
+Die JSON-Daten aus dem Request werden danach in ein Dictionary umgewandelt (Z.~\ref{serverjson}).
+Im Anschluss daran werden die Daten an den Service übergeben, der die Daten auf Korrektheit überprüft und sie dem Service hinzufügt (Z.~\ref{serveraction}).
+Zum Schluss wird eine Response im JSON-Format an die Benutzeroberfläche zurückgegeben (Z.~\ref{serverresponse}).
+
+Die letzte Anweisung in der Datei (Z.~\ref{serverend}) dient dazu, alle Dateien im Ordner \textit{static/} unter dem Pfad \textit{/} freizugeben, ohne jeweils Endpunkte einrichten zu müssen.
+Der Ordner enthält die Benutzeroberfläche als HTML-Dokument und weitere Hilfsdateien. Somit kann die Benutzeroberfläche direkt unter der Adresse \url{http://127.0.0.1:8000/}
+aufgerufen werden. Um die vorher definierten Pfadoperationen nicht zu verdecken, muss diese Anweisung am Ende der Datei stehen.
+Die Angabe des Pfades erfolgt durch \textit{realpath}, da es sonst zu Problemen mit den Tests gekommen wäre (siehe Kapitel~\ref{sec:probleme}).
 
 \subsection{Vierte Komponente: Weboberfläche}
 
-Die vierte Komponente besteht aus einer Benutzeroberfläche, dem dazugehörigen JavaScript-Code für die Interaktion mit dem Server und einer Dokumentation.
+Die vierte Komponente besteht aus einer Benutzeroberfläche mit Dokumentation und dem dazugehörigen JavaScript-Code, der für die Funktionalität und Kommunikation mit dem Server
+zuständig ist.
 
-\subsubsection{Benutzeroberfläche und JavaScript}
+\subsubsection{Benutzeroberfläche}
 
 % \afterpage{\clearpage}
 % \begin{sidewaysfigure}[h!]
@@ -357,25 +379,91 @@ Die vierte Komponente besteht aus einer Benutzeroberfläche, dem dazugehörigen 
 % \end{sidewaysfigure}
 
 Die Benutzeroberfläche~\ref{fig:website} startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation und die About-Seite aufgerufen werden.
-Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment rendert den E-Graph als SVG. Das zweite Element ist für \textit{rewrite rules} zuständig, während das dritte 
+Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment ist für die Visualisierung von E-Graphs verantwortlich. Das zweite Element ist für \textit{rewrite rules} zuständig, während das dritte 
 die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
 
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.42, angle=90]{../fig/website.png}
+\caption{Website der Anwendung}
+\label{fig:website}
+\end{figure}
+\newpage
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{../fig/egraphcontrol.png}
+    \caption{Segment zur Darstellung von E-Graphs}
+    \label{fig:segment1}
+\end{figure}
 
-\begin{wrapfigure}{r}{0.4\textwidth}
+Im ersten Segment (Abbildung~\ref{fig:segment1}) wird der E-Graph als SVG gerendert. Durch Bewegen des Mausrades oder Benutzen des Touchpads kann die Darstellung vergrößert und verkleinert werden.
+Der Cursor ermöglicht das Herumziehen der Darstellung innerhalb des hellgrauen Kastens. Zusätzlich verfügt das Segment über den Link \textit{Open in new tab}, durch den
+sich ein neuer Tab mit einer größeren Darstellung des E-Graphs öffnet. Dadurch werden Probleme mit der variierenden Bildschirmgröße von Nutzern umgangen.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
     \vspace{-10mm}
     \begin{center}
-      \includegraphics[scale=0.5]{../fig/rewriterulecontrol.png}
+      \includegraphics[scale=0.6]{../fig/rewriterulecontrol.png}
     \end{center}
-    \caption{Kontrollsegment für \textit{rewrite rules}}
+    \caption{Segment für \textit{rewrite rules}}
     \label{fig:segment2}
 \end{wrapfigure}
 
-Das Kontrollsegment in Abbildung~\ref{fig:segment2} besteht aus drei Untersegmenten. Das erste Untersegment lässt Benutzer eine Regel eingeben und abschicken.
-Im zweiten Untersegment können die Regeln, die momentan in der Anwendung abgespeichert sind, in einer Datei gesichert werden. Nach einem Neustart der Anwendung können
-diese durch den \textit{Upload}-Button automatisch hinzugefügt werden.  
-Das dritte Untersegment listet alle Regeln auf. Soll eine oder mehrere Regeln angewendet werden, können diese ausgewählt und durch den Button \textit{Apply} auf den E-Graph angewendet werden.
-Der Button \textit{Saturate} führt eine Saturierung des E-Graphs durch, indem alle Regeln solange auf den E-Graph angewendet werden, bis sich keine Änderungen mehr ergeben.
+Das zweite Segment (Abbildung~\ref{fig:segment2}) besteht aus drei Untersegmenten, die Erstellung, Sicherung und Anwendung von \textit{rewrite rules} regeln. 
+Das erste Untersegment \textbf{Create} besteht aus zwei Eingabefeldern und einem Button \textit{Create}, durch die der Benutzer eine Regel eingeben und abschicken kann.
+Im zweiten Untersegment \textbf{Rules} können die Regeln, die momentan in der Anwendung abgespeichert sind, mit dem \textit{Download}-Button in einer Datei gesichert werden. 
+Nach einem Neustart der Anwendung können diese durch den \textit{Upload}-Button automatisch wieder zur Anwendung hinzugefügt werden. 
+
+Im dritten Untersegment werden alle Regeln aufgelistet. Möchte der Benutzer eine oder mehrere Regeln anwenden, können diese durch die Checkboxen ausgewählt und durch den 
+Button \textit{Apply} auf den E-Graph angewendet werden. Der Button \textit{Saturate} führt eine Saturierung des E-Graphs durch, indem alle Regeln solange auf den E-Graph angewendet werden, bis sich keine Änderungen mehr ergeben.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \vspace{-10mm}
+    \begin{center}
+      \includegraphics[scale=0.6]{../fig/control1.png}
+    \end{center}
+    \caption{Kontrollsegment, Teil 1}
+    \label{fig:segment31}
+\end{wrapfigure}
+
+Im dritten Segment (Abbildung~\ref{fig:segment31} und Abbildung~\ref{fig:segment32}) befinden sich eine Funktion zur Erstellung von E-Graphs sowie weiteren Steuerungselemente für die Anwendung.
+Im oberen Teil des Segments wurden drei Untersegmente platziert. Im ersten Untersegment \textbf{Create} kann durch die Eingabe eines Terms und das Betätigen des \textit{Create}-Buttons
+ein E-Graph erzeugt werden. Das zweite Untersegment \textbf{Debug} zeichnet sich durch zwei Radio-Buttons (\textit{Standard} und \textit{Debug}) sowie vier weiteren Buttons aus. 
+
+
+Die beiden Radio-Buttons lassen den Benutzer zwischen zwei Optionen (\textit{Standard} und \textit{Debug}) wählen.
+
+
+% \begin{wrapfigure}{r}{0.4\textwidth}
+%     \vspace{-10mm}
+%     \begin{center}
+%       \includegraphics[scale=0.5]{../fig/control2.png}
+%     \end{center}
+%     \caption{Kontrollsegment, Teil 2}
+%     \label{fig:segment32}
+% \end{wrapfigure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsubsection{JavaScript}
+
 
 Beim Drücken des Buttons \textit{Apply} wird die Funktion \textit{applyRewriteRules} ausgeführt (Listing~\ref{lst:apply}).
 Sie übermittelt die ausgewählten Regeln an den Server. Sollte der Kontaktversuch scheitern, wird eine Fehlermeldung in der Statusanzeige erscheinen. Ansonsten wird die 
@@ -437,43 +525,10 @@ async function contactServer(path, payload, httpMethod) {
 \end{lstlisting} 
     
 
-% \begin{wrapfigure}{r}{0.5\textwidth}
-%     \begin{center}
-%       \includegraphics[width=0.48\textwidth]{birds}
-%     \end{center}
-%     \caption{Birds}
-% \end{wrapfigure}
-
-
-\newpage
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.42, angle=90]{../fig/website.png}
-\caption{Website der Anwendung}
-\label{fig:website}
-\end{figure}
-\newpage
 
 
 
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-    %\vspace{-10mm}
-    \begin{center}
-      \includegraphics[scale=0.5]{../fig/control1.png}
-    \end{center}
-    \caption{Kontrollsegment, Teil 1}
-    \label{fig:segment31}
-\end{wrapfigure}
-
-\begin{wrapfigure}{r}{0.4\textwidth}
-    %\vspace{-10mm}
-    \begin{center}
-      \includegraphics[scale=0.5]{../fig/control2.png}
-    \end{center}
-    \caption{Kontrollsegment, Teil 2}
-    \label{fig:segment32}
-\end{wrapfigure}
 
 
 
