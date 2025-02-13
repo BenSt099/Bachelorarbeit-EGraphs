@@ -1,9 +1,6 @@
 \section{Entwicklung der Anwendung}\label{sec:entwicklung}
 
-
-
-
-In Kapitel~\ref{sec:grundlagen} und~\ref{sec:architektur} wurden die notwendigen Grundlagen und die Architektur vermittelt.
+In Kapitel~\ref{sec:grundlagen} und~\ref{sec:architektur} wurden die notwendigen Grundlagen und die Architektur der Anwendung vermittelt.
 Darauf aufbauend wird in den folgenden Abschnitten ein tieferer Einblick in die Entwicklungsphase vorgenommen und dazu passend Teile des Codes vorgestellt.
 Dazu ist dieses Kapitel in vier Abschnitte gegliedert, in denen jeweils eine Komponente der Anwendung behandelt wird.
 
@@ -368,17 +365,7 @@ zuständig ist.
 
 \subsubsection{Benutzeroberfläche}
 
-% \afterpage{\clearpage}
-% \begin{sidewaysfigure}[h!]
-% % \begin{figure}[H]
-% \centering
-% \includegraphics[scale=0.45]{../fig/website.png}
-% \caption{Website beim Start des Servers}
-% \label{fig:website}
-% % \end{figure}
-% \end{sidewaysfigure}
-
-Die Benutzeroberfläche~\ref{fig:website} startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation und die About-Seite aufgerufen werden.
+Die Benutzeroberfläche (Abbildung~\ref{fig:website}) startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation und die About-Seite aufgerufen werden.
 Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment ist für die Visualisierung von E-Graphs verantwortlich. Das zweite Element ist für \textit{rewrite rules} zuständig, während das dritte 
 die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
 
@@ -399,7 +386,8 @@ die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
 \end{figure}
 
 Im ersten Segment (Abbildung~\ref{fig:segment1}) wird der E-Graph als SVG gerendert. Durch Bewegen des Mausrades oder Benutzen des Touchpads kann die Darstellung vergrößert und verkleinert werden.
-Der Cursor ermöglicht das Herumziehen der Darstellung innerhalb des hellgrauen Kastens. Zusätzlich verfügt das Segment über den Link \textit{Open in new tab}, durch den
+Der Cursor ermöglicht das Herumziehen der Darstellung innerhalb des hellgrauen Kastens. Hovert der Benutzer länger über eine beige E-Class, wird ihre EClass-ID angezeigt.
+Zusätzlich verfügt das Segment über den Link \textit{Open in new tab}, durch den
 sich ein neuer Tab mit einer größeren Darstellung des E-Graphs öffnet. Dadurch werden Probleme mit der variierenden Bildschirmgröße von Nutzern umgangen.
 
 \begin{wrapfigure}{r}{0.5\textwidth}
@@ -412,6 +400,7 @@ sich ein neuer Tab mit einer größeren Darstellung des E-Graphs öffnet. Dadurc
 \end{wrapfigure}
 
 Das zweite Segment (Abbildung~\ref{fig:segment2}) besteht aus drei Untersegmenten, die Erstellung, Sicherung und Anwendung von \textit{rewrite rules} regeln. 
+Dabei minimiert der schwarze Pfeil in der rechten oberen Ecke dieses Segment und sorgt bei schmaleren Bildschirmen für eine effizientere Aufteilung des Inhalts.
 Das erste Untersegment \textbf{Create} besteht aus zwei Eingabefeldern und einem Button \textit{Create}, durch die der Benutzer eine Regel eingeben und abschicken kann.
 Im zweiten Untersegment \textbf{Rules} können die Regeln, die momentan in der Anwendung abgespeichert sind, mit dem \textit{Download}-Button in einer Datei gesichert werden. 
 Nach einem Neustart der Anwendung können diese durch den \textit{Upload}-Button automatisch wieder zur Anwendung hinzugefügt werden. 
@@ -432,85 +421,46 @@ Im dritten Segment (Abbildung~\ref{fig:segment31} und Abbildung~\ref{fig:segment
 Im oberen Teil des Segments wurden drei Untersegmente platziert. Im ersten Untersegment \textbf{Create} kann durch die Eingabe eines Terms und das Betätigen des \textit{Create}-Buttons
 ein E-Graph erzeugt werden. Das zweite Untersegment \textbf{Debug} zeichnet sich durch zwei Radio-Buttons (\textit{Standard} und \textit{Debug}) sowie vier weiteren Buttons aus. 
 
+Durch die Radio-Buttons kann der Benutzer zwischen der Standardausgabe (\textit{Standard}) und einer detailierten Debugausgabe (\textit{Debug}) wählen.
+Mit den vier Buttons unterhalb der Radio-Buttons kann durch die Ausgabe gesprungen werden. Die beiden Buttons \textbf{<<} und \textbf{>>} zeigen den E-Graph jeweils nach oder vor einer 
+Reihe von Änderungen. Durch die anderen zwei Buttons (\textbf{<} und \textbf{>}), die nur im Debug-Modus aktiviert sind, kann der Benutzer jede einzelne Änderung am E-Graph verfolgen. 
 
-Die beiden Radio-Buttons lassen den Benutzer zwischen zwei Optionen (\textit{Standard} und \textit{Debug}) wählen.
+Das dritte Untersegment \textbf{Extract} kann durch Betätigen des \textit{Extract}-Buttons der optimale Ausdruck aus dem E-Graph extrahiert und darüber liegenden grauen Feld angezeigt werden.
+Die Prozedur des Extrahierens kann danach im Debug-Modus detailiert beobachtet werden. Zum kopieren des optimalen Ausdrucks kann der Benutzer den \textit{Best Term}-Button betätigen.
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \vspace{-10mm}
+    \begin{center}
+      \includegraphics[scale=0.6]{../fig/control2.png}
+    \end{center}
+    \caption{Kontrollsegment, Teil 2}
+    \label{fig:segment32}
+\end{wrapfigure}
 
-% \begin{wrapfigure}{r}{0.4\textwidth}
-%     \vspace{-10mm}
-%     \begin{center}
-%       \includegraphics[scale=0.5]{../fig/control2.png}
-%     \end{center}
-%     \caption{Kontrollsegment, Teil 2}
-%     \label{fig:segment32}
-% \end{wrapfigure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Im unteren Teil des dritten Segments (Abbildung~\ref{fig:segment32}) befinden sich drei weitere Untersegmente.  
+Das erste Untersegment \textbf{Export} stellt dem Benutzer drei mögliche Formate (PDF, SVG und PNF) für den Export des E-Graphs zur Verfügung. Durch das Betätigen des \textit{Export}-Buttons
+wird der E-Graph ins ausgewählte Dateiformat exportiert.
+Durch das zweite Untersegment \textbf{Session} kann der Benutzer seine Sitzung, durch Drücken des \textit{Download}-Buttons, als Datei sichern und bei Bedarf durch den \textit{Upload}-Button
+wiederherstellen. In der Sitzungsdatei wird der Ausdruck gespeichert, durch den der E-Graph erstellt wurde, eine Liste der \textit{rewrite rules} und einer Kennzeichnung, welche 
+bereits auf den E-Graph angewendet wurden und der eventuell extrahierte, optimale Ausdruck.
+Das dritte Untersegment \textbf{Status} ist eine Liste mit Infos, Warnungen und Fehlern, die dem Benutzer als Rückmeldung dienen. Wenn der Benutzer die Änderungen am E-Graph beobachtet, werden
+darüber hinaus weitere Informationen angezeigt. Werden zwei E-Classes gemerged, wird in der Statusleiste angezeigt, um welche E-Classes es sich handelt.  
 
 \subsubsection{JavaScript}
 
+JavaScript regelt die Manipulation der Benutzeroberfläche und die Kommunikation mit dem Server. Im Folgenden werden die Abläufe während der Kommunikation näher beleuchtet.
 
-Beim Drücken des Buttons \textit{Apply} wird die Funktion \textit{applyRewriteRules} ausgeführt (Listing~\ref{lst:apply}).
-Sie übermittelt die ausgewählten Regeln an den Server. Sollte der Kontaktversuch scheitern, wird eine Fehlermeldung in der Statusanzeige erscheinen. Ansonsten wird die 
-Nachricht des Servers eingeblendet.
-\vspace{5mm}
-
-
-\begin{lstlisting}[language=JavaScript, escapechar=|, caption=Funktion \textit{applyRewriteRules()} aus der Datei \textit{index.js}, label={lst:apply}]
-function applyRewriteRules() {
-    let rrNumbers = [];
-    // ...
-    contactServer("/applyrule",
-        JSON.stringify({"payload": rrNumbers}), "POST").then(
-        function (value) {
-            if (value['response'] === "False") {
-                addMessageToStatusBar("[WARN]", value['msg']);
-            } else {
-                addMessageToStatusBar("[INFO]", value['msg']);
-            }
-        }, function () {
-            addMessageToStatusBar("[ERROR]",
-                "Failed to contact server.");
-        });
-}
-\end{lstlisting} 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Die Hauptfunktionalität wird durch die Funktion \textit{contactServer} bereitgestellt~\ref{lst:js}. Sie kontaktiert den Server und übermittelt, falls vorhanden, Daten im JSON-Format.
-Die Rückgabe erfolgt ebenfalls im JSON-Format (Z.~\ref{js:return}).
+Die Kommunikation mit dem Server wird durch die Funktion \textit{contactServer} möglich (Listing~\ref{lst:js}).
+Der Funktion werden drei Parameter übergeben (Z.~\ref{js:a1}): einen String für die Route (\textit{path}), zum Beispiel /add\_rule, Daten im JSON-Format (\textit{payload})
+und die HTTP-Methode (\textit{httpMethod}). In den Zeilen~\ref{js:a2} bis~\ref{js:a3} wird aus den Parametern ein neuer Request vorbereitet. Sollte dabei kein \textit{payload}
+angegebenen werden (Z.~\ref{js:a21}), wird keiner mitgeschickt. Der vorbereitete Request wird in Zeile~\ref{js:return} an den Server geschickt. Dabei wird mit \textit{await}
+die Ausführung pausiert, bis eine Antwort erhalten wurde. Das funktioniert nur in einer asynchronen Funktion, weshalb \textit{contactServer} entsprechend mit \textit{async} 
+markiert wurde (Z.~\ref{js:a1}). Die Antwort wird in das JSON-Format umgewandelt und zurückgegeben (Z.~\ref{js:return}).
 
 \begin{lstlisting}[language=JavaScript, escapechar=|, caption=Auszug aus der Datei \textit{index.js}, label={lst:js}]
-async function contactServer(path, payload, httpMethod) {
-    let request;
-    if (payload == null) {
+async function contactServer(path, payload, httpMethod) { |\label{js:a1}|
+    let request; |\label{js:a2}|
+    if (payload == null) { |\label{js:a21}|
         request = new Request("http://127.0.0.1:8000" + path, {
             method: httpMethod
         });
@@ -519,25 +469,51 @@ async function contactServer(path, payload, httpMethod) {
             method: httpMethod,
             body: payload,
         });
-    }
+    } |\label{js:a3}|
     return (await fetch(request)).json(); |\label{js:return}|
 }
 \end{lstlisting} 
-    
 
+Dieser Ablauf wird im Folgenden anhand eines Beispiels verdeutlicht.
+Beim Anlegen einer neuen rewrite rule wird durch das Betätigen des Buttons \textit{Apply} die Funktion \textit{applyRewriteRules} ausgeführt (Listing~\ref{lst:apply}).
 
+Die Funktion startet mit dem Sammeln der vom Benutzer ausgewählten Regeln in einem Array (Z.~\ref{js:b1} -~\ref{js:b2}, hier nicht gezeigt).
+Im zweiten Schritt wird \textit{contactServer} mit den Parametern aufgerufen (Z.~\ref{js:b3} -~\ref{js:b4}).
+Die Funktion \textit{contactServer} liefert dabei die Daten im JSON-Format zurück, die durch die asynchrone Eigenschaft der Funktion automatisch in ein \textit{Promise}-Objekt gewrapped werden (Z.~\ref{js:b4}).
+Ein \textit{Promise}-Objekt stellt das Ergebnis einer asynchronen Funktion dar~\footnote{\hspace{1.5mm}\url{https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Promise}}.
+Eine Funktion kann erfolgreich ausgeführt werden (Z.~\ref{js:b5}) oder fehlschlagen (Z.~\ref{js:b6}). Im ersten Fall wird, basierend darauf, ob der Benutzer überhaupt eine Regel ausgewählt hat,
+eine Warnung (Z.~\ref{js:b8}) oder eine Bestätigung (Z.~\ref{js:b9}) als Statusmeldung angezeigt
+Im zweiten Fall wird eine Fehlermeldung angezeigt (Z.~\ref{js:b7}), wenn der Request fehlschlägt.
 
-
-
-
-
+\begin{lstlisting}[language=JavaScript, escapechar=|, caption=Funktion \textit{applyRewriteRules()} aus der Datei \textit{index.js}, label={lst:apply}]
+function applyRewriteRules() {
+    let rrNumbers = []; |\label{js:b1}|
+    // Filtere die ausgewählten Regeln heraus und füge sie in rrNumbers ein
+    //... |\label{js:b2}|
+    contactServer("/applyrule", |\label{js:b3}|
+        JSON.stringify({"payload": rrNumbers}), "POST").then( |\label{js:b4}|
+        function (value) { |\label{js:b5}|
+            if (value['response'] === "False") {
+                addMessageToStatusBar("[WARN]", value['msg']); |\label{js:b8}|
+            } else {
+                addMessageToStatusBar("[INFO]", value['msg']); |\label{js:b9}|
+            }
+        }, function () { |\label{js:b6}|
+            addMessageToStatusBar("[ERROR]", "Failed to contact server."); |\label{js:b7}|
+        }); 
+}
+\end{lstlisting} 
 
 \subsubsection{Dokumentation}
 
-
-% Die Dokumentation setzt auf das Framework \textit{Docusaurus}~\cite{docusaurus}.
-
+Die Dokumentation wurde unabhängig mit dem Framework \textit{Docusaurus} erstellt. Abbildung~\ref{fig:docs} zeigt die Startseite der Dokumentation.
 
 
-
-
+% \newpage
+% \begin{figure}[H]
+% \centering
+% \includegraphics[scale=0.42, angle=90]{../fig/docs.png}
+% \caption{Dokumentation der Anwendung}
+% \label{fig:docs}
+% \end{figure}
+% \newpage

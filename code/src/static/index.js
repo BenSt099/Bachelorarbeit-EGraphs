@@ -557,7 +557,7 @@ async function copyTextToClipboard() {
 
 
 /**
- * Expands or collapses the second or third container in the grid.
+ * Expands or collapses the second or third column in the grid.
  */
 function expandOrCollapseGridContainer(column) {
     if (column === '1') {
