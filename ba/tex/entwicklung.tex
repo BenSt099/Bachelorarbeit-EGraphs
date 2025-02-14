@@ -14,7 +14,7 @@ kann gleichzeitig als Validierungsphase genutzt werden, da hier bereits feststeh
 
 Ein AST erfordert die Klassen \textit{AbstractSyntaxTreeNode} (Listing~\ref{lst:astnode}) und 
 \textit{AbstractSyntaxTree} (Listing~\ref{lst:ast}). Die Klasse \textit{AbstractSyntaxTreeNode} repräsentiert
-einen Knoten im AST. Sie hat drei Attribute: einen linken Zeiger, einen rechten Zeiger und einen Schlüssel.
+einen Knoten im AST. Sie hat drei Attribute: eine linke Referenz, eine rechte Referenz und einen Schlüssel.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{AbstractSyntaxTreeNode}, label={lst:astnode}]
 class AbstractSyntaxTreeNode:
@@ -24,11 +24,11 @@ class AbstractSyntaxTreeNode:
         self.right = None
 \end{lstlisting}
 
-Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl sein. Die Zeiger können auf einen weiteren Teilbaum zeigen, auf einen einzelnen Knoten
+Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl sein. Die Referenzen können auf einen weiteren Teilbaum zeigen, auf einen einzelnen Knoten
 oder auf nichts. Mithilfe dieser Klasse kann nachher ein ganzer Baum dargestellt werden. Dazu braucht man nur den Wurzelknoten des Baumes abspeichern, um über dessen Kinder
 Zugriff auf den gesamten Baum zu bekommen. 
 
-Über die Klasse \textit{AbstractSyntaxTree} kann aus einem Ausdruck ein AST erstellt werden.
+Über die Klasse \textit{AbstractSyntaxTree} kann aus einem Ausdruck ein AST erstellt werden. Sei der Ausdruck $(a * 2) / 2$ als Beispiel gegeben.
 Entsprechend wird die Klasse mit einem Ausdruck initialisiert, der direkt durch die Methode \textit{\_process\_expression(self, expression)} verarbeitet wird.
 Die Methode gibt den Wurzelknoten des erstellten AST zurück, der im Attribut \textit{root\_node} der Klasse abgespeichert wird.
 Anschließend wird der AST in ein String-Format gebracht und im zweiten Attribut \textit{string\_representation} abgespeichert.
@@ -86,28 +86,13 @@ class AbstractSyntaxTree:
         return root_ast_node
 \end{lstlisting}
 
+
+
 Die Methode~(Z. \ref{astprocess}) \textit{\_process\_expression(self, expression)} initialisiert drei lokale Variablen.
 Die erste Variable \textit{root\_ast\_node} speichert den Wurzelknoten des Baumes, den die Methode später zurückgibt. Die zweite Variable \textit{stack} speichert an der 
 Position \textbf{Top of Stack} (TOS) den aktuell zu bearbeitenden Knoten. Die dritte Variable \textit{word} ist ein leerer String, der als kurzzeitiger Zwischenspeicher verwendet wird,
 wenn Variablen, Zahlen oder Operationen aus mehreren Zeichen bestehen.
 Der String wird von links nach rechts Zeichen für Zeichen verarbeitet, wobei sieben Fälle unterschieden werden.
-
-Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
-dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
-Nach einer öffnenden Klammer wird eine arithmetische Operation erwartet. 
-Daher behandelt Fall zwei~(Z. \ref{ast1}) die vier Operationen ($+, *, -, /$), indem die jeweilige Operation dem Knoten, der gerade TOS ist,
-als Schlüssel zugewiesen wird. Da Shift-Operationen ($<<, >>$) zwei Zeichen lang sind, werden sie in Fall drei~(Z. \ref{ast2}) behandelt.
-Zu Fall drei kommt es, wenn in \textit{word} bereits eines der Shift-Zeichen ($<, >$) eingelesen wurde und nun das nächste eingelesen wird.
-Das Zeichen wird \textit{word} hinzugefügt und dem TOS-Knoten als Schlüssel übergeben.
-
-Im vierten Fall~(Z. \ref{ast3}) werden Variablen und Zahlen verarbeitet und eventuell auch Knoten vom Stack genommen.
-Zur Trennung von Variablen und Zahlen wird ein Leerzeichen erwartet und ein nichtleeres \textit{word}.
-Dabei werden nochmal vier Fälle unterschieden, je nach Zustand des aktuellen TOS-Knotens. Dementsprechend wird entweder ein neuer Knoten mit dem Inhalt von \textit{word} als Schlüssel
-erzeugt und links oder rechts angehängt oder der aktuelle TOS-Knoten hat noch kein Schlüssel und bekommt entsprechend einen. 
-Wenn jedoch das Zeichen ein schließende Klammer ist, wird \textit{word} geleert und der TOS-Knoten vom Stack genommen.
-Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{word} jedoch leer. Der TOS-Knoten wird ebenfalls vom Stack genommen.
-Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
-Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
 
 \begin{wrapfigure}{r}{0.4\textwidth}
     \vspace{-10mm}
@@ -117,6 +102,25 @@ Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Da
     \caption{Der Abstract Syntax Tree für den Ausdruck $(a * 2) / 2$}
     \label{fig:astexp}
 \end{wrapfigure}
+
+% Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
+% dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
+% Nach einer öffnenden Klammer wird eine arithmetische Operation erwartet. 
+% Daher behandelt Fall zwei~(Z. \ref{ast1}) die vier Operationen ($+, *, -, /$), indem die jeweilige Operation dem Knoten, der gerade TOS ist,
+% als Schlüssel zugewiesen wird. Da Shift-Operationen ($<<, >>$) zwei Zeichen lang sind, werden sie in Fall drei~(Z. \ref{ast2}) behandelt.
+% Zu Fall drei kommt es, wenn in \textit{word} bereits eines der Shift-Zeichen ($<, >$) eingelesen wurde und nun das nächste eingelesen wird.
+% Das Zeichen wird \textit{word} hinzugefügt und dem TOS-Knoten als Schlüssel übergeben.
+
+% Im vierten Fall~(Z. \ref{ast3}) werden Variablen und Zahlen verarbeitet und eventuell auch Knoten vom Stack genommen.
+% Zur Trennung von Variablen und Zahlen wird ein Leerzeichen erwartet und ein nichtleeres \textit{word}.
+% Dabei werden nochmal vier Fälle unterschieden, je nach Zustand des aktuellen TOS-Knotens. Dementsprechend wird entweder ein neuer Knoten mit dem Inhalt von \textit{word} als Schlüssel
+% erzeugt und links oder rechts angehängt oder der aktuelle TOS-Knoten hat noch kein Schlüssel und bekommt entsprechend einen. 
+% Wenn jedoch das Zeichen ein schließende Klammer ist, wird \textit{word} geleert und der TOS-Knoten vom Stack genommen.
+% Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{word} jedoch leer. Der TOS-Knoten wird ebenfalls vom Stack genommen.
+% Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
+% Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
+
+
 
 
 
@@ -247,7 +251,7 @@ da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden we
 
 Der Service wurde in der Klasse \textit{EGraphService} implementiert. Die Initialisierung der Klasse erfolgt in Listing~\ref{lst:serviceinit}.
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Datei \textit{EGraphService.py}, label={lst:serviceinit}]
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Datei \textit{EGraphService.py}, label={lst:serviceinit}]
 # Importe und is_valid_expression(expression) ausgelassen 
 
 class EGraphService:
@@ -257,7 +261,7 @@ class EGraphService:
         self.applied_rules = set()
         self.egraph = None
         self.expr = None
-        self.egraphs = [[]]
+        self.egraphs = [[]] |\label{lst:serviceegraphs}|
         self.current_major = 0
         self.current_minor = 0
 
@@ -270,7 +274,7 @@ Darauf aufbauend bilden die vier Methoden in Listing~\ref{lst:servicemove} die G
     def move_backward(self):
         if self.current_minor == 0:
             if self.current_major == 0:
-                pass
+                pass # ganz hinten angekommen
             else:
                 self.current_major -= 1
                 self.current_minor = len(self.egraphs[self.current_major]) - 1
@@ -280,10 +284,10 @@ Darauf aufbauend bilden die vier Methoden in Listing~\ref{lst:servicemove} die G
     def move_forward(self):
         if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
             if self.current_major == len(self.egraphs) - 1:
-                pass
+                pass # ganz vorne angekommen
             else:
-                self.current_minor = 0
-                self.current_major += 1
+                self.current_minor = 0   # am Ende dieser Liste angekommen,
+                self.current_major += 1  # beim Anfang der nächsten starten
         else:
             self.current_minor += 1
 
@@ -291,14 +295,28 @@ Darauf aufbauend bilden die vier Methoden in Listing~\ref{lst:servicemove} die G
         if self.current_major != 0:
             self.current_major -= 1
             self.current_minor = len(self.egraphs[self.current_major]) - 1
+            # ^- letzte Änderung am Ende der Liste, daher dorthin springen
 
     def move_fastforward(self):
         if self.current_major != len(self.egraphs) - 1:
             self.current_major += 1
             self.current_minor = len(self.egraphs[self.current_major]) - 1
+            # ^- letzte Änderung am Ende der Liste, daher dorthin springen
 \end{lstlisting} 
 
+Das Debugging-Feature beruht auf folgender Idee. Der Service speichert eine Liste mit Änderungen, die am E-Graph durchgeführt worden sind.
+Dazu wird bei jeder Änderung ein Schnappschuss des E-Graphs erstellt im DOT-Format erstellt.
+Möchte der Nutzer eine Änderung erneut begutachten, kann er in der Liste zurückspringen. Um feinere Details abspeicheren zu können, wird 
+eine Änderung darüber hinaus in mehrere kleine Änderungen zerlegt, die alle in einer Liste gespeichert werden. Das resultiert in einer Liste von Listen,
+die im Attribut \textit{self.egraphs} gespeichert werden (Listing~\ref{lst:serviceinit}, Z.~\ref{lst:serviceegraphs}).
 
+Die beiden Methoden \textit{move\_forward} und \textit{move\_backward} (Listing~\ref{lst:servicemove}) regeln das vor- und zurückspringen innerhalb einer Liste mit kleinen Änderungen.
+Die anderen beiden Methoden \textit{move\_fastforward} und \textit{move\_fastbackward} regeln den Sprung von Änderung zu Änderung.
+Für die Position innerhalb der Listen, gibt es zwei Attribute: \textit{self.current\_minor} und \textit{self.current\_major}. Mit \textit{self.current\_major} kann von Änderung
+zu Änderung gesprungen werden, während \textit{self.current\_minor} innerhalb der Änderung vor- oder zurückspringt.
+
+Diese Vorgehensweise ermöglicht es, an der Position \textit{self.egraphs[self.current\_major][self.current\_minor]} den Schnappschuss des E-Graphs im DOT-Format abzufragen,
+der durch den Server an die Benutzeroberfläche geschickt und dort gerendert wird.
 
 \subsection{Dritte Komponente: Server}
 
@@ -354,7 +372,7 @@ Die Angabe des Pfades erfolgt durch \textit{realpath}, da es sonst zu Problemen 
 Die vierte Komponente besteht aus einer Benutzeroberfläche mit Dokumentation und dem dazugehörigen JavaScript-Code, der für die Funktionalität und Kommunikation mit dem Server
 zuständig ist.
 
-\subsubsection{Benutzeroberfläche}
+\subsubsection{Benutzeroberfläche und Dokumentation}
 
 Die Benutzeroberfläche (Abbildung~\ref{fig:website}) startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation und die About-Seite aufgerufen werden.
 Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment ist für die Visualisierung von E-Graphs verantwortlich. Das zweite Element ist für \textit{rewrite rules} zuständig, während das dritte 
@@ -437,6 +455,20 @@ bereits auf den E-Graph angewendet wurden und der eventuell extrahierte, optimal
 Das dritte Untersegment \textbf{Status} ist eine Liste mit Infos, Warnungen und Fehlern, die dem Benutzer als Rückmeldung dienen. Wenn der Benutzer die Änderungen am E-Graph beobachtet, werden
 darüber hinaus weitere Informationen angezeigt. Werden zwei E-Classes gemerged, wird in der Statusleiste angezeigt, um welche E-Classes es sich handelt.  
 
+
+Die Dokumentation wurde unabhängig mit dem Framework \textit{Docusaurus} erstellt. Abbildung~\ref{fig:docs} zeigt den Unterabschnitt Installation der Dependencies.
+
+
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.42, angle=90]{../fig/docs.png}
+\caption{Dokumentation der Anwendung, Abschnitt Installation}
+\label{fig:docs}
+\end{figure}
+\newpage
+
 \subsubsection{JavaScript}
 
 JavaScript regelt die Manipulation der Benutzeroberfläche und die Kommunikation mit dem Server. Im Folgenden werden die Abläufe während der Kommunikation näher beleuchtet.
@@ -494,17 +526,3 @@ function applyRewriteRules() {
         }); 
 }
 \end{lstlisting} 
-
-\subsubsection{Dokumentation}
-
-Die Dokumentation wurde unabhängig mit dem Framework \textit{Docusaurus} erstellt. Abbildung~\ref{fig:docs} zeigt die Startseite der Dokumentation.
-
-
-% \newpage
-% \begin{figure}[H]
-% \centering
-% \includegraphics[scale=0.42, angle=90]{../fig/docs.png}
-% \caption{Dokumentation der Anwendung}
-% \label{fig:docs}
-% \end{figure}
-% \newpage
