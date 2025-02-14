@@ -17,8 +17,7 @@ const FeatureList = [
     Svg: require('@site/static/img/alphabet.svg').default,
     description: (
       <>
-        Hier erfahren Sie alles was Sie für die Bedienung der Anwendung wissen müssen. Sie werden in der Lage sein, 
-        E-Graphs zu erstellen, Rewrite Rules anzuwenden und Equality Saturation durchzuführen.
+        Sie werden in der Lage sein, E-Graphs zu erstellen, Rewrite Rules anzuwenden und Equality Saturation durchzuführen.
       </>
     ),
   },
@@ -27,7 +26,7 @@ const FeatureList = [
     Svg: require('@site/static/img/bookmark-check.svg').default,
     description: (
       <>
-        Die Software ist durch Unit-Tests abgedeckt. Die Dokumentation erklärt Ihnen wie sie auszuführen sind.
+        Die Software ist durch Unit-Tests abgedeckt. Die Dokumentation erklärt Ihnen, wie sie auszuführen sind.
       </>
     ),
   },
