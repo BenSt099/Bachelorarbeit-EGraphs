@@ -39,7 +39,6 @@ dieser dem korrekten Format entsprach.
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{AbstractSyntaxTree}, label={lst:ast}]
 class AbstractSyntaxTree:
-
     # ... __init__ und __str__  weggelassen 
 
     def _preorder(self, ast_node): |\label{astpreorder}|
@@ -164,8 +163,8 @@ rechten Ausdruck übergeben. Die beiden Ausdrücke werden in AST umgewandelt. Di
 class RewriteRule:
     def __init__(self, name, expr_lhs, expr_rhs):
         self.name = name
-        self.expr_lhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_lhs)
-        self.expr_rhs = AbstractSyntaxTree.AbstractSyntaxTree(expr_rhs)
+        self.expr_lhs = AbstractSyntaxTree(expr_lhs)
+        self.expr_rhs = AbstractSyntaxTree(expr_rhs)
 
     # ... 
 \end{lstlisting}
@@ -173,12 +172,10 @@ class RewriteRule:
 \subsubsection{EGraph}
 
 Mit den bereits definierten Klassen kann jetzt die wichtigste Klasse der Komponente definiert werden. Die Init-Methode der Klasse \textit{EGraph} (Listing~\ref{lst:egraph})
-legt eine Union-Find Datenstruktur \textit{u} und zwei Dictionaries \textit{m} und \textit{h} an. Die weiteren vier Attribute werden erst im Verlauf der Entwicklung wichtig und 
-an den entsprechenden Stellen erläutert.
+legt eine Union-Find Datenstruktur \textit{u} und zwei Dictionaries \textit{m} und \textit{h} an.
 
 \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:egraph}]
 # ... 
-
 class EGraph:
     def __init__(self):
         self.u = DisjointSet()
@@ -188,58 +185,85 @@ class EGraph:
         self.version = 0
         self.str_repr = ""
         self.is_saturated = False
-
     # ...
 \end{lstlisting} 
 
+Die nächsten sieben Methoden statten den E-Graph mit Basisfunktionalität aus.
 
 
-% Die nächsten sieben Methoden statten den E-Graph mit Basisfunktionalität aus.
+% \begin{wrapfigure}[5]{r}{0.6\textwidth}
+\begin{wrapfigure}{r}{0.6\textwidth}
+%\vspace{-10mm}
+\hspace{3mm}
+\begin{minipage}[t]{\linewidth}
+\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
+def _add(self, enode):
+    enode = self._canonicalize(enode)
+    # ... 
+    elif enode in self.h.keys():
+        return self.h[enode]
+    # ... 
+    else:
+        self.version += 1
+        eclass_id = self._new_singleton_eclass(enode)
+        for child in enode.arguments:
+            self.m[child].parents.add((enode, eclass_id))
+        self.h[enode] = eclass_id
+        return eclass_id
+\end{lstlisting} 
+\end{minipage}
+\end{wrapfigure}
 
-% \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
-% def _add(self, enode):
-%     enode = self._canonicalize(enode)
-%     # ... 
-%     elif enode in self.h.keys():
-%         return self.h[enode]
-%     # ... 
-%     else:
-%         self.version += 1
-%         eclass_id = self._new_singleton_eclass(enode)
-%         for child in enode.arguments:
-%             self.m[child].parents.add((enode, eclass_id))
-%         self.h[enode] = eclass_id
-%         return eclass_id
-% \end{lstlisting} 
-
-% \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
-% def add_node(self, ast_node):
-%     if ast_node is not None:
-%         if ast_node.left is not None and ast_node.right is not None:
-%             return self._add(ENode(ast_node.key, [self.add_node(ast_node.left), self.add_node(ast_node.right)],))
-%         elif ast_node.left is not None:
-%             return self._add(ENode(ast_node.key, [self.add_node(ast_node.left)]))
-%         elif ast_node.right is not None:
-%             return self._add(ENode(ast_node.key, [self.add_node(ast_node.right)]))
-%         else:
-%             return self._add(ENode(ast_node.key, []))
-% \end{lstlisting} 
-
-% Bis jetzt hat die Klasse \textit{EGraph} noch keine Funktionalität, um tatsächlich ihre Aufgabe zu erfüllen. Die folgenden zwei Abschnitte 
-% behandeln zwei Quellen, mit deren Hilfe diese Funktionalität erreicht werden konnte.
-
-% \subsubsection{egg-Implementierung}\label{subsub:egg}
-
-% In der Einleitung (Abschnitt \ref{sub:verwandtearbeiten}) wurde bereits die in Rust geschriebene Bibliothek \textbf{egg} vorgestellt, die auf einem Paper (\cite{2021-egg}) basiert.
-% Für diese Implementierung wurden verschiedene, grundlegende Methoden übernommen, darunter \textit{add}, \textit{merge}, \textit{repair}, \textit{rebuild}, \textit{canonicalize} und
-% \textit{find}. Abgesehen von einigen wenigen Änderungen wurden die Methoden aus dem Paper weitestgehend übernommen.
+Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
+Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
+da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
+Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
+Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
+da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
 
 
+\begin{wrapfigure}{r}{0.6\textwidth}
+    %\vspace{-10mm}
+\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
+def _new_singleton_eclass(self, enode):
+    new_eclass = EClass()
+    new_eclass.nodes.add(enode)
+    self.u.add(new_eclass.id)
+    self.m[new_eclass.id] = new_eclass
+    return new_eclass.id
 
-% \subsubsection{Colab-Implementierung}\label{subsub:colab}
+def _canonicalize(self, enode):
+    return ENode(enode.key, [self._find(child) for child in enode.arguments])
 
-% Das erwähnte Paper behandelt die grundlegenden Funktionen eines E-Graphs. Allerdings werden andere Aspekte nicht beleuchtet. Hierzu wurde auf ein Google Colab Notebook zurückgegriffen \cite{devito},
-% welches weiterführende Konzepte aufzeigt.
+def _find(self, eclass_id):
+    return self.u.__getitem__(eclass_id)
+
+def merge(self, eid1, eid2):
+    if self._find(eid1) == self._find(eid2):
+        return self._find(eid1)
+    self.version += 1
+    self.u.merge(eid1, eid2)
+    new_id = self._find(eid1)
+    self.pending.append(new_id)
+    return new_id
+
+def rebuild(self):
+    for eclass in set([self._find(eclass) for eclass in self.pending]):
+        self._repair(eclass)
+    self.pending = []
+\end{lstlisting} 
+\end{wrapfigure}
+
+Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
+Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
+da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
+Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
+Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
+da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
+
+
+
+
 
 
 
@@ -271,37 +295,37 @@ class EGraphService:
 Darauf aufbauend bilden die vier Methoden in Listing~\ref{lst:servicemove} die Grundlage des Debugging-Features.
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Methoden für das Debugging aus der Datei \textit{EGraphService.py}, label={lst:servicemove}]
-    def move_backward(self):
-        if self.current_minor == 0:
-            if self.current_major == 0:
-                pass # ganz hinten angekommen
-            else:
-                self.current_major -= 1
-                self.current_minor = len(self.egraphs[self.current_major]) - 1
+def move_backward(self):
+    if self.current_minor == 0:
+        if self.current_major == 0:
+            pass # ganz hinten angekommen
         else:
-            self.current_minor -= 1
-
-    def move_forward(self):
-        if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
-            if self.current_major == len(self.egraphs) - 1:
-                pass # ganz vorne angekommen
-            else:
-                self.current_minor = 0   # am Ende dieser Liste angekommen,
-                self.current_major += 1  # beim Anfang der nächsten starten
-        else:
-            self.current_minor += 1
-
-    def move_fastbackward(self):
-        if self.current_major != 0:
             self.current_major -= 1
             self.current_minor = len(self.egraphs[self.current_major]) - 1
-            # ^- letzte Änderung am Ende der Liste, daher dorthin springen
+    else:
+        self.current_minor -= 1
 
-    def move_fastforward(self):
-        if self.current_major != len(self.egraphs) - 1:
-            self.current_major += 1
-            self.current_minor = len(self.egraphs[self.current_major]) - 1
-            # ^- letzte Änderung am Ende der Liste, daher dorthin springen
+def move_forward(self):
+    if len(self.egraphs[self.current_major]) - 1 == self.current_minor:
+        if self.current_major == len(self.egraphs) - 1:
+            pass # ganz vorne angekommen
+        else:
+            self.current_minor = 0   # am Ende dieser Liste angekommen,
+            self.current_major += 1  # beim Anfang der nächsten starten
+    else:
+        self.current_minor += 1
+
+def move_fastbackward(self):
+    if self.current_major != 0:
+        self.current_major -= 1
+        self.current_minor = len(self.egraphs[self.current_major]) - 1
+        # ^- letzte Änderung am Ende der Liste, daher dorthin springen
+
+def move_fastforward(self):
+    if self.current_major != len(self.egraphs) - 1:
+        self.current_major += 1
+        self.current_minor = len(self.egraphs[self.current_major]) - 1
+        # ^- letzte Änderung am Ende der Liste, daher dorthin springen
 \end{lstlisting} 
 
 Das Debugging-Feature beruht auf folgender Idee. Der Service speichert eine Liste mit Änderungen, die am E-Graph durchgeführt worden sind.
