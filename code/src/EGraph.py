@@ -580,6 +580,7 @@ def _extract_term(eterm_id, egraph):
             costs[eclass] = new_cost
 
     def extract_best_term(eclass_id):
+        eclass_id = egraph._find(eclass_id)
         enode = costs[eclass_id][1]
         return ENode(enode.key, [extract_best_term(eid) for eid in enode.arguments])
 

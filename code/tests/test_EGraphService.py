@@ -1,7 +1,7 @@
 """This file contains tests to ensure the capability and correctness of EGraphService.py
 The tests are separated into groups to test different aspects of EGraphService.py.
 
-- Number of Tests: 20
+- Number of Tests: 33
 
 """
 
@@ -58,10 +58,6 @@ def test_valid_expression_10():
 # General functionality                 ########################################
 ################################################################################
 
-"""The test below this comment will create a pdf file in the current directory.
-Therefore, it requires manual execution.
-"""
-
 
 def test_service_general_1():
     service = EGraphService.EGraphService()
@@ -70,10 +66,28 @@ def test_service_general_1():
     _, _, term = service.extract()
     assert term == "(* 0 (* (+ a (<< a 1)) 1))"
 
+@pytest.mark.skip(
+    reason="Run this test manually. Test may take longer (~ 20 seconds)."
+)
+def test_service_general_2():
+    service = EGraphService.EGraphService()
+    service.create_egraph("(/ (* a 2) 2)")
+    service.add_rule("(/ (* x y) z)", "(* x (/ y z))")
+    service.add_rule("(* x 2)", "(<< x 1)")
+    service.add_rule("(/ x x)", "(1)")
+    service.add_rule("(* x 1)", "(x)")
+    service.apply_all_rules()
+    _, _, term = service.extract()
+    assert term == "a"
+
 
 ################################################################################
 # Export e-graph                        ########################################
 ################################################################################
+
+"""The test below this comment will create a pdf file in the current directory.
+Therefore, it requires manual execution.
+"""
 
 
 @pytest.mark.skip(
@@ -117,6 +131,13 @@ def test_service_add_rule_3():
     assert len(service.dict_of_rules) == 2
 
 
+def test_service_add_rule_4():
+    service = EGraphService.EGraphService()
+    service.add_rule("(* x 1)", "(x)")
+    service.add_rule("(+ x y)", "(+ y x)")
+    assert len(service.dict_of_rules) == 4
+
+
 ################################################################################
 # Apply rule                            ########################################
 ################################################################################
@@ -139,11 +160,45 @@ def test_service_apply_2():
 
 
 ################################################################################
+# Save to file                          ########################################
+################################################################################
+
+"""The test below this comment will create a json file with rewrite rules in the
+current directory. Therefore, it requires manual execution.
+"""
+
+
+@pytest.mark.skip(
+    reason="Run this test manually. For more information, read comment above method <test_service_save_rewrite_rules_to_file>."
+)
+def test_service_save_rewrite_rules_to_file():
+    service = EGraphService.EGraphService()
+    service.create_egraph("(* 0 (* (+ a (* a 2)) 1))")
+    service.add_rule("(* x 1)", "(x)")
+    service.add_rule("(* x 2)", "(<< x 1)")
+    result, msg = service.save_rewrite_rules_to_file()
+    assert result == True
+
+
+@pytest.mark.skip(
+    reason="Run this test manually. For more information, read comment above method <test_service_save_rewrite_rules_to_file>."
+)
+def test_service_save_session_to_file():
+    service = EGraphService.EGraphService()
+    service.create_egraph("(* 0 (* (+ a (* a 2)) 1))")
+    service.add_rule("(* x 1)", "(x)")
+    service.add_rule("(* x 2)", "(<< x 1)")
+    service.apply([0])
+    result, msg = service.save_session_to_file()
+    assert result == True
+
+
+################################################################################
 # Add rules from file                   ########################################
 ################################################################################
 
 
-def test_service_add_rewrite_rules_from_file():
+def test_service_add_rewrite_rules_from_file_1():
     service = EGraphService.EGraphService()
     service.add_rule("(* x 1)", "(x)")
     data = {
@@ -151,6 +206,14 @@ def test_service_add_rewrite_rules_from_file():
     }
     result, msg = service.add_rewrite_rules_from_file(data)
     assert result == True
+
+
+def test_service_add_rewrite_rules_from_file_2():
+    service = EGraphService.EGraphService()
+    service.add_rule("(* x 1)", "(x)")
+    data = {"RewriteRules": {}}
+    result, msg = service.add_rewrite_rules_from_file(data)
+    assert msg == "No rewrite rules found."
 
 
 ################################################################################
@@ -255,4 +318,25 @@ def test_service_move_backward_2():
     minor = service.current_minor
     service.move_forward()
     service.move_backward()
+    assert service.current_major == major and service.current_minor == minor
+
+
+def test_service_move_backward_3():
+    service = EGraphService.EGraphService()
+    service.create_egraph("(+ a 1)")
+    service.add_rule("(+ x 1)", "(x)")
+    service.apply([0, 1])
+    service.move_fastforward()
+    service.move_backward()
+    assert service.current_minor == len(service.egraphs[service.current_major]) - 2
+
+
+def test_service_move_fastforward_fastbackward():
+    service = EGraphService.EGraphService()
+    service.create_egraph("(+ a 1)")
+    service.add_rule("(+ x 1)", "(x)")
+    major = service.current_major
+    minor = service.current_minor
+    service.move_fastforward()
+    service.move_fastbackward()
     assert service.current_major == major and service.current_minor == minor

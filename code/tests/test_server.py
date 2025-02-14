@@ -1,7 +1,7 @@
 """This file contains tests to ensure the capability and correctness of server.py
 The tests are separated into groups to test different aspects of server.py.
 
-- Number of Tests: 20
+- Number of Tests: 22
 
 """
 
@@ -35,6 +35,15 @@ def test_get_rules_2():
     assert "'response': 'True'" in str(response.json())
     assert "['4', '(* x 1)', '(x)']" in str(response.json())
     assert "['6', '(* y 1)', '(y)']" in str(response.json())
+
+
+def test_get_rules_3():
+    import server
+
+    importlib.reload(server)
+    client = TestClient(app)
+    response = client.get("/getrules")
+    assert "'response': 'False'" in str(response.json())
 
 
 ################################################################################
@@ -175,6 +184,17 @@ def test_move_2():
     )
     assert "'response': 'False'" in str(response.json())
     assert "'msg': 'End of debug output.'" in str(response.json())
+
+
+def test_move_3():
+    client = TestClient(app)
+    client.post("/createegraph", json={"payload": "(* x 1)"})
+    response = client.post(
+        "/move", json={"payload": "fastforward", "debugModeEnabled": "false"}
+    )
+    assert "'response': 'False'" in str(
+        response.json()
+    ) and "'msg': 'End of debug output.'" in str(response.json())
 
 
 ################################################################################

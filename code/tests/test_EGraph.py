@@ -1,7 +1,7 @@
 """This file contains tests to ensure the capability and correctness of EGraph.py
 The tests are separated into groups to test different aspects of EGraph.py.
 
-- Number of Tests: 20
+- Number of Tests: 25
 
 """
 
@@ -95,6 +95,18 @@ def test_egraph_general_7():
     eclass_id, environment = list_of_matches[0]
     new_eclass_id = g._substitute(rule.expr_rhs.root_node, environment)
     assert g._find(new_eclass_id)
+
+
+def test_egraph_general_8():
+    ast = AbstractSyntaxTree.AbstractSyntaxTree("(* a (/ a a))")
+    g = EGraph.EGraph()
+    etermid = g.add_node(ast.root_node)
+    rules = [
+        RewriteRule.RewriteRule("simplify", "(/ x x)", "(1)"),
+        RewriteRule.RewriteRule("simp", "(* x 1)", "(x)"),
+    ]
+    egraph, dbg, best = EGraph.equality_saturation(rules, etermid, g)
+    assert best == "a"
 
 
 ################################################################################
