@@ -34,7 +34,7 @@ from EGraph import (
     apply_rules,
     export_egraph_to_file,
     equality_saturation,
-    equality_saturation_no_extract,
+    equality_saturation_no_extract, _extract_term,
 )
 from RewriteRule import RewriteRule
 from AbstractSyntaxTree import AbstractSyntaxTree
@@ -286,10 +286,12 @@ class EGraphService:
         rules = dict()
         for number, rule in self.dict_of_rules.items():
             rules[number] = [rule.name, str(rule.expr_lhs), str(rule.expr_rhs)]
+        best_term = _extract_term(self.egraph[1], self.egraph[0])
         return {
             "RewriteRules": rules,
             "Applied": list(self.applied_rules),
             "graph": self.expr,
+            "optimalTerm": best_term,
         }
 
     def save_session_to_file(self):
@@ -327,8 +329,9 @@ class EGraphService:
             egraph = data["graph"]
             rules = data["RewriteRules"]
             applied_rules = data["Applied"]
+            optimal_term = data["optimalTerm"]
         except KeyError:
-            return False, "Format is broken.", None
+            return False, "Format is broken."
         self.create_egraph(egraph)
         self.rrc = 0
         applied_rules_str = []
@@ -336,7 +339,13 @@ class EGraphService:
             _, number = self.add_rule(rule[1], rule[2])
             if rule[0] in applied_rules:
                 applied_rules_str.append(number)
-        return True, "Saved session.", applied_rules_str
+        return (
+            True,
+            "Uploaded session. Applied rules in last session: "
+            + str(applied_rules_str)
+            + " | optimal term in last session: "
+            + optimal_term,
+        )
 
     def move_backward(self):
         """Moves backward in debug output."""

@@ -26,6 +26,30 @@ def test_egraph_general_1():
 
 def test_egraph_general_2():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(/ (* a 2) 2)")
+    g = EGraph.EGraph()
+    etermid = g.add_node(ast.root_node)
+    rules = [
+        RewriteRule.RewriteRule("reassociate", "(/ (* x y) z)", "(* x (/ y z))"),
+        RewriteRule.RewriteRule("shift", "(* x 2)", "(<< x 1)"),
+        RewriteRule.RewriteRule("simplify", "(/ x x)", "(1)"),
+        RewriteRule.RewriteRule("simp", "(* x 1)", "(x)"),
+    ]
+    egraph, dbg, best = EGraph.equality_saturation(rules, etermid, g)
+    assert len(egraph.u.subsets()) == 4
+    assert len(egraph.h.keys()) == 8
+
+
+def test_egraph_general_3():
+    ast = AbstractSyntaxTree.AbstractSyntaxTree(
+        "(* (>> (<< 1 (- a 4)) c) (/ (* (+ 2 3) (- 3 4)) 4))"
+    )
+    egraph = EGraph.EGraph()
+    egraph.add_node(ast.root_node)
+    assert len(egraph.h.keys()) == 14
+
+
+def test_egraph_general_4():
+    ast = AbstractSyntaxTree.AbstractSyntaxTree("(/ (* a 2) 2)")
     egraph = EGraph.EGraph()
     egraph.add_node(ast.root_node)
     enode_keys = [enode.key for enode in egraph.h.keys()]
@@ -35,10 +59,10 @@ def test_egraph_general_2():
     assert "2" in enode_keys
 
 
-def test_egraph_general_3():
+def test_egraph_general_5():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(/ (* a 2) 2)")
     ast2 = AbstractSyntaxTree.AbstractSyntaxTree("(* a 2)")
-    ast3 = AbstractSyntaxTree.AbstractSyntaxTree("(<< a 2)")
+    ast3 = AbstractSyntaxTree.AbstractSyntaxTree("(<< a 1)")
     g = EGraph.EGraph()
     g.add_node(ast.root_node)
     id1 = g.add_node(ast2.root_node)
@@ -48,7 +72,20 @@ def test_egraph_general_3():
     assert g._find(id1) == g._find(id2)
 
 
-def test_egraph_general_4():
+def test_egraph_general_6():
+    ast = AbstractSyntaxTree.AbstractSyntaxTree("(+ z (* w (/ x y)))")
+    ast2 = AbstractSyntaxTree.AbstractSyntaxTree("(* w (/ x y))")
+    ast3 = AbstractSyntaxTree.AbstractSyntaxTree("(/ (* w x)) y")
+    g = EGraph.EGraph()
+    g.add_node(ast.root_node)
+    id1 = g.add_node(ast2.root_node)
+    id2 = g.add_node(ast3.root_node)
+    g.merge(id1, id2)
+    g.rebuild()
+    assert g._find(id1) == g._find(id2)
+
+
+def test_egraph_general_7():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(+ a 2)")
     g = EGraph.EGraph()
     g.add_node(ast.root_node)
@@ -275,7 +312,7 @@ def test_egraph_to_dot_4():
 ################################################################################
 
 
-def test_edge_case():
+def test_edge_case_1():
     ast = AbstractSyntaxTree.AbstractSyntaxTree("(a)")
     egraph = EGraph.EGraph()
     eterm_id = egraph.add_node(ast.root_node)
@@ -284,3 +321,23 @@ def test_edge_case():
     egraph, debug_output = EGraph.apply_rules(rules, egraph)
     assert len(egraph.u.subsets()) == 2
     assert "a" == EGraph._extract_term(eterm_id, egraph)
+
+
+def test_edge_case_2():
+    ast = AbstractSyntaxTree.AbstractSyntaxTree("(/ (* a 2) 2)")
+    egraph = EGraph.EGraph()
+    eterm_id = egraph.add_node(ast.root_node)
+    rules = [
+        RewriteRule.RewriteRule("reassociate", "(/ (* x y) z)", "(* x (/ y z))"),
+        RewriteRule.RewriteRule("shift", "(* x 2)", "(<< x 1)"),
+        RewriteRule.RewriteRule("simplify", "(/ x x)", "(1)"),
+        RewriteRule.RewriteRule("simp", "(* x 1)", "(x)"),
+        RewriteRule.RewriteRule(
+            "reassociate_reverse", "(* x (/ y z))", "(/ (* x y) z)"
+        ),
+        RewriteRule.RewriteRule("shift_reverse", "(<< x 1)", "(* x 2)"),
+        RewriteRule.RewriteRule("simplify_reverse", "(1)", "(/ x x)"),
+        RewriteRule.RewriteRule("simp_reverse", "(x)", "(* x 1)"),
+    ]
+    egraph, dbg, best = EGraph.equality_saturation(rules, eterm_id, egraph)
+    assert best == "a"

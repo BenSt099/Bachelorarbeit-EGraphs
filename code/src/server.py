@@ -242,10 +242,8 @@ async def upload_session(request: Request):
     """
     payload = await request.body()
     json_data = json.loads(payload)
-    result, msg, data = egraphService.set_session_from_file(
-        json.loads(json_data["payload"])
-    )
-    return {"response": str(result), "msg": msg, "payload": data}
+    result, msg = egraphService.set_session_from_file(json.loads(json_data["payload"]))
+    return {"response": str(result), "msg": msg}
 
 
 """

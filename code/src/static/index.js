@@ -496,10 +496,7 @@ function uploadSession() {
                         addMessageToStatusBar("[WARN]", value['msg']);
                     } else {
                         addMessageToStatusBar("[INFO]", value['msg']);
-                        if (String(value["payload"])) {
-                            addMessageToStatusBar("[INFO]", "Applied rules in last session: " + value['payload']);
-                            loadData();
-                        }
+                        loadData();
                     }
                 }, function () {
                     addMessageToStatusBar("[ERROR]",

@@ -107,6 +107,13 @@ class EGraph:
                 e_node.arguments = [self._find(arg) for arg in e_node.arguments]
                 if e_node.key == enode.key and e_node.arguments == enode.arguments:
                     return self.h[e_node]
+
+            self.version += 1
+            eclass_id = self._new_singleton_eclass(enode)
+            for child in enode.arguments:
+                self.m[child].parents.add((enode, eclass_id))
+            self.h[enode] = eclass_id
+            return eclass_id
         else:
             self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
@@ -220,6 +227,7 @@ class EGraph:
                 else:
                     return environment[node_key] is eid, environment
             else:
+                eid = self._find(eid)
                 for enode in eclasses[eid]:
                     matches, env_new = enode_matches(node_pattern, enode, environment)
                     if matches:
@@ -244,6 +252,7 @@ class EGraph:
             ast_node.left is None
             and ast_node.right is None
             and not re.match("[0-9]+", ast_node.key)
+            and ast_node.key in environment.keys()
         ):
             return environment[ast_node.key]
         else:
@@ -456,10 +465,12 @@ def equality_saturation(rules, eterm_id, egraph):
     """
     debug_information = []
     best_term = ""
+    timeout = 0
     if not egraph.is_saturated:
         debug_information.append(["Cost model: ['+'|'-'|'<<'|'>>']: 1, ['*']: 2, ['/']: 3, [other]: 0", egraph.egraph_to_dot()])
-        while True:
+        while True and timeout < 5:
             v = egraph.version
+            timeout += 1
             best_term = _extract_term(eterm_id, egraph)
             debug_information.append(["Best Term: " + best_term, egraph.egraph_to_dot()])
             egraph, debug = apply_rules(rules, egraph)
@@ -478,8 +489,10 @@ def equality_saturation_no_extract(rules, egraph):
     please see the implementation section in the module's docstring.
     """
     debug_information = []
+    timeout = 0
     if not egraph.is_saturated:
-        while True:
+        while True and timeout < 5:
+            timeout += 1
             v = egraph.version
             egraph, debug = apply_rules(rules, egraph)
             for x in debug:
@@ -520,6 +533,7 @@ def apply_rules(rules, egraph):
                 egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id]),
             ]
         )
+        # print(eclass_id, new_eclass_id, environment, str(rule.expr_rhs))
         egraph.merge(eclass_id, new_eclass_id)
         debug_info.append(["Rule " + str(rule.name) + ": MERGED.", egraph.egraph_to_dot()])
     if egraph.pending:

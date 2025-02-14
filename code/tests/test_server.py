@@ -18,7 +18,6 @@ from server import app
 
 
 def test_get_rules_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
@@ -28,7 +27,6 @@ def test_get_rules_1():
 
 
 def test_get_rules_2():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
@@ -45,7 +43,6 @@ def test_get_rules_2():
 
 
 def test_add_rule_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     response = client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
@@ -53,7 +50,6 @@ def test_add_rule_1():
 
 
 def test_add_rule_2():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     response = client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "x)"})
@@ -66,7 +62,6 @@ def test_add_rule_2():
 
 
 def test_apply_rule_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
@@ -75,7 +70,6 @@ def test_apply_rule_1():
 
 
 def test_apply_rule_2():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
@@ -85,7 +79,6 @@ def test_apply_rule_2():
 
 
 def test_apply_rule_3():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(/ a 2)"})
     client.post("/addrule", json={"lhs": "(* x 1)", "rhs": "(x)"})
@@ -100,7 +93,6 @@ def test_apply_rule_3():
 
 
 def test_upload_rule_1():
-    """"""
     client = TestClient(app)
     response = client.post(
         "/uploadrules",
@@ -112,7 +104,6 @@ def test_upload_rule_1():
 
 
 def test_upload_rule_2():
-    """"""
     client = TestClient(app)
     response = client.post(
         "/uploadrules",
@@ -129,14 +120,12 @@ def test_upload_rule_2():
 
 
 def test_create_egraph_1():
-    """"""
     client = TestClient(app)
     response = client.post("/createegraph", json={"payload": "(+ x 1)"})
     assert response.json() == {"response": "True", "msg": "Created EGraph."}
 
 
 def test_create_egraph_2():
-    """"""
     client = TestClient(app)
     response = client.post("/createegraph", json={"payload": "+ x 1)"})
     assert "'response': 'False'" in str(response.json())
@@ -148,7 +137,6 @@ def test_create_egraph_2():
 
 
 def test_load_egraph_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(+ x 1)"})
     response = client.get("/loadegraph")
@@ -156,7 +144,6 @@ def test_load_egraph_1():
 
 
 def test_load_egraph_2():
-    """"""
     import server
 
     importlib.reload(server)
@@ -172,7 +159,6 @@ def test_load_egraph_2():
 
 
 def test_move_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(* x 1)"})
     response = client.post(
@@ -182,7 +168,6 @@ def test_move_1():
 
 
 def test_move_2():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(* x 1)"})
     response = client.post(
@@ -198,7 +183,6 @@ def test_move_2():
 
 
 def test_extract_term_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(* x 1)"})
     response = client.post("/extractterm")
@@ -206,7 +190,6 @@ def test_extract_term_1():
 
 
 def test_extract_term_2():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(/ (* a 2) 2)"})
     client.post("/addrule", json={"lhs": "(/ (* x y) z)", "rhs": "(* x (/ y z))"})
@@ -234,7 +217,6 @@ will be created in the current directory.
     reason="Run this test manually. For more information, read comment above method <test_export_egraph_1>."
 )
 def test_export_egraph_1():
-    """"""
     client = TestClient(app)
     client.post("/createegraph", json={"payload": "(* x 1)"})
     response = client.post("/exportegraph", json={"payload": "png"})
@@ -247,19 +229,17 @@ def test_export_egraph_1():
 
 
 def test_upload_session_1():
-    """"""
     client = TestClient(app)
     response = client.post(
         "/uploadsession",
         json={
-            "payload": '{"RewriteRules": {"0": ["0", "(* x 2)", "(<< x 1)"], "1": ["1", "(/ x x)", "(1)"]}, "Applied": ["0"], "graph": "(+ a (* a 2))"}'
+            "payload": '{"RewriteRules": {"0": ["0", "(* x 2)", "(<< x 1)"], "1": ["1", "(/ x x)", "(1)"]}, "Applied": ["0"], "graph": "(+ a (* a 2))", "optimalTerm": ""}'
         },
     )
     assert "'response': 'True'" in str(response.json())
 
 
 def test_upload_session_2():
-    """"""
     client = TestClient(app)
     response = client.post(
         "/uploadsession",
