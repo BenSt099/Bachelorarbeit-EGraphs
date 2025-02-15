@@ -11,7 +11,7 @@ Die folgenden beiden Abschnitte~\ref{subsec:naiv} und~\ref{subsec:egraphs} stüt
 
 Für das naive Optimieren von Ausdrücken wird zuerst das Konzept der \textit{rewrite rules} benötigt. Gegeben sei ein beliebiger mathematischer Ausdruck, z.B.
 $a * 1$. Um eine Umformung dieses Ausdrucks durchführen zu können, kann eine \textit{rewrite rule} auf diesen Ausdruck angewendet werden.
-Als Beispiel sei hier die folgende Regel gegeben: $[\mathbf{1}]: x * 1 \Leftrightarrow x$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
+Als Beispiel sei hier die folgende Regel gegeben: $[\mathbf{1}] x * 1 \Leftrightarrow x$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
 beschreibt ein \textbf{Muster}, das dem Ausdruck entsprechen muss. Das wird als \textit{Matching} bezeichnet. Dabei spielt der Name der Variablen, in diesem Falle $x$, keine Rolle.
 Der rechte Teil vermittelt, in welche neue Form dieses Muster gebracht werden soll. Wendet man also Regel $[1]$ an,
 ergibt sich: $a * 1  \overset{[2]}{\rightarrow} a$. 
@@ -52,13 +52,13 @@ Dabei werden alle \textit{rewrite rules} auf den Ausdruck angewendet, die \texti
 Diese Lösung zeichnet sich durch ihre Einfachheit aus, hat aber auch ihre Schwächen. So läuft der Algorithmus
 bereits bei einfachen Beispielen in lokale Optima.
 Als Beispiel sei hier der Ausdruck $(a * 2) / 2$ gegeben, der, durch Anwendung folgender Regeln, zum Ausdruck $a$ umgeformt werden kann: \\ \\
-$[\mathbf{2}]: (x * y) / z \Leftrightarrow x * (y / z)$, \\
-$[\mathbf{3}]:x / x \Leftrightarrow 1$, \\
-$[\mathbf{4}]:x * 1 \Leftrightarrow x$ 
+$[\mathbf{2}] (x * y) / z \Leftrightarrow x * (y / z)$, \\
+$[\mathbf{3}] x / x \Leftrightarrow 1$, \\
+$[\mathbf{4}] x * 1 \Leftrightarrow x$ 
 
 $(a * 2) / 2 \overset{[2]}{\Leftrightarrow} a * (2 / 2) \overset{[3]}{\Leftrightarrow} a * 1 \overset{[4]}{\Leftrightarrow} a$.
 
-Wird statt Regel $[2]$ eine weitere Regel $[5]$ angewendet, zum Beispiel $[\mathbf{5}]: x * 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
+Wird statt Regel $[2]$ eine weitere Regel $[5]$ angewendet, zum Beispiel $[\mathbf{5}] x * 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
 Das Ergebnis hängt also davon ab, in welcher Reihenfolge die Regeln auf den Ausdruck angewendet werden. 
 Dieses Problem ist allgemein als das \textit{Phase Ordering Problem} bekannt~\cite{phaseorder-2009}.
 Selbst mit der Anwendung von Heuristiken würde dieses Problem bestehen bleiben, da auch sie dazu tendieren, kurzsichtige Entscheidungen zu treffen~\cite{phaseorder-2009}.
@@ -106,7 +106,7 @@ Der Speicherbedarf des Algorithmus (also die Größe der Liste) lässt sich durc
 Dadurch würde auch die Extraktion des optimalen Ausdrucks exponentiell lange dauern.
 
 Sei der Ausdruck $(a * 2) / 2$ mit den entstehenden Regeln aus dem vorherigen Beispiel als Situation gegeben. Durch die Anwendung einer einfachen \textit{rewrite rule} wie 
-$[\mathbf{6}]: a \Leftrightarrow b$, würde sich die Größe der Liste bereits verdoppeln.
+$[\mathbf{6}] a \Leftrightarrow b$, würde sich die Größe der Liste bereits verdoppeln.
 Eine effizientere Lösung wäre der Einsatz von \textit{E-Graphs}.
 
 % Am Ende der Ausführung steht eine komplette Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks zur Verfügung, aus der man den optimalen Ausdruck extrahieren kann.
@@ -125,15 +125,15 @@ Eine Äquivalenzrelation beschreibt eine Gleichwertigkeit zwischen Objekten, die
 \begin{itemize}
   \item \textbf{Reflexivität} Das Objekt ist gleichwertig zu sich selbst.
   \item \textbf{Symmetrie} Wenn Objekt $a$ zu Objekt $b$ gleichwertig ist, gilt das auch andersherum.
-  \item \textbf{Transitivität} Wenn Objekt $a$ zu Objekt $b$ gleichwertig ist, und Objekt $b$ zu Objekt $c$, dann gilt auch, dass $a$ zu $c$ gleichwertig ist.
+  \item \textbf{Transitivität} Wenn Objekt $a$ zu Objekt $b$ gleichwertig ist und Objekt $b$ zu Objekt $c$, dann gilt auch, dass $a$ zu $c$ gleichwertig ist.
 \end{itemize}
 
-Als Beispiel dienen hier Schuhe verschiedener Marken. Zwei Schuhe $a, b$ sind bzgl. ihrer Größe äquivalent, wenn sie dieselbe Schuhgröße haben. 
+Als Beispiel dienen hier Bälle für unterschiedliche Sportarten. Zwei Bälle $a, b$ sind äquivalent, wenn sie in derselben Sportart eingesetzt werden können. 
 
 \subsubsection{Äquivalenzklasse}
 
-Eine Äquivalenzrelation teilt eine Menge von Objekten in Äquivalenzklassen klein, in denen die Objekte jeweils die drei oben genannten Eigenschaften erfüllen~\cite{Ehrig2001}.
-Die Schuhe werden also bzgl. ihrer Größe in die Äquivalenzklassen \textit{Schuhgröße} eingeteilt.
+Eine Äquivalenzrelation teilt eine Menge von Objekten in Äquivalenzklassen ein, in denen die Objekte jeweils die drei oben genannten Eigenschaften erfüllen~\cite{Ehrig2001}.
+Die Bälle werden also bzgl. ihrer Funktion in die Äquivalenzklassen \textit{Sportarten} eingeteilt.
 
 \subsubsection{Zusammenhang zu E-Graphs}
 
@@ -191,9 +191,9 @@ Es gibt verschiedene Ansätze für die Implementierung von \textit{E-Graphs}. De
 Ein \textbf{E-Graph} wird nach~\cite{2021-egg} als Tuple $(\mathbf{U}, \mathbf{M}, \mathbf{H})$ mit folgenden Eigenschaften definiert:
 
 \begin{itemize}
-  \item $\mathbf{U}$ Eine Union-Find-Datenstruktur, die eine Äquivalenzrelation über IDs abspeichert.
+  \item $\mathbf{U}$ Eine Union-Find-Datenstruktur, die eine Äquivalenzrelation über IDs abspeichert. Jede Partition (Äquivalenzklasse) von $\mathbf{U}$ hat dabei einen Repräsentanten (EClass-ID).
   \item $\mathbf{M}$ Eine (Hash)-map, die IDs von E-Classes auf E-Classes abbildet. 
-  \item $\mathbf{H}$ Eine (Hash)-map, die E-Nodes auf IDs von E-Classes abbildet.
+  \item $\mathbf{H}$ Eine (Hash)-map, die E-Nodes auf IDs von E-Classes abbildet~\footnote{In diesem Zusammenhang wird im Paper~\cite{2021-egg} auf \textit{Hash Consing} verwiesen. Das ist ein spezifisches Implementierungsdetail des Papers und wird daher nicht berücksichtigt.}.
 \end{itemize}
 
 Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde also wie folgt aussehen:
@@ -203,6 +203,18 @@ Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde 
   \item $\mathbf{M}$: $ID1 \rightarrow EClass(\ldots)$, $ID2 \rightarrow EClass(\ldots)$, $ID3 \rightarrow EClass(\ldots)$, \ldots 
   \item $\mathbf{H}$: $/ \rightarrow ID1$, $* \rightarrow ID2$, $2 \rightarrow ID3$, $a \rightarrow ID4$, $b \rightarrow ID5$
 \end{itemize}
+
+\subsubsection{Invarianten}
+
+Ein E-Graph muss nach~\cite{2021-egg} zwei Invarianten aufrechterhalten, um eine niedrige Laufzeit und eine hohe Effizienz garantieren zu können. 
+Einige Operationen beschädigen die aufgestellen Invarianten, wodurch Methoden zur Aufrechterhaltung angewendet werden müssen (siehe~\ref{sec:entwicklung}).
+
+Die erste Invariante, \textbf{Kongruenz-Invariante} genannt, legt fest, dass die Äquivalenzrelation über E-Nodes die Eigenschaft der Kongruenzrelation erfüllen muss.
+Zwei kongruente E-Nodes müssen also in derselben E-Class sein und eine E-Node kann nicht in zwei E-Classes gleichzeitig sein.
+Kongruenz bedeutet in diesem Zusammenhang, dass zwei äquivalente E-Nodes $a, b$ in ihrer Funktion gleich sind, also z.B. gilt: $(a * 2) / 2 \Leftrightarrow (b * 2) / 2$.
+
+Die zweite Invariante, \textbf{Hashmap-Invariante} genannt, verfügt, dass die Hashmap $\mathbf{H}$ alle kanonischen E-Nodes zu ihren EClass-IDs abbildet.
+Damit kann eine E-Class gefunden werden, die eine kongruente E-Node enthält. \textit{Kanonisch} meint hier, dass die EClass-IDs einer E-Node die Repräsentanten ihrer Äquivalenzklassen sind.
 
 \subsection{Equality Saturation}
 

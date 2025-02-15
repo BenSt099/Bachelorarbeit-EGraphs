@@ -28,24 +28,13 @@ Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl s
 oder auf nichts. Mithilfe dieser Klasse kann nachher ein ganzer Baum dargestellt werden. Dazu braucht man nur den Wurzelknoten des Baumes abspeichern, um über dessen Kinder
 Zugriff auf den gesamten Baum zu bekommen. 
 
-Über die Klasse \textit{AbstractSyntaxTree} kann aus einem Ausdruck ein AST erstellt werden. Sei der Ausdruck $(a * 2) / 2$ als Beispiel gegeben.
-Entsprechend wird die Klasse mit einem Ausdruck initialisiert, der direkt durch die Methode \textit{\_process\_expression(self, expression)} verarbeitet wird.
-Die Methode gibt den Wurzelknoten des erstellten AST zurück, der im Attribut \textit{root\_node} der Klasse abgespeichert wird.
-Anschließend wird der AST in ein String-Format gebracht und im zweiten Attribut \textit{string\_representation} abgespeichert.
-Das Umwandeln eines AST in einen String übernimmt die Methode~(Z. \ref{astpreorder}) \textit{\_preorder(self, ast\_node)}. Sie startet mit dem Wurzelknoten (\textit{root\_node})
-und durchläuft den AST in Preorder-Traversierung. Dabei werden die Schlüssel der Knoten an einen String angehangen. Zusätzlich wird eine öffnende Klammer
-angehangen, wenn ein Knoten zwei Kinder hat und eine schließende Klammer, wenn beide Kinder bearbeitet wurden. Dadurch kann der eingegebene Ausdruck zurückerhalten werden, falls
-dieser dem korrekten Format entsprach.
+Durch die Klasse \textit{AbstractSyntaxTree} wird ein Ausdruck in einen AST transformiert. Sei der Ausdruck $(a * 2) / 2$ als Beispiel gegeben.
+Dieser muss vom Benutzer zuerst in \textit{prefix}-Notation umgeschrieben werden, wodurch der Ausdruck $(/\; (* \;a \;2) \;2)$ entsteht. Das erleichtert die Transformation.
+Entsprechend wird die Klasse mit diesem Ausdruck initialisiert, der durch die Methode \textit{\_process\_expression(self, expression)} verarbeitet wird.
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{AbstractSyntaxTree}, label={lst:ast}]
 class AbstractSyntaxTree:
-    # ... __init__ und __str__  weggelassen 
-
-    def _preorder(self, ast_node): |\label{astpreorder}|
-        # ...
-        self._preorder(ast_node.left)
-        self._preorder(ast_node.right)
-        # ...
+    # __init__, __str__ und _preorder weggelassen 
 
     def _process_expression(self, expression): |\label{astprocess}|
         root_ast_node = None
@@ -60,7 +49,7 @@ class AbstractSyntaxTree:
                 else:
                     last_ast_node = stack[-1]
                     ast_node = AbstractSyntaxTreeNode()
-                    # ...
+                    # drei weitere Fälle, je nach Zustand des TOS
                     stack.append(ast_node)
             elif character in ("/", "*", "+", "-"): |\label{ast1}|
                 last_ast_node = stack[-1]
@@ -72,7 +61,7 @@ class AbstractSyntaxTree:
                 word = ""
             elif (character == " " or character == ')') and word != "": |\label{ast3}|
                 last_ast_node = stack[-1]
-                # ...
+                # vier weitere Fälle, je nach Zustand des aktuellen TOS
                 if character == ")":
                     stack.pop()
                 word = ""
@@ -85,10 +74,9 @@ class AbstractSyntaxTree:
         return root_ast_node
 \end{lstlisting}
 
-
-
 Die Methode~(Z. \ref{astprocess}) \textit{\_process\_expression(self, expression)} initialisiert drei lokale Variablen.
-Die erste Variable \textit{root\_ast\_node} speichert den Wurzelknoten des Baumes, den die Methode später zurückgibt. Die zweite Variable \textit{stack} speichert an der 
+Die erste Variable \textit{root\_ast\_node} speichert den Wurzelknoten des Baumes, den die Methode später zurückgibt.
+Die zweite Variable \textit{stack} speichert an der 
 Position \textbf{Top of Stack} (TOS) den aktuell zu bearbeitenden Knoten. Die dritte Variable \textit{word} ist ein leerer String, der als kurzzeitiger Zwischenspeicher verwendet wird,
 wenn Variablen, Zahlen oder Operationen aus mehreren Zeichen bestehen.
 Der String wird von links nach rechts Zeichen für Zeichen verarbeitet, wobei sieben Fälle unterschieden werden.
@@ -98,9 +86,24 @@ Der String wird von links nach rechts Zeichen für Zeichen verarbeitet, wobei si
     \begin{center}
       \includegraphics[scale=1.2]{../fig/ast.pdf}
     \end{center}
-    \caption{Der Abstract Syntax Tree für den Ausdruck $(a * 2) / 2$}
+    \caption{Der AST für den Ausdruck $(a * 2) / 2$}
     \label{fig:astexp}
 \end{wrapfigure}
+
+Fall eins~(Z.~\ref{ast0}) sorgt für die Erstellung eines neuen Knotens im Baum, da nach einer Klammer immer eine Operation folgt, die zwei Argumente hat.
+Daher sorgt Fall zwei~(Z.~\ref{ast1}) dafür, dass der entsprechende Schlüssel dem letzten Knoten, der TOS ist, zugewiesen wird. 
+Im dritten Fall~(Z.~\ref{ast2}) werden die beiden Shift-Operatoren ($<<, >>$) behandelt, die zwei Zeichen lang sind. Darum werden diese Operatoren separat behandelt und müssen
+vom Zwischenspeicher \textit{word} Gebrauch machen.
+Im vierten Fall~(Z.~\ref{ast3}) werden Variablen und Zahlen verarbeitet und eventuell auch Knoten vom Stack genommen.
+Fall fünf~(Z.~\ref{ast4}) behandelt einen ähnlichen Fall. Hierbei symbolisiert die schließende Klammer und der leere Zwischenspeicher, dass die Operation mit den zwei Argumenten abgeschlossen ist. 
+Der sechste Falls~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
+Im siebten Fall~(Z.~\ref{ast6}) werden alle Variablen und Zahlen verarbeitet.
+
+Nach der Beendigung der Methode gibt sie den Wurzelknoten des erstellten AST zurück, der im Attribut \textit{root\_node} der Klasse abgespeichert wird.
+In Abbildung~\ref{fig:astexp} wird der fertige AST gezeigt.
+Der \textit{ASTNode} mit dem Schlüssel $/$ fungiert dabei als \textit{root\_node}.
+Die Klasse stellt weitere Methoden für eine Verifikation bereit, die den AST wieder in einen String transformieren. Dieser kann dann mit dem Original-String verglichen werden.
+
 
 % Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
 % dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
@@ -122,13 +125,11 @@ Der String wird von links nach rechts Zeichen für Zeichen verarbeitet, wobei si
 
 
 
+\subsubsection{E-Node}
 
-
-
-\subsubsection{ENode}
-
-Die Implementierung einer \textit{E-Node} kann ohne weitere Modifikationen implementiert werden. Hierzu dient die Klasse \textit{ENode} (Listing~\ref{lst:enode}).
-Ihre werden zwei Parameter übergeben, ein Schlüssel und eine Liste von EClass-IDs als Strings, die sie als ihre Attribute speichert.
+Zur Umsetzung von E-Nodes wird eine weitere Klasse \textit{ENode} (Listing~\ref{lst:enode}) eingeführt. Dieses Vorgehen dient zur strikten Trennung der Komponenten und 
+spart darüber hinaus unnötige Attribute.
+Ihr werden zwei Parameter übergeben: ein Schlüssel und eine Liste von EClass-IDs als Strings, die sie als ihre Attribute speichert.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{ENode}, label={lst:enode}]
 class ENode:
@@ -137,10 +138,17 @@ class ENode:
         self.arguments = arguments
 \end{lstlisting}
 
-\subsubsection{EClass}
+\subsubsection{E-Class}
 
-Für Erzeugung von \textit{E-Classes} ist die Klasse \textit{EClass} (Listing~\ref{lst:eclass}) verantwortlich. Durch die Initialisierung wird eine UUID als die EClass-ID generiert 
-und im Attribut \textit{id} gespeichert. Zusätzlich werden zwei Sets erzeugt, eines für die E-Nodes, die die Klasse enthält, und eines für die Elternklassen.
+Für Erzeugung von \textit{E-Classes} ist die Klasse \textit{EClass} (Listing~\ref{lst:eclass}) verantwortlich. 
+Jede E-Class muss eindeutig identifiziert werden können, um eine E-Node der richtigen E-Class hinzuzufügen.
+Darüber hinaus ist es für das Mergen von E-Classes notwendig, sie eindeutig auseinander halten zu können.
+Dafür wird die Klasse mit einer UUID als ihre EClass-ID initialisiert. Dieser Ansatz stammt spezifisch aus~\cite{2021-egg}
+und kann daher bei anderen Implementierungen variieren.
+
+Zusätzlich werden die zwei Sets für E-Nodes und Elternklassen erzeugt.
+Im Set für E-Nodes werden alle Knoten gespeichert, die zu dieser Klasse gehören.
+Die Elternklassen werden für den \textit{repair}-Schritt benötigt.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}, label={lst:eclass}]
 # ... 
@@ -158,24 +166,23 @@ Die Klasse \textit{RewriteRule} (Listing~\ref{lst:rr}) dient als Repräsentant e
 rechten Ausdruck übergeben. Die beiden Ausdrücke werden in AST umgewandelt. Die Attribute \textit{expr\_lhs} und \textit{expr\_rhs} speichern deshalb nur die Wurzelknoten der ASTs.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}, label={lst:rr}]
-# ... 
-
+# Importe ausgelassen 
 class RewriteRule:
     def __init__(self, name, expr_lhs, expr_rhs):
         self.name = name
         self.expr_lhs = AbstractSyntaxTree(expr_lhs)
         self.expr_rhs = AbstractSyntaxTree(expr_rhs)
 
-    # ... 
+    # __str__ Methode weggelassen 
 \end{lstlisting}
 
 \subsubsection{EGraph}
 
-Mit den bereits definierten Klassen kann jetzt die wichtigste Klasse der Komponente definiert werden. Die Init-Methode der Klasse \textit{EGraph} (Listing~\ref{lst:egraph})
+Mit den bereits definierten Klassen kann jetzt die wichtigste Klasse der Komponente erstellt werden. Die Init-Methode der Klasse \textit{EGraph} (Listing~\ref{lst:egraph})
 legt eine Union-Find Datenstruktur \textit{u} und zwei Dictionaries \textit{m} und \textit{h} an.
 
 \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:egraph}]
-# ... 
+# Importe ausgelassen 
 class EGraph:
     def __init__(self):
         self.u = DisjointSet()
@@ -185,24 +192,22 @@ class EGraph:
         self.version = 0
         self.str_repr = ""
         self.is_saturated = False
-    # ...
+    # Methoden werden später behandelt
 \end{lstlisting} 
-
-Die nächsten sieben Methoden statten den E-Graph mit Basisfunktionalität aus.
 
 
 % \begin{wrapfigure}[5]{r}{0.6\textwidth}
 \begin{wrapfigure}{r}{0.6\textwidth}
-%\vspace{-10mm}
+\vspace{-5mm}
 \hspace{3mm}
 \begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
-def _add(self, enode):
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods1}]
+def _add(self, enode): |\label{lst:add}|
     enode = self._canonicalize(enode)
-    # ... 
+    # weitere Fälle 
     elif enode in self.h.keys():
         return self.h[enode]
-    # ... 
+    # weitere Fälle 
     else:
         self.version += 1
         eclass_id = self._new_singleton_eclass(enode)
@@ -210,35 +215,20 @@ def _add(self, enode):
             self.m[child].parents.add((enode, eclass_id))
         self.h[enode] = eclass_id
         return eclass_id
-\end{lstlisting} 
-\end{minipage}
-\end{wrapfigure}
 
-Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
-Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
-da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
-Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
-Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
-da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
+def add_node(self, ast_root_node): |\label{lst:addnode}|
+    # aus Platzgründen ausgelassen
 
+def _new_singleton_eclass(self, enode): |\label{lst:add}|
+    # aus Platzgründen ausgelassen
+    
+def _canonicalize(self, enode): |\label{lst:canonicalize}|
+    # aus Platzgründen ausgelassen
 
-\begin{wrapfigure}{r}{0.6\textwidth}
-    %\vspace{-10mm}
-\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods}]
-def _new_singleton_eclass(self, enode):
-    new_eclass = EClass()
-    new_eclass.nodes.add(enode)
-    self.u.add(new_eclass.id)
-    self.m[new_eclass.id] = new_eclass
-    return new_eclass.id
+def _find(self, eclass_id): |\label{lst:find}|
+    # aus Platzgründen ausgelassen
 
-def _canonicalize(self, enode):
-    return ENode(enode.key, [self._find(child) for child in enode.arguments])
-
-def _find(self, eclass_id):
-    return self.u.__getitem__(eclass_id)
-
-def merge(self, eid1, eid2):
+def merge(self, eid1, eid2): |\label{lst:merge}|
     if self._find(eid1) == self._find(eid2):
         return self._find(eid1)
     self.version += 1
@@ -246,20 +236,119 @@ def merge(self, eid1, eid2):
     new_id = self._find(eid1)
     self.pending.append(new_id)
     return new_id
-
-def rebuild(self):
-    for eclass in set([self._find(eclass) for eclass in self.pending]):
-        self._repair(eclass)
-    self.pending = []
 \end{lstlisting} 
+\end{minipage}
 \end{wrapfigure}
 
-Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
-Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
-da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
-Während der Server Anfragen der Benutzeroberfläche beantwortet, regelt der Service im Hintergrund die Erstellung und Verwaltung von E-Graphs.
-Die schrittweise Darstellung von Veränderungen des E-Graphs stellt das Kernstück der Anwendung dar. Darum wird dieses Feature in den folgenden Abschnitten bevorzugt behandelt,
-da die meisten anderen Funktionen des Service auch ohne Erklärung verstanden werden können.
+In Listing~\ref{lst:methods1} und~\ref{lst:methods2} werden sieben Methoden definiert, die den E-Graph mit der Basisfunktionalität ausstatten.
+Als Beispiel sei hier wieder der Ausdruck $((a * 2) / 2)$ gegeben. Nachdem dieser in einen AST umgewandelt wurde, wird er jetzt durch den
+Wurzelknoten des AST an die Methode \textit{add\_node} übergeben. Diese erstellt eine E-Node, fügt sie mit der Methode \textit{\_add}
+dem E-Graph hinzu und ruft sich dann rekursiv auf die Kinderknoten auf. Damit wird der gesamte AST dem E-Graph hinzugefügt.
+
+Die Methode \textit{\_add} ruft zuerst \textit{\_canonicalize} auf, da sich der E-Graph in der Zwischenzeit geändert haben könnte.
+Diese Methode erstellt eine neue E-Node mit aktualisierten EClass-IDs, um die Repräsentanten der E-Classes herauszufinden.
+Dazu wird \textit{\_find} aufgerufen, die in der Union-Find Datenstruktur den aktuellen Repräsentanten heraussucht.
+Anschließend wird überprüft, ob die E-Node bereits vorhanden ist. Falls das der Fall ist, wird deren EClass-ID zurückgegeben.
+Ansonsten wird durch \textit{\_new\_singleton\_eclass} eine neue E-Class erstellt und dem E-Graph hinzugefügt. Dabei werden die Elternreferenzen
+der E-Nodes aktualisiert, was später für den \textit{rebuild}-Prozess wichtig wird.
+
+Die Methode \textit{merge} vereinigt zwei E-Classes über ihre EClass-ID. Dazu wird der Vorteil der Union-Find-Datenstruktur ausgenutzt. Die beiden EClass-IDs
+landen in derselben Partition. Danach wird der (womöglich neue) Repräsentant der E-Class herausgefunden und markiert.
+
+Durch das Mergen einzelner E-Classes können die Invarianten des E-Graphs verletzt werden. Die Methoden \textit{rebuild} und \textit{repair} dienen zum Aufrechterhalten
+dieser Invarianten.
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+\vspace{-5mm}
+\hspace{3mm}
+\begin{minipage}[t]{\linewidth}
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods2}]
+def rebuild(self): |\label{lst:rebuild}|
+    for e_id in set([self._find(e_id) for e_id in self.pending]):
+        self._repair(e_id)
+    self.pending = []
+
+def _repair(self, eclass_id):
+    for p_node, p_eclass in self.m[eclass_id].parents:
+        if p_node in self.h.keys():
+            self.h.pop(p_node)
+        p_node = self._canonicalize(p_node)
+        self.h[p_node] = self._find(p_eclass)
+    new_parents = set()
+    for p_node, p_eclass in self.m[eclass_id].parents:
+        p_node = self._canonicalize(p_node)
+        if p_node in [new_parent[0] for new_parent in new_parents]:
+            for new_p_enode, new_p_eclass_id in new_parents:
+                if new_p_enode == p_node:
+                    self.merge(p_eclass, new_p_eclass_id)
+        new_parents.add((p_node, self._find(p_eclass)))
+    self.m[self._find(eclass_id)].parents = new_parents
+\end{lstlisting} 
+\end{minipage}
+\end{wrapfigure}
+
+In der Methode \textit{\_rebuild} wird für jede E-Class ihr Repräsentant (die kanonische EClass-ID) heraussucht und dann der Methode \textit{\_repair} übergeben. 
+
+
+
+
+% - für jede E-Class aus pending wird der Repräsentant (die kanonische ID) heraussucht und dann repair übergeben
+
+
+
+% \begin{wrapfigure}{r}{0.6\textwidth}
+% \vspace{-5mm}
+% \hspace{3mm}
+% \begin{minipage}[t]{\linewidth}
+% \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
+% def apply_rules(rules, egraph):
+%     debug_info = []
+%     eclasses = egraph.get_eclasses()
+%     list_of_matches = []
+%     for rule in rules:
+%         for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
+%             list_of_matches.append((rule, eclass_id, environment))
+%     for rule, eclass_id, environment in list_of_matches:
+%         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
+%         egraph.merge(eclass_id, new_eclass_id)
+%         egraph.rebuild()
+%     egraph.is_saturated = False
+%     return egraph, debug_info
+
+% def equality_saturation(rules, eterm_id, egraph):
+%     debug_information = []
+%     best_term = ""
+%     timeout = 0
+%     if not egraph.is_saturated:
+%         # Verarbeitung der Debuginformationen
+%         while True and timeout < 5:
+%             v = egraph.version
+%             timeout += 1
+%             best_term = _extract_term(eterm_id, egraph)
+%             # Verarbeitung der Debuginformationen
+%             egraph, debug = apply_rules(rules, egraph)
+%             # Verarbeitung der Debuginformationen
+%             if v == egraph.version:
+%                 break
+%     return egraph, debug_information, best_term
+% \end{lstlisting} 
+% \end{minipage}
+% \end{wrapfigure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

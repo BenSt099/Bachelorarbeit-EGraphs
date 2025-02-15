@@ -52,6 +52,8 @@
 \definecolor{hhuorange}{HTML}{ee7f00} % Orange
 \definecolor{hhured}{HTML}{be0a26} % Rot
 
+\RequirePackage{geometry}
+
 \RequirePackage{tikz}
 \RequirePackage{pgf,pgfplots}
 %% Setup of colour cylce lists for pgfplots
@@ -190,6 +192,7 @@
 
 \if@titlepage
   \renewcommand\maketitle{
+    \newgeometry{left=1.15in}
     \begin{titlepage}%
       \let\footnotesize\small
       \let\footnoterule\relax
@@ -202,6 +205,7 @@
       \vfil\null
       \thispagestyle{empty}
     \end{titlepage}%
+    \restoregeometry
     \setcounter{footnote}{0}%
     % \global\let\thanks\relax
     % \global\let\maketitle\relax
@@ -317,7 +321,7 @@
     \@endparpenalty\@M
   \end{center}%
 
-  Hiermit versichere ich
+  Hiermit versichere ich,
   die vorliegende \@degree{}arbeit selbstst\"andig verfasst und keine anderen
   als die angegebenen Quellen und Hilfsmittel benutzt zu haben.
   Alle Stellen, die aus den Quellen entnommen wurden,

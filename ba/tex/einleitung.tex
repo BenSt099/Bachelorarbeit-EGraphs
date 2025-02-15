@@ -12,7 +12,7 @@ Häufig ist der Compiler für diese Optimierung zuständig, da manche Optimierun
 Der Compiler kann verschiedene Techniken anwenden, zum Beispiel Teile des Zwischencodes (engl. \textit{Intermediate Representation}) durch effizientere zu ersetzen.
 Findet diese Ersetzung sequentiell statt, tritt das sogenannte \textit{Phase Ordering Problem} auf. 
 Dabei werden Ersetzungen basierend auf dem momentan optimalsten Ergebnis vorgenommen, ohne zukünftige Verbesserungen miteinzubeziehen.
-Die Kette an Optimierungen endet entsprechend in einem lokalen Optimum~\cite{phaseorder-2009}.
+Die Kette an Optimierungen kann daher in einem lokalen Optimum enden~\cite{phaseorder-2009}.
 Neben Backtracking- und Brute-Force-Methoden sind \textit{E-Graphs} eine Möglichkeit, dieses Problem zu umgehen. 
 
 \noindent Die Abkürzung \textit{E-Graph} steht für \textit{Equality-} oder \textit{Equivalence-Graph} und beschreibt eine Datenstruktur, die es
