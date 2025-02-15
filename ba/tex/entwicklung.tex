@@ -104,7 +104,6 @@ In Abbildung~\ref{fig:astexp} wird der fertige AST gezeigt.
 Der \textit{ASTNode} mit dem Schlüssel $/$ fungiert dabei als \textit{root\_node}.
 Die Klasse stellt weitere Methoden für eine Verifikation bereit, die den AST wieder in einen String transformieren. Dieser kann dann mit dem Original-String verglichen werden.
 
-
 % Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
 % dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
 % Nach einer öffnenden Klammer wird eine arithmetische Operation erwartet. 
@@ -121,9 +120,6 @@ Die Klasse stellt weitere Methoden für eine Verifikation bereit, die den AST wi
 % Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{word} jedoch leer. Der TOS-Knoten wird ebenfalls vom Stack genommen.
 % Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
 % Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
-
-
-
 
 \subsubsection{E-Node}
 
@@ -146,9 +142,10 @@ Darüber hinaus ist es für das Mergen von E-Classes notwendig, sie eindeutig au
 Dafür wird die Klasse mit einer UUID als ihre EClass-ID initialisiert. Dieser Ansatz stammt spezifisch aus~\cite{2021-egg}
 und kann daher bei anderen Implementierungen variieren.
 
-Zusätzlich werden die zwei Sets für E-Nodes und Elternklassen erzeugt.
+Zusätzlich werden zwei Sets für E-Nodes und die Eltern erzeugt.
 Im Set für E-Nodes werden alle Knoten gespeichert, die zu dieser Klasse gehören.
-Die Elternklassen werden für den \textit{repair}-Schritt benötigt.
+Im Eltern-Set werden Tuple gespeichert. Jedes Tuple enthält eine E-Node $x$, die auf diese E-Class zeigt sowie die EClass-ID von $x$.
+Die Referenzen auf Eltern werden für den \textit{rebuild}-Schritt benötigt.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}, label={lst:eclass}]
 # ... 
@@ -178,14 +175,14 @@ class RewriteRule:
 
 \subsubsection{EGraph}
 
-Mit den bereits definierten Klassen kann jetzt die wichtigste Klasse der Komponente erstellt werden. Die Init-Methode der Klasse \textit{EGraph} (Listing~\ref{lst:egraph})
-legt eine Union-Find Datenstruktur \textit{u} und zwei Dictionaries \textit{m} und \textit{h} an.
+Zusammen mit den bereits definierten Klassen kann jetzt die E-Graph-Datenstruktur angelegt werden. Dazu wird in der Init-Methode der Klasse \textit{EGraph} (Listing~\ref{lst:egraph})
+die grundlegenden Datenstrukturen für einen E-Graph erstellt, wobei \textit{u} (Z.\ref{lst:union}) eine Union-Find-Datenstruktur ist.
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:egraph}]
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:egraph}]
 # Importe ausgelassen 
 class EGraph:
     def __init__(self):
-        self.u = DisjointSet()
+        self.u = DisjointSet() |\label{lst:union}|
         self.m = {}
         self.h = {}
         self.pending = []
@@ -201,141 +198,133 @@ class EGraph:
 \vspace{-5mm}
 \hspace{3mm}
 \begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods1}]
+\begin{lstlisting}[language=Python, escapechar=|, caption=Methoden der Klasse \textit{EGraph}, label={lst:methods1}]
+def add_node(self, ast_root_node): |\label{lst:addnode}|
+    # rekursiv Knoten des AST mit _add() zum E-Graph hinzufügen 
+
 def _add(self, enode): |\label{lst:add}|
     enode = self._canonicalize(enode)
     # weitere Fälle 
-    elif enode in self.h.keys():
+    elif enode in self.h.keys(): |\label{lst:add1}|
         return self.h[enode]
     # weitere Fälle 
     else:
         self.version += 1
         eclass_id = self._new_singleton_eclass(enode)
         for child in enode.arguments:
-            self.m[child].parents.add((enode, eclass_id))
+            self.m[child].parents.add((enode, eclass_id)) |\label{lst:add2}|
         self.h[enode] = eclass_id
         return eclass_id
 
-def add_node(self, ast_root_node): |\label{lst:addnode}|
-    # aus Platzgründen ausgelassen
-
-def _new_singleton_eclass(self, enode): |\label{lst:add}|
-    # aus Platzgründen ausgelassen
+def _new_singleton_eclass(self, enode): |\label{lst:single}|
+    # neue E-Class erstellen, enode hinzufügen
     
 def _canonicalize(self, enode): |\label{lst:canonicalize}|
-    # aus Platzgründen ausgelassen
+    return ENode(enode.key, [self._find(child) for child in enode.arguments])
 
 def _find(self, eclass_id): |\label{lst:find}|
-    # aus Platzgründen ausgelassen
+    return self.u.__getitem__(eclass_id)
 
 def merge(self, eid1, eid2): |\label{lst:merge}|
     if self._find(eid1) == self._find(eid2):
         return self._find(eid1)
     self.version += 1
-    self.u.merge(eid1, eid2)
-    new_id = self._find(eid1)
-    self.pending.append(new_id)
+    self.u.merge(eid1, eid2) |\label{lst:merge1}|
+    new_id = self._find(eid1) |\label{lst:merge2}|
+    self.pending.append(new_id) |\label{lst:merge3}|
     return new_id
 \end{lstlisting} 
 \end{minipage}
 \end{wrapfigure}
 
-In Listing~\ref{lst:methods1} und~\ref{lst:methods2} werden sieben Methoden definiert, die den E-Graph mit der Basisfunktionalität ausstatten.
-Als Beispiel sei hier wieder der Ausdruck $((a * 2) / 2)$ gegeben. Nachdem dieser in einen AST umgewandelt wurde, wird er jetzt durch den
-Wurzelknoten des AST an die Methode \textit{add\_node} übergeben. Diese erstellt eine E-Node, fügt sie mit der Methode \textit{\_add}
-dem E-Graph hinzu und ruft sich dann rekursiv auf die Kinderknoten auf. Damit wird der gesamte AST dem E-Graph hinzugefügt.
+In Listing~\ref{lst:methods1} und~\ref{lst:methods2} werden acht Methoden definiert, die für die Basisfunktionalität eines E-Graphs nötig sind.
+Nachdem der Ausdruck in einen AST umgewandelt wurde, wird er der Methode \textit{add\_node} (Z.~\ref{lst:addnode}) übergeben. Die Methode erstellt eine E-Node aus dem Wurzelknoten
+und fügt sie mit \textit{\_add} zum E-Graph hinzu. Die Argumente der E-Node entstehen durch das rekursive Aufrufen der Methode auf den Kindern des Wurzelknotens mit derselben Vorgehensweise.
+Somit wird der gesamte AST dem E-Graph hinzugefügt.
 
-Die Methode \textit{\_add} ruft zuerst \textit{\_canonicalize} auf, da sich der E-Graph in der Zwischenzeit geändert haben könnte.
-Diese Methode erstellt eine neue E-Node mit aktualisierten EClass-IDs, um die Repräsentanten der E-Classes herauszufinden.
-Dazu wird \textit{\_find} aufgerufen, die in der Union-Find Datenstruktur den aktuellen Repräsentanten heraussucht.
-Anschließend wird überprüft, ob die E-Node bereits vorhanden ist. Falls das der Fall ist, wird deren EClass-ID zurückgegeben.
-Ansonsten wird durch \textit{\_new\_singleton\_eclass} eine neue E-Class erstellt und dem E-Graph hinzugefügt. Dabei werden die Elternreferenzen
-der E-Nodes aktualisiert, was später für den \textit{rebuild}-Prozess wichtig wird.
+Die Methode \textit{\_add} (Z.~\ref{lst:add}) ruft zuerst \textit{\_canonicalize} auf, weil der E-Graph geändert worden sein könnte.
+\textit{\_canonicalize} (Z.~\ref{lst:canonicalize}) bildet aus der übergebenen E-Node die kanonische Form und gibt diese zurück.
+Dafür wird wiederum \textit{\_find} (Z.~\ref{lst:find}) aufgerufen, die in der Union-Find-Datenstruktur den aktuellen Repräsentanten heraussucht.
+Anschließend überprüft die \textit{\_add}-Methode, ob die E-Node in kanonischer Form bereits existiert (Z.~\ref{lst:add1}). Falls nicht, wird durch 
+die Methode \textit{\_new\_singleton\_eclass} (Z.~\ref{lst:single}) eine neue E-Class erstellt und dem E-Graph hinzugefügt. Dabei wird die E-Class zu den Eltern
+ihrer Kinder hinzugefügt (Z.~\ref{lst:add2}). Das ist für den \textit{rebuild}-Prozess wichtig.
 
-Die Methode \textit{merge} vereinigt zwei E-Classes über ihre EClass-ID. Dazu wird der Vorteil der Union-Find-Datenstruktur ausgenutzt. Die beiden EClass-IDs
-landen in derselben Partition. Danach wird der (womöglich neue) Repräsentant der E-Class herausgefunden und markiert.
-
-Durch das Mergen einzelner E-Classes können die Invarianten des E-Graphs verletzt werden. Die Methoden \textit{rebuild} und \textit{repair} dienen zum Aufrechterhalten
-dieser Invarianten.
-
-\begin{wrapfigure}{r}{0.6\textwidth}
-\vspace{-5mm}
-\hspace{3mm}
-\begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods2}]
-def rebuild(self): |\label{lst:rebuild}|
-    for e_id in set([self._find(e_id) for e_id in self.pending]):
-        self._repair(e_id)
-    self.pending = []
-
-def _repair(self, eclass_id):
-    for p_node, p_eclass in self.m[eclass_id].parents:
-        if p_node in self.h.keys():
-            self.h.pop(p_node)
-        p_node = self._canonicalize(p_node)
-        self.h[p_node] = self._find(p_eclass)
-    new_parents = set()
-    for p_node, p_eclass in self.m[eclass_id].parents:
-        p_node = self._canonicalize(p_node)
-        if p_node in [new_parent[0] for new_parent in new_parents]:
-            for new_p_enode, new_p_eclass_id in new_parents:
-                if new_p_enode == p_node:
-                    self.merge(p_eclass, new_p_eclass_id)
-        new_parents.add((p_node, self._find(p_eclass)))
-    self.m[self._find(eclass_id)].parents = new_parents
-\end{lstlisting} 
-\end{minipage}
-\end{wrapfigure}
-
-In der Methode \textit{\_rebuild} wird für jede E-Class ihr Repräsentant (die kanonische EClass-ID) heraussucht und dann der Methode \textit{\_repair} übergeben. 
-
-
-
-
-% - für jede E-Class aus pending wird der Repräsentant (die kanonische ID) heraussucht und dann repair übergeben
-
-
+Die Methode \textit{merge} vereinigt zwei E-Classes über ihre EClass-IDs. Dazu werden die Partitionen der Union-Find-Datenstruktur zusammengelegt (Z.~\ref{lst:merge1}) und ein (womöglich)
+neuer Repräsentant bestimmt (Z.~\ref{lst:merge2}), der markiert wird (Z.~\ref{lst:merge3}). Die Markierung ist notwendig, damit im \textit{rebuild}-Schritt die Invarianten wiederhergestellt werden können.
+Nach traditionellem Ansatz (siehe Kapitel~\ref{sec:grundlagen}) würde die \textit{merge}-Methode auch den \textit{rebuild}-Schritt beinhalten. Die Entwickler von \textit{egg} konnten jedoch
+zeigen, dass dieser Schritt ausgelagert werden kann~\cite{2021-egg}.
 
 % \begin{wrapfigure}{r}{0.6\textwidth}
 % \vspace{-5mm}
 % \hspace{3mm}
 % \begin{minipage}[t]{\linewidth}
-% \begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
-% def apply_rules(rules, egraph):
-%     debug_info = []
-%     eclasses = egraph.get_eclasses()
-%     list_of_matches = []
-%     for rule in rules:
-%         for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
-%             list_of_matches.append((rule, eclass_id, environment))
-%     for rule, eclass_id, environment in list_of_matches:
-%         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
-%         egraph.merge(eclass_id, new_eclass_id)
-%         egraph.rebuild()
-%     egraph.is_saturated = False
-%     return egraph, debug_info
+\begin{lstlisting}[language=Python, escapechar=|, caption=\textit{rebuild}- und \textit{repair}-Methode, label={lst:methods2}]
+def rebuild(self): |\label{lst:rebuild}|
+    for e_id in set([self._find(e_id) for e_id in self.pending]): |\label{lst:rebuild1}|
+        self._repair(e_id)
+    self.pending = []
 
-% def equality_saturation(rules, eterm_id, egraph):
-%     debug_information = []
-%     best_term = ""
-%     timeout = 0
-%     if not egraph.is_saturated:
-%         # Verarbeitung der Debuginformationen
-%         while True and timeout < 5:
-%             v = egraph.version
-%             timeout += 1
-%             best_term = _extract_term(eterm_id, egraph)
-%             # Verarbeitung der Debuginformationen
-%             egraph, debug = apply_rules(rules, egraph)
-%             # Verarbeitung der Debuginformationen
-%             if v == egraph.version:
-%                 break
-%     return egraph, debug_information, best_term
-% \end{lstlisting} 
+def _repair(self, eclass_id): |\label{lst:repair}|
+    for p_node, p_eclass in self.m[eclass_id].parents: |\label{lst:repair1}|
+        if p_node in self.h.keys():
+            self.h.pop(p_node)
+        p_node = self._canonicalize(p_node)
+        self.h[p_node] = self._find(p_eclass)
+    new_parents = set()
+    for p_node, p_eclass in self.m[eclass_id].parents: |\label{lst:repair2}|
+        p_node = self._canonicalize(p_node)
+        if p_node in [new_parent[0] for new_parent in new_parents]:
+            for new_p_enode, new_p_eclass_id in new_parents:
+                if new_p_enode == p_node: |\label{lst:repair3}|
+                    self.merge(p_eclass, new_p_eclass_id) |\label{lst:repair4}|
+        new_parents.add((p_node, self._find(p_eclass)))
+    self.m[self._find(eclass_id)].parents = new_parents |\label{lst:repair99}|
+\end{lstlisting} 
 % \end{minipage}
 % \end{wrapfigure}
 
+In der Methode \textit{\_rebuild} (Z.~\ref{lst:rebuild}) werden die EClass-IDs aus \textit{pending} zuerst durch ihre kanonische Form ersetzt. Ein Set vermeidet dabei Duplikate (Z.~\ref{lst:rebuild1}).  
+Damit kann die Anzahl der \textit{\_repair}-Aufrufe reduziert werden.
+Anschließend wird für jede EClass-ID die Methode \textit{\_repair} aufgeufen.
 
+Bei einem \textit{merge} kann es passieren, dass die Eltern der E-Classes kongruent sind und daher ebenfalls gemerged werden müssen. Somit merged die Methode \textit{\_repair} (Z.~\ref{lst:repair}) 
+rekursiv nach oben. Dafür werden zuerst die Eltern und deren Referenz auf die E-Class erneuert (Z~\ref{lst:repair1}), da beim mergen zweier E-Classes eventuell ein anderer Repräsentant
+gewählt wird, wodurch die E-Nodes, die Eltern dieser E-Classes sind, eine falsche kanonische Form aufweisen.
+Danach werden die Eltern neu festgelegt (Z.\ref{lst:repair2} bis \ref{lst:repair99}). Hierbei wird zuerst festgestellt, ob die Eltern bereits vorhanden sind (Z.\ref{lst:repair3}). Ist das der Fall werden sie
+gemerged (Z.\ref{lst:repair4}).
+
+\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
+def apply_rules(rules, egraph):
+    debug_info = []
+    eclasses = egraph.get_eclasses()
+    list_of_matches = []
+    for rule in rules:
+        for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
+            list_of_matches.append((rule, eclass_id, environment))
+    for rule, eclass_id, environment in list_of_matches:
+        new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
+        egraph.merge(eclass_id, new_eclass_id)
+        egraph.rebuild()
+    egraph.is_saturated = False
+    return egraph, debug_info
+
+def equality_saturation(rules, eterm_id, egraph):
+    debug_information = []
+    best_term = ""
+    timeout = 0
+    if not egraph.is_saturated:
+        # Verarbeitung der Debuginformationen
+        while True and timeout < 5:
+            v = egraph.version
+            timeout += 1
+            best_term = _extract_term(eterm_id, egraph)
+            # Verarbeitung der Debuginformationen
+            egraph, debug = apply_rules(rules, egraph)
+            # Verarbeitung der Debuginformationen
+            if v == egraph.version:
+                break
+    return egraph, debug_information, best_term
+\end{lstlisting} 
 
 
 
@@ -487,7 +476,7 @@ zuständig ist.
 
 \subsubsection{Benutzeroberfläche und Dokumentation}
 
-Die Benutzeroberfläche (Abbildung~\ref{fig:website}) startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation und die About-Seite aufgerufen werden.
+Die Benutzeroberfläche (Abbildung~\ref{fig:website}) startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links kann die Dokumentation (Abbildung~\ref{fig:docs}) und die About-Seite aufgerufen werden.
 Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment ist für die Visualisierung von E-Graphs verantwortlich. Das zweite Element ist für \textit{rewrite rules} zuständig, während das dritte 
 die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
 
@@ -497,6 +486,14 @@ die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
 \includegraphics[scale=0.42, angle=90]{../fig/website.png}
 \caption{Website der Anwendung}
 \label{fig:website}
+\end{figure}
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.42, angle=90]{../fig/docs.png}
+\caption{Dokumentation der Anwendung, Abschnitt Installation}
+\label{fig:docs}
 \end{figure}
 \newpage
 
@@ -567,20 +564,6 @@ wiederherstellen. In der Sitzungsdatei wird der Ausdruck gespeichert, durch den 
 bereits auf den E-Graph angewendet wurden und der eventuell extrahierte, optimale Ausdruck.
 Das dritte Untersegment \textbf{Status} ist eine Liste mit Infos, Warnungen und Fehlern, die dem Benutzer als Rückmeldung dienen. Wenn der Benutzer die Änderungen am E-Graph beobachtet, werden
 darüber hinaus weitere Informationen angezeigt. Werden zwei E-Classes gemerged, wird in der Statusleiste angezeigt, um welche E-Classes es sich handelt.  
-
-
-Die Dokumentation wurde unabhängig mit dem Framework \textit{Docusaurus} erstellt. Abbildung~\ref{fig:docs} zeigt den Unterabschnitt Installation der Dependencies.
-
-
-
-\newpage
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.42, angle=90]{../fig/docs.png}
-\caption{Dokumentation der Anwendung, Abschnitt Installation}
-\label{fig:docs}
-\end{figure}
-\newpage
 
 \subsubsection{JavaScript}
 
