@@ -43,6 +43,9 @@ Wendet man die Regel erneut an, tritt ein Fehler in der Darstellung auf. Dabei w
 Kante der E-Node aus gezeichnet, sondern beide starten auf der linken Seite. Es handelt sich hierbei um einen Sonderfall, der nur in dieser Situation auftritt und nicht zu einem 
 Missverständnis des Themas beiträgt. Der Fehler lässt sich durch die Korrektur der entsprechenden Methode beseitigen.
 
+Darüber hinaus muss während der Equality Saturation ein Timeout angegeben werden, um den Prozess unterbrechen zu können. Durch den Zyklus wird immer wieder ein neues \textit{Match}
+im E-Graph gefunden, wodurch sich die Version des E-Graphs ständig ändert. Damit wird eine Endlosschleife erzeugt.
+
 \noindent\textbf{Pfadangabe im Server} Während dem Testen des Servers hat sich herausgestellt, dass der Pfad zum Ordner \textit{static/} unter Testbedingungen abweicht.
 Dementsprechend muss der Pfad erst berechnet werden, und kann nicht durch die Angabe \textit{static/} erreicht werden. Die Lösung stammt aus einem Issue auf 
 \textit{GitHub}~\footnote{\hspace{1.5mm}\url{https://github.com/fastapi/fastapi/issues/3550}}.

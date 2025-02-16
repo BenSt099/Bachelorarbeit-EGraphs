@@ -293,31 +293,31 @@ gewählt wird, wodurch die E-Nodes, die Eltern dieser E-Classes sind, eine falsc
 Danach werden die Eltern neu festgelegt (Z.\ref{lst:repair2} bis \ref{lst:repair99}). Hierbei wird zuerst festgestellt, ob die Eltern bereits vorhanden sind (Z.\ref{lst:repair3}). Ist das der Fall werden sie
 gemerged (Z.\ref{lst:repair4}).
 
-\begin{lstlisting}[language=Python, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
-def apply_rules(rules, egraph):
+\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
+def apply_rules(rules, egraph): |\label{lst:apply}|
     debug_info = []
     eclasses = egraph.get_eclasses()
     list_of_matches = []
-    for rule in rules:
+    for rule in rules: |\label{lst:phase1}|
         for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
             list_of_matches.append((rule, eclass_id, environment))
-    for rule, eclass_id, environment in list_of_matches:
+    for rule, eclass_id, environment in list_of_matches: |\label{lst:phase2}|
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
-        egraph.merge(eclass_id, new_eclass_id)
-        egraph.rebuild()
+        egraph.merge(eclass_id, new_eclass_id) |\label{lst:applymerge}|
+    egraph.rebuild() |\label{lst:applyrebuild}|
     egraph.is_saturated = False
     return egraph, debug_info
 
-def equality_saturation(rules, eterm_id, egraph):
+def equality_saturation(rules, eterm_id, egraph): |\label{lst:eqsat}|
     debug_information = []
     best_term = ""
     timeout = 0
     if not egraph.is_saturated:
         # Verarbeitung der Debuginformationen
-        while True and timeout < 5:
+        while True and timeout < 5: |\label{lst:eqsat1}|
             v = egraph.version
             timeout += 1
-            best_term = _extract_term(eterm_id, egraph)
+            best_term = _extract_term(eterm_id, egraph) |\label{lst:extract}|
             # Verarbeitung der Debuginformationen
             egraph, debug = apply_rules(rules, egraph)
             # Verarbeitung der Debuginformationen
@@ -326,24 +326,27 @@ def equality_saturation(rules, eterm_id, egraph):
     return egraph, debug_information, best_term
 \end{lstlisting} 
 
+Nachdem die grundlegenden Methoden implementiert wurden, werden im Folgenden (Listing~\ref{lst:methods3}) zwei Funktionen eingeführt, mit deren Hilfe Equality Saturation durchgeführt werden kann.
+Die Funktion \textit{apply\_rules} (Z.\ref{lst:apply}) ist für das Anwenden von rewrite rules auf den E-Graph verantwortlich. Der Vorgang kann in zwei Phasen unterteilt werden.
+In der ersten Phase (Z.\ref{lst:phase1}) werden die rewrite rules herausgefiltert, deren linke Seite zu einem Teil des E-Graphs matcht. 
+Die Funktion \textit{\_ematch()} iteriert über alle E-Classes und sucht dabei nach einem Muster, das zur linken Seite der Regel passt. Dabei entsteht eine Umgebung (\textit{environment}).
+Das \textit{environment} ist eine Zuordnung von Variablen der linken Seite der Regel zu E-Classes, die für die Variablen infrage kommen. 
 
+In der zweiten Phase (Z.\ref{lst:phase2})
+wird mit der Methode \textit{\_substitute} die rechte Seite der Regel auf den E-Graph übertragen. Die Methode \textit{\_substitute} funktioniert arbeitet auf ähnliche Weise zur Funktion \textit{add\_node}.
+Der übergebene AST wird rekursiv abgearbeitet, während die Knoten in E-Nodes umgewandelt und dem E-Graph mit \textit{\_add} hinzugefügt werden. Anschließend werden die neu erstellen E-Classes
+mit den E-Classes aus dem environment gemerged (Z.~\ref{lst:applymerge}).
+Nach den Phasen wird einmal \textit{rebuild} ausgeführt (Z.~\ref{applyrebuild}). Wie im Paper~\cite{2021-egg} beschrieben, wurden durch die \textit{merge}-Operationen kurzzeitig die Invarianten verletzt, 
+die aber am Ende von \textit{apply\_rules} wiederhergestellt werden.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Die Funktion \textit{equality\_saturation} (Z.\ref{lst:eqsat}) ist für das Verfahren der Equality Saturation zuständig. Um den E-Graph zu saturieren, werden solange Regeln angewendet, bis
+dieser saturiert oder ein Timeout erreicht wird (Z.~\ref{lst:eqsat1}).
+Der Timeout ist notwendig, da im Falle eines Zyklus im E-Graph (siehe Kapitel~\ref{sec:reflexion}) eine Endlosschleife ausgeführt wird.
+Während der Ausführung wird ein optimaler Ausdruck aus dem E-Graph mit \textit{\_extract\_term} extrahiert (Z.~\ref{lst:extract}).
+Die Funktion \textit{\_extract\_term} berechnet basierend auf einem einfachen Kostenmodell: jede E-Node kostet so viel wie die Summe ihrer Kinder, zuzüglich ihrer Kosten.
+Dabei erhalten E-Nodes ohne Operationen Kosten von null. E-Nodes mit Addition, Subtraktion oder Shift-Operationen
+erhalten Kosten von eins, E-Nodes mit Multiplikation erhalten Kosten zwei und E-Nodes mit Division erhalten Kosten drei.
+Durch diese Berechnung kann der günstigste (optimalste) Ausdruck aus dem E-Graph extrahiert werden.
 
 \subsection{Zweite Komponente: Service}
 
