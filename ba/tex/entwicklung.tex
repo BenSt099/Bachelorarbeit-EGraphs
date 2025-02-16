@@ -28,9 +28,10 @@ Der Schlüssel kann eine arithmetische Operation, eine Variable oder eine Zahl s
 oder auf nichts zeigen. Mithilfe dieser Klasse kann nachher ein ganzer Baum dargestellt werden. Dazu muss lediglich der Wurzelknoten des Baumes abgespeichert werden, um über dessen Kinder
 Zugriff auf den gesamten Baum zu erlangen. 
 
-Durch die Klasse \textit{AbstractSyntaxTree} wird ein Ausdruck in einen AST transformiert. Sei der Ausdruck $(a * 2) / 2$ als Beispiel gegeben.
-Dieser muss von dem Benutzer zuerst in \textit{prefix}-Notation umgeschrieben werden. Dadurch entsteht der Ausdruck $(/\; (* \;a \;2) \;2)$. Dies erleichtert die Transformation.
+Durch die Klasse \textit{AbstractSyntaxTree} wird ein Ausdruck in einen AST transformiert. Sei der Ausdruck $(a \cdot 2) / 2$ als Beispiel gegeben.
+Dieser muss von dem Benutzer zuerst in \textit{prefix}-Notation umgeschrieben werden. Dadurch entsteht der Ausdruck $(/\; (\cdot \;a \;2) \;2)$. Dies erleichtert die Transformation.
 Entsprechend wird die Klasse mit diesem Ausdruck initialisiert, der durch die Methode \textit{\_process\_expression(self, expression)} verarbeitet wird.
+\newpage
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{AbstractSyntaxTree}, label={lst:ast}]
 class AbstractSyntaxTree:
@@ -74,7 +75,7 @@ class AbstractSyntaxTree:
         return root_ast_node
 \end{lstlisting}
 
-Die Methode~(Z. \ref{astprocess}) \textit{\_process\_expression(self, expression)} initialisiert drei lokale Variablen.
+Die Methode~(Z. \ref{astprocess}) \textit{\_process\_expression} initialisiert drei lokale Variablen.
 Die erste Variable \textit{root\_ast\_node} speichert den Wurzelknoten des Baumes, den die Methode später zurückgibt.
 Die zweite Variable \textit{stack} speichert an der 
 Position \textbf{Top of Stack} (TOS) den aktuell zu bearbeitenden Knoten. Die dritte Variable \textit{word} ist ein leerer String, der als kurzzeitiger Zwischenspeicher verwendet wird,
@@ -82,11 +83,11 @@ wenn Variablen, Zahlen oder Operationen aus mehreren Zeichen bestehen.
 Der String wird von links nach rechts Zeichen für Zeichen verarbeitet, wobei sieben Fälle unterschieden werden.
 
 \begin{wrapfigure}{r}{0.4\textwidth}
-    \vspace{-10mm}
+    %\vspace{-10mm}
     \begin{center}
       \includegraphics[scale=1.2]{../fig/ast.pdf}
     \end{center}
-    \caption{Der AST für den Ausdruck $(a * 2) / 2$}
+    \caption{Der AST für den Ausdruck $(a \cdot 2) / 2$}
     \label{fig:astexp}
 \end{wrapfigure}
 
@@ -106,8 +107,8 @@ Die Klasse stellt weitere Methoden für eine Verifikation bereit, die den AST wi
 
 \subsubsection{E-Node}
 
-Zur Umsetzung von E-Nodes wird eine weitere Klasse \textit{ENode} (Listing~\ref{lst:enode}) eingeführt. Dieses Vorgehen dient zur strikten Trennung der Komponenten und 
-und verzichtet außerdem auf unnötige Attribute.
+Zur Umsetzung von E-Nodes wird eine weitere Klasse \textit{ENode} (Listing~\ref{lst:enode}) eingeführt. Dieses Vorgehen dient zur strikten Trennung der Komponenten.
+Außerdem kann auf unnötige Attribute verzichtet werden. 
 Der Klasse \textit{ENode} werden zwei Parameter übergeben: ein Schlüssel und eine Liste von EClass-IDs als Strings, die sie als ihre Attribute speichert.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{ENode}, label={lst:enode}]
@@ -119,16 +120,17 @@ class ENode:
 
 \subsubsection{E-Class}
 
-Für die Erzeugung von \textit{E-Classes} ist die Klasse \textit{EClass} (Listing~\ref{lst:eclass}) verantwortlich. 
-Jede E-Class muss eindeutig identifiziert werden können, um eine E-Node der richtigen E-Class hinzuzufügen.
-Darüber hinaus ist es für das Mergen von E-Classes notwendig, sie eindeutig auseinanderhalten zu können.
-Dafür wird die Klasse mit einer UUID als ihre EClass-ID initialisiert. Dieser Ansatz stammt spezifisch aus~\cite{2021-egg}
+Für die Erzeugung von E-Classes ist die Klasse \textit{EClass} (Listing~\ref{lst:eclass}) verantwortlich. 
+Jede E-Class muss eindeutig identifizierbar sein, um eine E-Node der richtigen E-Class hinzufügen zu können.
+Darüber hinaus ist es für das Mergen von E-Classes notwendig.
+Für eine eindeutige Identifikation wird die Klasse mit einer UUID als ihre EClass-ID initialisiert. Dieser Ansatz stammt spezifisch aus~\cite{2021-egg}
 und kann daher bei anderen Implementierungen variieren.
 
-Zusätzlich werden zwei Sets für E-Nodes und die Eltern erzeugt.
-In dem Set für E-Nodes werden alle Knoten gespeichert, die zu dieser Klasse gehören.
-In dem Eltern-Set werden Tuple gespeichert. Jedes Tuple enthält eine E-Node $x$, die auf diese E-Class zeigt sowie die EClass-ID von $x$.
-Die Referenzen auf Eltern werden für den \textit{rebuild}-Schritt benötigt.
+Weiterhin werden zwei Sets für E-Nodes und die Eltern der E-Class erzeugt.
+Im Set für E-Nodes werden alle Knoten gespeichert, die Teil dieser Klasse sind.
+Das Set mit Eltern der E-Class enthält Tuple. 
+Jedes Tuple enthält eine E-Node $x$, die auf diese E-Class zeigt sowie die EClass-ID von $x$.
+Die Referenzen auf Eltern der E-Class werden für den \textit{rebuild}-Schritt benötigt.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}, label={lst:eclass}]
 # ... 
@@ -142,8 +144,8 @@ class EClass:
 
 \subsubsection{RewriteRule}
 
-Die Klasse \textit{RewriteRule} (Listing~\ref{lst:rr}) dient als Repräsentant einer \textit{rewrite rule}. Als Parameter bekommt sie einen Namen der Regel, einen linken sowie einen 
-rechten Ausdruck übergeben. Die beiden Ausdrücke werden in AST umgewandelt. Die Attribute \textit{expr\_lhs} und \textit{expr\_rhs} speichern deshalb nur die Wurzelknoten der ASTs.
+Die Klasse \textit{RewriteRule} (Listing~\ref{lst:rr}) dient als Repräsentant einer rewrite rule. Als Parameter bekommt sie einen Namen der Regel, einen linken sowie einen 
+rechten Ausdruck übergeben. Die beiden Ausdrücke werden in ASTs umgewandelt. Die Attribute \textit{expr\_lhs} und \textit{expr\_rhs} speichern deshalb nur die Wurzelknoten der ASTs.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{RewriteRule}, label={lst:rr}]
 # Importe ausgelassen 
@@ -175,10 +177,8 @@ class EGraph:
     # Methoden werden später behandelt
 \end{lstlisting} 
 
-
-% \begin{wrapfigure}[5]{r}{0.6\textwidth}
-\begin{wrapfigure}{r}{0.6\textwidth}
-\vspace{-5mm}
+\begin{wrapfigure}[24]{r}{0.6\textwidth}
+\vspace{-7mm}
 \hspace{3mm}
 \begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[language=Python, escapechar=|, caption=Methoden der Klasse \textit{EGraph}, label={lst:methods1}]
@@ -220,16 +220,18 @@ def merge(self, eid1, eid2): |\label{lst:merge}|
 \end{minipage}
 \end{wrapfigure}
 
-In Listing~\ref{lst:methods1} und~\ref{lst:methods2} werden acht Methoden definiert, die für die Basisfunktionalität eines E-Graphs notwendig sind.
+In Listing~\ref{lst:methods1} und~\ref{lst:methods2} werden acht Methoden aus~\cite{devito} definiert, die für die Basisfunktionalität eines E-Graphs notwendig sind.
 Nachdem der Ausdruck in einen AST umgewandelt wurde, wird er der Methode \textit{add\_node} (Z.~\ref{lst:addnode}) übergeben. Die Methode erstellt eine E-Node aus dem Wurzelknoten
 und fügt sie mit \textit{\_add} zum E-Graph hinzu. Die Argumente der E-Node entstehen durch das rekursive Aufrufen der Methode auf den Kindern des Wurzelknotens mit derselben Vorgehensweise.
 Somit wird der gesamte AST dem E-Graph hinzugefügt.
 
 Die Methode \textit{\_add} (Z.~\ref{lst:add}) ruft zuerst \textit{\_canonicalize} auf, weil der E-Graph geändert worden sein könnte.
 \textit{\_canonicalize} (Z.~\ref{lst:canonicalize}) bildet aus der übergebenen E-Node die kanonische Form und gibt diese zurück.
+
 Dafür wird wiederum die Methode \textit{\_find} (Z.~\ref{lst:find}) aufgerufen, die in der Union-Find-Datenstruktur den aktuellen Repräsentanten heraussucht.
+
 Anschließend überprüft die \textit{\_add}-Methode, ob die E-Node in kanonischer Form bereits existiert (Z.~\ref{lst:add1}). Ist dies nicht der Fall, wird durch 
-die Methode \textit{\_new\_singleton\_eclass} (Z.~\ref{lst:single}) eine neue E-Class erstellt und dem E-Graph hinzugefügt. Dabei wird die E-Class zu den Eltern
+die Methode \textit{\_new\_singleton\_eclass} (Z.~\ref{lst:single}) eine neue E-Class erstellt, die E-Node hinzugefügt und in den E-Graph integriert. Dabei wird die E-Class zu den Eltern
 ihrer Kinder hinzugefügt (Z.~\ref{lst:add2}). Dies ist für den \textit{rebuild}-Prozess wichtig.
 
 Die Methode \textit{merge} vereinigt zwei E-Classes über ihre EClass-IDs. Dazu werden die Partitionen der Union-Find-Datenstruktur zusammengelegt (Z.~\ref{lst:merge1}) und ein (womöglich)
@@ -237,10 +239,6 @@ neuer Repräsentant bestimmt (Z.~\ref{lst:merge2}), der markiert wird (Z.~\ref{l
 Nach traditionellem Ansatz (siehe Kapitel~\ref{sec:grundlagen}) beinhaltet die \textit{merge}-Methode auch den \textit{rebuild}-Schritt. Die Entwickler von \textit{egg} konnten jedoch
 zeigen, dass dieser Schritt ausgelagert werden kann~\cite{2021-egg}.
 
-% \begin{wrapfigure}{r}{0.6\textwidth}
-% \vspace{-5mm}
-% \hspace{3mm}
-% \begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[language=Python, escapechar=|, caption=\textit{rebuild}- und \textit{repair}-Methode, label={lst:methods2}]
 def rebuild(self): |\label{lst:rebuild}|
     for e_id in set([self._find(e_id) for e_id in self.pending]): |\label{lst:rebuild1}|
@@ -263,21 +261,20 @@ def _repair(self, eclass_id): |\label{lst:repair}|
         new_parents.add((p_node, self._find(p_eclass)))
     self.m[self._find(eclass_id)].parents = new_parents |\label{lst:repair99}|
 \end{lstlisting} 
-% \end{minipage}
-% \end{wrapfigure}
 
 In der Methode \textit{\_rebuild} (Z.~\ref{lst:rebuild}) werden die EClass-IDs aus \textit{pending} zuerst durch ihre kanonische Form ersetzt. Ein Set vermeidet dabei Duplikate (Z.~\ref{lst:rebuild1}).  
 Damit kann die Anzahl der \textit{\_repair}-Aufrufe reduziert werden.
 Anschließend wird für jede EClass-ID die Methode \textit{\_repair} aufgerufen.
 
-Bei einem \textit{merge} kann es vorkommen, dass die Eltern der E-Classes kongruent sind und daher ebenfalls gemerged werden müssen. Somit merged die Methode \textit{\_repair} (Z.~\ref{lst:repair}) 
-rekursiv nach oben. Dafür werden zuerst die Eltern und deren Referenz auf die E-Class erneuert (Z~\ref{lst:repair1}), da bei dem Merge-Vorgang zweier E-Classes eventuell ein anderer Repräsentant
+Bei dem \textit{Mergen} kann es vorkommen, dass die Eltern der E-Classes kongruent sind und daher ebenfalls gemerged werden müssen. Somit merged die Methode \textit{\_repair} (Z.~\ref{lst:repair}) 
+rekursiv nach oben. Dafür werden zuerst die Eltern und deren Referenz auf die E-Class erneuert (Z.~\ref{lst:repair1}), da bei dem Merge-Vorgang zweier E-Classes eventuell ein anderer Repräsentant
 gewählt wird. Dies führt dazu, dass die E-Nodes, die Eltern dieser E-Classes sind, eine falsche kanonische Form aufweisen.
+
 Danach werden die Eltern neu festgelegt (Z.\ref{lst:repair2} bis \ref{lst:repair99}). Hierbei wird zuerst festgestellt, ob die Eltern bereits vorhanden sind (Z.\ref{lst:repair3}). Ist dies der Fall, werden sie
 gemerged (Z.\ref{lst:repair4}).
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
-def apply_rules(rules, egraph): |\label{lst:apply}|
+def apply_rules(rules, egraph): |\label{lst:applyrules}|
     debug_info = []
     eclasses = egraph.get_eclasses()
     list_of_matches = []
@@ -309,9 +306,9 @@ def equality_saturation(rules, eterm_id, egraph): |\label{lst:eqsat}|
     return egraph, debug_information, best_term
 \end{lstlisting} 
 
-Nachdem die grundlegenden Methoden implementiert wurden, werden im Folgenden (Listing~\ref{lst:methods3}) zwei Funktionen eingeführt, mit deren Hilfe Equality Saturation durchgeführt werden kann.
-Die Funktion \textit{apply\_rules} (Z.\ref{lst:apply}) ist für das Anwenden von rewrite rules auf den E-Graph verantwortlich. Der Vorgang kann in zwei Phasen unterteilt werden.
-In der ersten Phase (Z.\ref{lst:phase1}) werden die rewrite rules herausgefiltert, deren linke Seite zu einem Teil des E-Graphs matched. 
+Nachdem die grundlegenden Methoden implementiert wurden, werden im Folgenden (Listing~\ref{lst:methods3}) zwei Funktionen aus~\cite{devito} eingeführt, mit deren Hilfe Equality Saturation durchgeführt werden kann.
+Die Funktion \textit{apply\_rules} (Z.\ref{lst:applyrules}) ist für das Anwenden von rewrite rules auf den E-Graph verantwortlich. Der Vorgang kann in zwei Phasen unterteilt werden.
+In der ersten Phase (Z.\ref{lst:phase1}) werden die rewrite rules herausgefiltert, deren linke Seite zu einem Teil des E-Graphs matchen. 
 Die Funktion \textit{\_ematch()} iteriert über alle E-Classes und sucht dabei nach einem Muster, das zur linken Seite der Regel passt. Dabei entsteht eine Umgebung (\textit{environment}).
 Das \textit{environment} ist eine Zuordnung von Variablen der linken Seite der Regel zu E-Classes, die für die Variablen infrage kommen. 
 
@@ -319,12 +316,12 @@ In der zweiten Phase (Z.\ref{lst:phase2})
 wird mit der Methode \textit{\_substitute} die rechte Seite der Regel auf den E-Graph übertragen. Die Methode \textit{\_substitute} funktioniert auf ähnliche Weise wie die Funktion \textit{add\_node}.
 Der übergebene AST wird rekursiv abgearbeitet, während die Knoten in E-Nodes umgewandelt und dem E-Graph mit \textit{\_add} hinzugefügt werden. Anschließend werden die neu erstellten E-Classes
 mit den E-Classes aus dem environment gemerged (Z.~\ref{lst:applymerge}).
-Nach den Phasen wird einmal \textit{rebuild} ausgeführt (Z.~\ref{lst:applyrebuild}). Wie im Paper~\cite{2021-egg} beschrieben, wurden durch die \textit{merge}-Operationen kurzzeitig die Invarianten verletzt, 
+Nach den Phasen wird einmal \textit{rebuild} ausgeführt (Z.~\ref{lst:applyrebuild}). Wie im Paper~\cite{2021-egg} beschrieben, werden durch die \textit{merge}-Operationen kurzzeitig die Invarianten verletzt, 
 die aber zum Schluss von \textit{apply\_rules} wiederhergestellt werden.
 
 Die Funktion \textit{equality\_saturation} (Z.\ref{lst:eqsat}) ist für das Verfahren der Equality Saturation zuständig. Um den E-Graph zu saturieren, werden solange Regeln angewendet, bis
 dieser saturiert oder ein Timeout erreicht wird (Z.~\ref{lst:eqsat1}).
-Das Timeout ist notwendig, da im Falle eines Zykluses im E-Graph (siehe Kapitel~\ref{sec:reflexion}) eine Endlosschleife ausgeführt wird.
+Das Timeout ist notwendig, da im Falle eines Zyklus im E-Graph (siehe Kapitel~\ref{sec:reflexion}) eine Endlosschleife ausgeführt wird.
 Während der Ausführung wird ein optimaler Ausdruck aus dem E-Graph mit \textit{\_extract\_term} extrahiert (Z.~\ref{lst:extract}).
 Die Funktion \textit{\_extract\_term} berechnet auf der Grundlage eines einfachen Kostenmodelles: Jede E-Node kostet so viel wie die Summe ihrer Kinder, zuzüglich ihrer Kosten.
 Dabei erhalten E-Nodes ohne Operationen Kosten von null. E-Nodes mit Addition, Subtraktion oder Shift-Operationen
@@ -462,7 +459,7 @@ zuständig ist.
 \subsubsection{Benutzeroberfläche und Dokumentation}
 
 Die Benutzeroberfläche (Abbildung~\ref{fig:website}) startet mit einer Navigation ganz oben auf der Website. Über die angegebenen Links können die Dokumentation (Abbildung~\ref{fig:docs}) und die About-Seite aufgerufen werden.
-Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment ist für die Visualisierung von E-Graphs verantwortlich. Das zweite Segment ist für \textit{rewrite rules} zuständig, während das dritte Segment
+Darunter ist die Anwendung in drei Segmente unterteilt. Das erste Segment ist für die Visualisierung von E-Graphs verantwortlich. Das zweite Segment ist für rewrite rules zuständig, während das dritte Segment
 die Erstellung von E-Graphs und weitere Steuerungselemente beinhaltet.
 
 \newpage
@@ -494,19 +491,20 @@ Der Cursor ermöglicht das Verschieben der Darstellung innerhalb des hellgrauen 
 Zusätzlich verfügt das Segment über den Link \textit{Open in new tab}, durch den
 sich ein neuer Tab mit einer größeren Darstellung des E-Graphs öffnet. Dadurch werden Probleme mit der variierenden Bildschirmgröße von Nutzern umgangen.
 
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{wrapfigure}[16]{r}{0.5\textwidth}
     \vspace{-10mm}
     \begin{center}
       \includegraphics[scale=0.6]{../fig/rewriterulecontrol.png}
     \end{center}
-    \caption{Segment für \textit{rewrite rules}}
+    \caption{Segment für rewrite rules}
     \label{fig:segment2}
 \end{wrapfigure}
 
 Das zweite Segment (Abbildung~\ref{fig:segment2}) besteht aus drei Untersegmenten, die Erstellung, Sicherung und Anwendung von \textit{rewrite rules} regeln. 
 Dabei minimiert der schwarze Pfeil in der rechten oberen Ecke dieses Segment und sorgt bei schmaleren Bildschirmen für eine effizientere Aufteilung des Inhalts.
 Das erste Untersegment \textbf{Create} besteht aus zwei Eingabefeldern und einem Button \textit{Create}, durch die der Benutzer eine Regel eingeben und abschicken kann.
-Im zweiten Untersegment \textbf{Rules} können die Regeln, die zu diesem Zeitpunkt in der Anwendung abgespeichert sind, mit dem \textit{Download}-Button in einer Datei gesichert werden. 
+Im zweiten Untersegment \textbf{Rules} können die Regeln, die zu diesem Zeitpunkt in der Anwendung abgespeichert sind, mit dem \textit{Download}-Button in einer Datei gesichert werden.
+
 Nach einem Neustart der Anwendung können diese durch den \textit{Upload}-Button automatisch wieder zur Anwendung hinzugefügt werden. 
 
 Im dritten Untersegment werden alle Regeln aufgelistet. Möchte der Benutzer eine oder mehrere Regeln anwenden, können diese durch die Checkboxen ausgewählt und durch den 
@@ -532,9 +530,10 @@ Reihe von Änderungen. Durch die anderen zwei Buttons (\textbf{<} und \textbf{>}
 In dem dritten Untersegment \textbf{Extract} kann durch die Betätigung des \textit{Extract}-Buttons der optimale Ausdruck aus dem E-Graph extrahiert und in dem darüber liegenden grauen Feld angezeigt werden.
 Die Prozedur der Extraktion kann danach im Debug-Modus detailliert beobachtet werden. 
 Der Benutzer kann den \textit{Best Term}-Button betätigen, um den optimalen Ausdruck zu kopieren.
+\newpage
 
 \begin{wrapfigure}{r}{0.5\textwidth}
-    \vspace{-10mm}
+    \vspace{-5mm}
     \begin{center}
       \includegraphics[scale=0.6]{../fig/control2.png}
     \end{center}

@@ -12,33 +12,34 @@ In diesem Abschnitt werden einige der Probleme, die während der Entwicklung auf
 
 \noindent\textbf{Kombination zweier Implementierungen} Wie in Kapitel~\ref{sec:grundlagen} erläutert, basiert die vorliegende Implementierung
 auf der Kombination zweier bestehender Ansätze. Für diese Entscheidung gab es mehrere Gründe.
-Einerseits basieren viele Implementierungen, darunter auch \textit{egg}, auf der Standarddefinition von \textit{E-Graphs}, wie sie auch in Kapitel~\ref{sec:grundlagen} vorliegt.
+Einerseits basieren viele Implementierungen, darunter auch \textit{egg}, auf der Standarddefinition von E-Graphs, wie sie auch in Kapitel~\ref{sec:grundlagen} vorliegt.
 Das Google Colab Notebook, das als zweite Quelle dient, setzt aber bereits auf eine modifizierte Variante. Dies könnte zur Verwirrung unter den Studentinnen und Studenten
 führen. Folglich wurde die Implementierung von \textit{egg} der zweiten Quelle vorgezogen.
 
 Andererseits beschreibt das Paper, in dem die Hintergründe zu \textit{egg} erläutert werden~\cite{2021-egg}, nicht genau, wie \textit{E-Matching} und \textit{Extraction} funktionieren.  
 Diese beiden Konzepte konnte allerdings das Notebook zur Verfügung stellen. Somit komplementieren sich die beiden Ansätze.
-Aus der Kombination resultierten jedoch auch einige Probleme. Neben der \textit{Darstellung der Datenstruktur} (siehe unten) mussten mehrere Sonderfälle in der \textit{add}-Methode
-berücksichtigt werden, sodass die Methode insgesamt länger wurde als in den beiden Ansätzen vorgesehen.
+Aus der Kombination resultierten jedoch auch einige Probleme. Neben der \textit{Darstellung der Datenstruktur} (siehe unten) mussten mehrere Sonderfälle in Methoden, wie zum Beispiel in der \textit{add}-Methode,
+berücksichtigt werden. Einige Methoden sind dadurch länger und unübersichtlicher geworden, als die Methoden aus den ursprünglichen Implementierungen. 
+Dies erschwert das das Verständnis für fachfremde Personen, das Debugging sowie die Weiterentwicklung der Software durch andere Entwickler.
 
 \noindent\textbf{Darstellung der Datenstruktur} Nur eine der zwei Implementierungen, auf denen diese Arbeit beruht, verfügt über eine Methode zur Visualisierung der Datenstruktur.
 Die Methode ist kurz und effizient programmiert. Die Darstellung hingegen weist einige Schwächen auf, besonders in Bezug auf Verständlichkeit und Klarheit.
 Diese beiden Aspekte sind jedoch für eine Anwendung, die von unerfahrenen oder fachfremden Personen bedient werden soll, essenziell.
-Außerdem wurde die Methode durch die Kombination der beiden Implementierungen unbrauchbar.
+Außerdem wurde die Methode durch die Kombination der beiden Implementierungen unbrauchbar, da sie Konzepte anders umsetzt und dadurch andere Voraussetzungen notwendig sind.
 Dementsprechend wurde eine eigene Methode \textit{egraph\_to\_dot()} in der Datei \textit{EGraph.py} angefertigt.
 
-Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der \textit{E-Classes} im \textit{DOT}-Format zu kontrollieren.
+Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der E-Classes im DOT-Format zu kontrollieren.
 Daher zeigen die Pfeile einer E-Node eventuell verkehrt herum auf die Klassen. Mithin kann es zu einer falschen Darstellung kommen.
-Zusätzlich musste, aufgrund des Debugging-Features, Code eingefügt werden, der es ermöglicht, \textit{E-Classes} einzufärben.
+Zusätzlich musste, aufgrund des Debugging-Features, Code eingefügt werden, der es ermöglicht, E-Classes einzufärben.
 Diese Anforderungen und Sonderfälle resultierten schließlich in einer Methode mit komplizierterem Code, der 106 Zeilen lang ist.
 
-Daher wurde bei dieser Methode der \textit{PEP 8} Style Guide~\cite{pep} vernachlässigt sowie die Formatierung durch das Werkzeug \textit{Black}~\cite{black} unterlassen.
-Das Testen dieser Methode gestaltete sich ebenfalls schwierig, da der Output ein String im \textit{Dot}-Format ist. Entsprechend bedarf das Testen der Methode
-einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisierungen durch einen Menschen.
+Dies hat zur Folge, dass das Testen der Methode einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisierungen durch einen Menschen bedarf.
+Des Weiteren wurde bei dieser Methode der \textit{PEP 8} Style Guide~\cite{pep} vernachlässigt sowie die Formatierung durch das Werkzeug \textit{Black}~\cite{black} unterlassen.
+Darunter leidet die Übersichtlichkeit und Klarheit des Codes. Dies schafft eine Abhängigkeit zum Entwickler und behindert mögliche Weiterentwicklungen.
 
 \noindent\textbf{Spezialfall: Kreis im E-Graph} Ein E-Graph muss kein \textbf{Directed Acyclic Graph} (DAG) sein, d.h. er kann unter Umständen auch Kreise enthalten. 
 Dementsprechend kann ein E-Graph auch unendlich viele äquivalente Ausdrücke repräsentieren.
-Als Beispiel sei der E-Graph gegeben, der nur den Ausdruck $a$ enthält. Wendet man die Regel $x \Leftrightarrow x * 1$ auf diesen an, entsteht ein Kreis im E-Graph.
+Als Beispiel sei der E-Graph gegeben, der nur den Ausdruck $a$ enthält. Wendet man die Regel $x \Leftrightarrow x \cdot 1$ auf diesen an, entsteht ein Kreis im E-Graph.
 Wendet man die Regel erneut an, tritt ein Fehler in der Darstellung auf. Dabei werden zwei Pfeile, die beide auf die gleiche E-Class zeigen, nicht von der linken und der rechten
 Kante der E-Node aus gezeichnet, sondern starten beide auf der linken Seite. Es handelt sich hierbei um einen Sonderfall, der nur in dieser Situation auftritt und nicht zu einem 
 Missverständnis des Themas beiträgt. Der Fehler lässt sich durch die Korrektur der entsprechenden Methode beseitigen.
@@ -46,9 +47,10 @@ Missverständnis des Themas beiträgt. Der Fehler lässt sich durch die Korrektu
 Darüber hinaus muss während der Equality Saturation ein Timeout angegeben werden, um den Prozess unterbrechen zu können. Durch den Zyklus wird immer wieder ein neues \textit{Match}
 im E-Graph gefunden, wodurch sich die Version des E-Graphs ständig ändert. Damit wird eine Endlosschleife erzeugt.
 
-\noindent\textbf{Pfadangabe im Server} Während der Testphase des Servers hat sich herausgestellt, dass der Pfad zum Ordner \textit{static/} unter Testbedingungen abweicht.
-Dementsprechend muss der Pfad erst berechnet werden, und kann nicht durch die Angabe \textit{static/} erreicht werden. Diese Lösung stammt aus einem Issue auf 
-\textit{GitHub}~\footnote{\hspace{1.5mm}\url{https://github.com/fastapi/fastapi/issues/3550}}.
+\noindent\textbf{Pfadangabe im Server} Während der Testphase des Servers hat sich herausgestellt, dass der Pfad zum Ordner \textit{static/} unter Testbedingungen abweicht, weil
+die Tests in einem anderen Ordner untergebracht sind. Die Angabe \textit{static/} reichte daher nicht aus und die Tests schlugen fehl, weil kein Ordner \textit{static/} gefunden wird, der \textit{gemounted} werden kann. Die Lösung für das Problem stammt aus einem Issue auf 
+\textit{GitHub}~\footnote{\hspace{1.5mm}\url{https://github.com/fastapi/fastapi/issues/3550}}. Demzufolge muss der Pfad abhängig von der Position der Datei mit \textit{realpath} berechnet werden, um
+auf den Ordner zugreifen zu können.
 
 \subsection{Ziel der Bachelorarbeit}\label{sub:ziel}
 
@@ -117,25 +119,26 @@ Zusätzlich wurde der gesamte Code der Anwendung auf \textit{GitHub} veröffentl
 Die Tatsache, dass E-Graphs basierend auf dem Paper implementiert wurden, spricht für eine hohe Zuverlässigkeit der Software.
 Die erstellten Unit-Tests geben weitere Gewissheit über die praktische Umsetzung.
 
-
 \noindent\textbf{Funktionale Eignung} In Abschnitt~\ref{sub:ziel} wurde bereits dargelegt, dass die im Exposé festgehaltenen Anforderungen an die Software erreicht worden sind.
 Die Anwendung bietet Studentinnen und Studenten die Möglichkeit, sich auf interaktive Weise mit E-Graphs und Equality Saturation auseinander zu setzen.
 
-
-
-
-
 \noindent\textbf{Performance} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht priorisiert, da die Software in der Lehre eingesetzt werden sollte
-und somit andere Anforderungen, wie zum Beispiel die Benutzbarkeit, erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Auch die Übertragung eines E-Graphs ins DOT-Format 
-geschieht mit Aufwand. Trotzdem ist die Software in der Lage, Darstellungen flüssig zu rendern und dem Benutzer eine verzögerungsfreie Interaktion mit E-Graphs zu ermöglichen.
+und somit andere Anforderungen, wie zum Beispiel die Benutzbarkeit, erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Dies wurde zu Gunsten einer einfachen Benutzbarkeit
+aber in Kauf genommen.
+Auch die Übertragung eines E-Graphs in das DOT-Format wird durch eine Methode geregelt, die ineffizient arbeitet und sich durch unklaren Code auszeichnet. Trotzdem wird diese Art der Visualisierung
+der anderen~\cite{devito} vorgezogen, weil sie klarer und verständlicher für Studentinnen und Studenten ist.
+Nichtsdestotrotz ist die Software in der Lage, Darstellungen flüssig zu rendern und dem Benutzer eine verzögerungsfreie Interaktion mit E-Graphs zu ermöglichen.
 
-\noindent\textbf{Kompatibilität} Die Software setzt auf bekannte Standards wie dem JSON- und dem DOT-Format und kann daher, mit eventuellen Modifikationen, auch mit anderen Systemen Daten austauschen.
+\noindent\textbf{Kompatibilität} Die Software setzt auf bekannte Standards wie dem JSON- und dem DOT-Format und kann daher, mit eventuellen Modifikationen, auch an andere Systeme gekoppelt werden, die 
+die Software als Unterbau nutzen.
 Außerdem ist die Kommunikation zwischen Server und Weboberfläche so gestaltet, dass auch andere Systeme, wie zum Beispiel eine REST-API oder eine andere Benutzeroberfläche, an die Anwendung anbinden könnten.
 
 \noindent\textbf{Benutzbarkeit} Die Weboberfläche setzt auf eine Website, die mithilfe des Frameworks \textit{Bootstrap}~\cite{bootstrap} übersichtlich gestaltet werden konnte.
 Über die Website lässt sich die Dokumentation abrufen, die als Bedienungsanleitung fungiert und dem Benutzer anhand von Beispielen behilflich ist.
-Bei der Visualisierung von E-Graphs wurde besonders großen Wert auf die Benutzerfreundlichkeit gelegt. Nicht nur lassen sich andere Strukturen der Website für eine bessere Übersicht 
+Bei der Visualisierung von E-Graphs wurde besonders großen Wert auf die Benutzerfreundlichkeit gelegt, um Studentinnen und Studenten den Einstieg in das Thema zu vereinfachen.
+Nicht nur lassen sich andere Strukturen der Website für eine bessere Übersicht 
 einklappen, sondern die Darstellung eines E-Graphs lässt sich vergrößern, verkleinern und verschieben. Es ist auch möglich, die Grafik in einem neuen Tab zu öffnen, damit auch Benutzer
 mit einem kleineren Bildschirm die Anwendung nutzen können.
-Des Weiteren kann ein E-Graph durch das Debugging-Feature in jedem Stadium beobachtet werden. Hilfreiche Statusmeldungen erklären dem Benutzer die Abläufe.
-Es ist auch möglich, eine Session bzw. die \textit{rewrite rules} in einer Datei zu speichern und später hochzuladen, sodass dem Benutzer Zeit erspart wird.
+Des Weiteren kann ein E-Graph durch das Debugging-Feature in jedem Stadium beobachtet werden, wodurch Abläufe während Equality Saturation besser verstanden werden können.
+Hilfreiche Statusmeldungen dienen als zusätzliches Hilfsmittel, um Benutzung der Anwendung zu erleichtern.
+Es ist auch möglich, eine Session bzw. die rewrite rules in einer Datei zu speichern und später hochzuladen, sodass dem Benutzer Zeit erspart wird.
