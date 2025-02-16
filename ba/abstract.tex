@@ -1,21 +1,21 @@
-In der Lehre können Studentinnen und Studenten Inhalte auf unterschiedliche Weise vermittelt bekommen. Ziel ist dabei das Verstehen und Anwenden des Gelernten zu fördern.
+In der Lehre können Studentinnen und Studenten Inhalte auf unterschiedliche Weise vermittelt bekommen. Ziel dabei ist, das Verstehen und Anwenden des Gelernten zu fördern.
 Eine Möglichkeit der Wissensvermittlung besteht darin, den Lernenden ein Werkzeug zur Verfügung zu stellen, mit dem sie das Gelernte interaktiv anwenden können.
 
 Gegenstand dieser Arbeit ist die Entwicklung einer Software, mit deren Hilfe die Konzepte \textbf{E-Graphs} und \textbf{Equality Saturation} vertieft werden können.
-Dazu wurde zuerst grundlegendes, theoretisches Wissen über die beiden Konzepte erläutert. 
+Dazu wurde zuerst grundlegendes theoretisches Wissen über die beiden Konzepte erläutert. 
 Anschließend wurde, basierend auf zwei bereits vorhandenen Implementierungen, die Datenstruktur \textit{E-Graph} sowie das Verfahren \textit{Equality Saturation} in Python realisiert. 
 Darauf aufbauend wurde ein Server konstruiert und eine entsprechende Weboberfläche gestaltet.
 
 Während der Entwicklung wurden mehrere Probleme identifiziert. Zum einen traten durch die Kombination der zwei Ansätze Kompatibilitätsschwierigkeiten auf, wodurch bei manchen
 Methoden Sonderfälle berücksichtigt werden mussten. Zum anderen wurde festgestellt, dass das eingesetzte DOT-Format, in das E-Graphs für die Visualisierung umgewandelt werden sollten, 
-kaum Kontrolle über die Reihenfolge von Komponenten erlaubt. Somit musste die Vorgehensweise angepasst werden, was in komplexerem Code endete.
+kaum Kontrolle über die Reihenfolge von Komponenten erlaubt. Somit musste die Vorgehensweise angepasst werden. Dies resultierte in komplexerem Code.
 
 Die entstandene Anwendung erlaubt Studentinnen und Studenten die Erzeugung von E-Graphs, das Umformen dieser durch Anwendung von \textit{rewrite rules} und das Durchführen
-des Verfahrens der \textbf{Equality Saturation}. Die dahinter liegenden Mechanismen können währenddessen mithilfe des Debugging-Features Schritt für Schritt beobachtet und verstanden werden.
+des Verfahrens der \textbf{Equality Saturation}. Die dahinter liegenden Mechanismen können währenddessen mithilfe des Debugging-Features Schritt für Schritt beobachtet und nachvollzogen werden.
 Die schlicht gestaltete Benutzeroberfläche und die beigefügte Dokumentation erleichtern den Einstieg in die Software. 
 
 Durch die Entwicklung der Software konnte aufgezeigt werden, dass Lernsoftware plattformunabhängig und Open-Source sein sollte, um Lizenzprobleme und Installationshürden zu vermeiden.
-Auch die Verwendung des Browsers zur Interaktion mit Nutzern und die schrittweise Visualisierung von Veränderungen des E-Graphs haben sich bewährt. 
+Zudem haben sich die Verwendung des Browsers zur Interaktion mit Nutzern und die schrittweise Visualisierung von Veränderungen des E-Graphs bewährt. 
 Zusammenfassend konnte in dieser Arbeit eine Vorgehensweise präsentiert werden, die als Vorbild für vergleichbare Lernsoftware dienen kann.
 
 % Weiterentwicklungen der Software könnten sich auf die Implementierung von \textit{EClass Analysis} und den damit verbundenen Techniken oder auf die Optimierung der Erzeugung von

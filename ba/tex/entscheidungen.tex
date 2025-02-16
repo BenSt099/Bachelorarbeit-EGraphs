@@ -2,17 +2,17 @@
 
 \subsection{Python}
 
-Die Auswahl einer Programmiersprache zum Durchführen eines Projektes entscheidet über dessen Potential und Einschränkungen.
+Die Auswahl einer Programmiersprache für die Durchführung eines Projektes entscheidet über dessen Potential und Einschränkungen.
 Zudem bietet jede Programmiersprache unterschiedliche Herangehensweisen und Werkzeuge an, um Probleme lösen zu können.
 Auf Grundlage dieser Gegebenheiten wurde die Programmiersprache \textit{Python} in der Version \textit{3.12} gewählt.
 Dafür gab es folgende Gründe:
 
 \begin{itemize}
     \item Obwohl die Programmiersprache \textit{Python} einen engen Bezug zu Data Science, Machine Learning und ähnlichen Themen hat, gilt sie dennoch als Allzweck-Sprache,
-    die in vielen Situation Anwendung finden kann. Sie ist außerdem bekannt und wird auf allen gängigen Plattformen genutzt, sodass die Platformunabhängigkeit garantiert ist. 
+    die in vielen Situationen Anwendung finden kann. Sie ist außerdem bekannt und wird auf allen gängigen Plattformen genutzt, sodass die Plattformunabhängigkeit garantiert ist. 
     Die Standardbibliothek bietet viele Funktionen und es gibt zahlreiche Bibliotheken, die eine Reihe von verschiedenen Themengebieten behandeln.
     \item \textit{Python} erlaubt durch seine unkomplizierte Speicherverwaltung und eingebaute Garbage Collection das schnelle Konstruieren und Testen von Prototypen.
-    Damit entfällt weniger Zeit auf Implementierungsdetails wie Speicherverwaltung und mehr Zeit auf das übergeordnete Ziel.
+    Damit entfällt weniger Zeit auf Implementierungsdetails, wie Speicherverwaltung, und mehr Zeit auf das übergeordnete Ziel.
 \end{itemize}
 
 
@@ -35,20 +35,20 @@ Dafür gab es folgende Gründe:
 
 Um das Ziel der Anwendung zu erreichen, muss dem Benutzer die Datenstruktur E-Graph visuell angezeigt werden können. 
 Durch die graphenähnliche Struktur der Datenstruktur, die in drei verschiedenen Datenstrukturen festgehalten ist, wurde die Software 
-\textit{Graphviz}~\footnote{\hspace{1.5mm}\url{https://graphviz.org/}} ausgewählt. Folgende Gründe sprachen waren dabei für die Entscheidung ausschlaggebend:
+\textit{Graphviz}~\footnote{\hspace{1.5mm}\url{https://graphviz.org/}} ausgewählt. Folgende Gründe sprachen dabei für die Entscheidung:
 
 % Jeder EGraph besteht aus drei Datenstrukturen. Um diese visuell darstellen zu können, wird eine Software benötigt, die Graphen erzeugen kann.
 % Dazu wurde die Software \textit{Graphviz}~\footnote{\hspace{1.5mm}\url{https://graphviz.org/}} ausgewählt. Folgende Gründe waren dabei ausschlaggebend.
 
 \begin{itemize}
     \item Die Software \textit{Graphviz} ist auf allen gängigen Plattformen verfügbar, weitreichend getestet und Open Source. Außerdem findet sie in einer Vielzahl von Gebieten Anwendung.
-    \item Sie bietet eine allgemeine, abstrakte Grammatik (die sogenannte \textit{DOT}-Sprache) zur Beschreibung von Graphen an. Die \textit{DOT}-Sprache ist, ähnlich wie andere Sprachformate wie
+    \item Sie bietet eine allgemeine, abstrakte Grammatik (die sogenannte \textit{DOT}-Sprache) zur Beschreibung von Graphen an. Die \textit{DOT}-Sprache ist, ähnlich wie andere Sprachformate, wie
     zum Beispiel JSON oder YAML, zu einem Standard geworden. Dementsprechend gibt es auch andere Werkzeuge und Software, die dieses Sprachformat verarbeiten können.
     \item Es gibt viele Pakete, die auf \textit{Graphviz} aufbauen, darunter das Python-Paket \textit{graphviz}~\footnote{\hspace{1.5mm}\url{https://pypi.org/project/graphviz/}}, was nativen Anschluss an die Software ermöglicht. 
-    Daher kann auf das Interagieren mit \textit{Graphviz} über ein CLI verzichtet werden.
+    Daher kann auf die Interaktion mit \textit{Graphviz} über ein CLI verzichtet werden.
     \item \textit{Graphviz} kennt viele gängige Ausgabeformate, wie SVG, PDF oder PNG, in die ein im \textit{DOT}-Format beschriebener Graph exportiert werden kann.
     \item Ein E-Graph muss im Browser des Benutzers angezeigt werden können. Hierzu existiert die JavaScript-Bibliothek \textit{D3}~\footnote{\hspace{1.5mm}\url{https://d3js.org/}}, die, im Zusammenspiel
-    mit einer entsprechenden Bibliothek wie \textit{d3-graphviz}~\footnote{\hspace{1.5mm}\url{https://github.com/magjac/d3-graphviz}}, in der Lage ist, ein E-Graph in \textit{DOT}-Format entgegen zu nehmen,
+    mit einer entsprechenden Bibliothek wie \textit{d3-graphviz}~\footnote{\hspace{1.5mm}\url{https://github.com/magjac/d3-graphviz}}, in der Lage ist, einen E-Graph in dem \textit{DOT}-Format entgegen zu nehmen
     und ihn als SVG zu rendern. Das \textit{SVG}-Format eignet sich dabei sehr gut für die Darstellung auf Websiten.
     % \item Sie bietet eine allgemeine, abstrakte Grammatik an, die sogenannte \textit{Dot}-Sprache, mit deren Hilfe verschiedene Typen von Graphen erstellt werden können. 
     % Die \textit{Dot}-Sprache ist, ähnlich zu anderen Formaten wie JSON oder YAML, zu einem Standard geworden, der auch von anderen Werkzeugen und Software verarbeitet werden kann.
@@ -66,13 +66,13 @@ Im Rahmen dieser Arbeit erschien eine Website, die lokal im Browser läuft, am s
 % In dieser Arbeit stellt eine Website, die lokal im Browser läuft zum Einsatz. Diese Entscheidung ist mit folgenden Argumenten zustande gekommen. 
 
 \begin{itemize}
-    \item Es sind umfangreiche GUI-Bibliotheken für Python vorhanden, darunter PyQt, PySide oder TKinter. Jede von ihnen kommt jedoch mit plattformspezifischen Problemen und Einschränkungen.
+    \item Es sind umfangreiche GUI-Bibliotheken für Python vorhanden, darunter PyQt, PySide oder TKinter. Jede von ihnen weist jedoch plattformspezifische Probleme und Einschränkungen auf.
     Darüber hinaus erscheint die Generierung von dynamischem Inhalt im Browser durch JavaScript (oder darauf basierenden Bibliotheken) deutlich einfacher. Auch die Eigenschaft moderner Browser,
-    das SVG-Format problemos und ohne weitere Dependencies anzeigen zu können, hat sich als Vorteil herausgestellt.
-    \item Eine Website benötigt einen Server im Backend. Auch hier stehen zahlreiche Frameworks zur Verfügung, darunter Flask, Django und FastAPI.
-    \textit{Django} ist weit verbreitet und sehr beliebt, hat aber auch Nachteile. Unter anderem bietet das Framework ein umfangreiches Angebot an, das viele Anwendungsfälle abdeckt.
+    das SVG-Format problemos und ohne weitere Dependencies anzeigen zu können, hat sich als Vorteil erwiesen.
+    \item Eine Website benötigt einen Server im Backend. Zudem stehen hier zahlreiche Frameworks zur Verfügung, darunter Flask, Django und FastAPI.
+    \textit{Django} ist weit verbreitet und bei Entwicklern sehr beliebt, weist aber auch Nachteile auf. Unter anderem bietet das Framework ein umfangreiches Angebot an, das viele Anwendungsfälle abdeckt.
     Dadurch ist die Performance ein oft genannter Kritikpunkt. 
-    Im Gegensatz dazu beinhaltet \textit{FastAPI}~\footnote{\hspace{1.5mm}\url{https://fastapi.tiangolo.com/}} nur essenzielle Funktionen, was das Aufsetzen eines Servers deutlich vereinfacht.
+    Im Gegensatz dazu beinhaltet \textit{FastAPI}~\footnote{\hspace{1.5mm}\url{https://fastapi.tiangolo.com/}} nur essenzielle Funktionen. Dies vereinfacht das Aufsetzen eines Servers deutlich.
     % \item Es gibt umfangreiche GUI-Bibliotheken, wie zum Beispiel PyQt, PySide oder TKinter. Diese bringen jedoch plattformspezifische Probleme und Einschränkungen mit sich.
     % Außerdem ist die dynamische Generierung von Inhalten im Browser mit JavaScript (oder darauf basierenden Bibliotheken) deutlich einfacher.
     % \item Für einen Server im Backend gibt es ebenfalls zahlreiche Frameworks, darunter Flask, Django und FastAPI.
@@ -88,13 +88,13 @@ Die Gestaltung der Benutzeroberfläche basiert auf dem CSS-Framework \textit{Boo
 \textit{Bootstrap} ist leicht zu integrieren und vielfach erprobt worden. Dazu bietet es bereits fertige und optimierte Bausteine, die für Konsistenz sorgen und auf Accessibility getestet sind.
 
 Die Dokumentation wurde mit \textit{Docusaurus}~\cite{docusaurus} in der Version \textit{3.7} erstellt. \textit{Docusaurus} ist ein Static-Site Generator, der sich leicht in
-bestehende Infrastruktur einfügen lässt. Er unterstützt nativ Internationalisierung und die Dokumentation kann in Markdown geschrieben werden. Damit eignet sich \textit{Docusaurus} für diese Arbeit.
+bestehende Infrastruktur einfügen lässt. Er unterstützt nativ Internationalisierung. Die Dokumentation kann in Markdown geschrieben werden. Folglich eignet sich \textit{Docusaurus} für diese Arbeit.
 
 Für die Kommunikation zwischen Server und Benutzeroberfläche wurde kein Framework gewählt. Stattdessen wurden die notwendigen Funktionen von Hand geschrieben. Dies erlaubt eine bessere Kontrolle sowie die
-Reduzierung von unnötigem Code. Zusätzlich sind die meisten JavaScript-Frameworks zu umfangreich für den Zweck der Arbeit und eines der vielen Frameworks auszuwählen ist zeitintensiv. Daher wurde darauf verzichtet.
+Reduzierung von unnötigem Code. Zusätzlich sind die meisten JavaScript-Frameworks zu umfangreich für den Zweck dieser Arbeit. Außerdem nimmt es viel Zeit in Anspruch, ein passendes Framework auszuwählen. Daher wurde darauf verzichtet.
 
 Beim Testen der Anwendung wurde auf \textit{pytest}~\footnote{\hspace{1.5mm}\url{https://docs.pytest.org/}} in der Version \textit{8.3.3} gesetzt.
-\textit{pytest} ist ein sehr bekanntes und verbreitetes Testing-Framework, was sich vor allem durch seine Unkompliziertheit auszeichnet.
+Das Testing-Framework \textit{pytest} ist sehr bekannt, verbreitet und zeichnet sich vor allem durch seine Unkompliziertheit aus.
 Des Weiteren steht \textit{pytest} auch für das Testen von FastAPI-Funktionalität zur Verfügung, was das Testen simplifiziert. 
 
 \subsection{JSON-Format}

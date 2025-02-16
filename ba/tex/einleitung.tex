@@ -1,13 +1,13 @@
 \section{Einleitung}\label{sec:einleitung}
 
-In den folgenden Abschnitten wird das Thema der Arbeit motiviert sowie ihr Ziel definiert.
+In den folgenden Abschnitten wird das Thema der Arbeit dargestellt sowie ihr Ziel definiert.
 Danach wird auf verwandte Arbeiten eingegangen.
 Abschließend wird im letzten Abschnitt der Aufbau der Arbeit geschildert.
 
 \subsection{Motivation}
 
 \noindent In der Informatik nimmt das Optimieren von Ausdrücken eine wichtige Rolle ein. 
-Ausdrücke können in Form von mathematischen Termen vorkommen oder als Programmcode auftreten.
+Diese können in Form von mathematischen Termen vorkommen oder als Programmcode auftreten.
 Häufig ist der Compiler für diese Optimierung zuständig, da manche Optimierungen nicht durch den Programmierer vorgenommen werden können. 
 Der Compiler kann verschiedene Techniken anwenden, zum Beispiel Teile des Zwischencodes (engl. \textit{Intermediate Representation}) durch effizientere zu ersetzen.
 Findet diese Ersetzung sequentiell statt, tritt das sogenannte \textit{Phase Ordering Problem} auf. 
@@ -18,12 +18,12 @@ Neben Backtracking- und Brute-Force-Methoden sind \textit{E-Graphs} eine Möglic
 \noindent Die Abkürzung \textit{E-Graph} steht für \textit{Equality-} oder \textit{Equivalence-Graph} und beschreibt eine Datenstruktur, die es
 erlaubt, äquivalente Ausdrücke kompakt abzuspeichern.
 Ursprünglich wurden sie in der automatisierten Beweisführung eingesetzt~\cite{2021-egg}. Heute finden sie, auch dank \textit{Equality Saturation}, Anwendung in Compilern, in 
-Deep Learning Verfahren~\cite{yang2021} und in Linearer Algebra~\cite{wang2020}.
+Deep Learning Verfahren~\cite{yang2021} und in linearer Algebra~\cite{wang2020}.
 Als Beispiel aus dem Compilerbau dient \textit{Cranelift}~\footnote{\hspace{1.5mm}\url{https://cranelift.dev/}}, ein Compiler Backend, das \textit{E-Graphs} für die Optimierung verwendet.
 
-\noindent \textit{E-Graphs} und \textit{Equality Saturation} sind nicht-triviale Konzepte, die in den letzte Jahren wieder an Wichtigkeit zugenommen haben~\cite[S.~2]{eqsatexploration}.
-Das schrittweise Heranführen von Studentinnen und Studenten an diese Themen erfordert eine Methode, die interaktiv funktioniert, da das Anwenden des Gelernten 
-das Erlernen von Konzepten erleichtert. Damit soll sich diese Bachelorarbeit beschäftigen. 
+\noindent \textit{E-Graphs} und \textit{Equality Saturation} sind nicht-triviale Konzepte, die in den letzte Jahren wieder an Wichtigkeit gewonnen haben~\cite[S.~2]{eqsatexploration}.
+Das schrittweise Heranführen von Studentinnen und Studenten an diese Themen erfordert eine Methode, die interaktiv funktioniert, da die unmittelbare Anwendung des Gelernten 
+das Erlernen von Konzepten erleichtert. Dies wird in der vorliegenden Bachelorarbeit thematisiert. 
 
 \subsection{Ziel der Arbeit}
 
@@ -43,16 +43,16 @@ das Erlernen von Konzepten erleichtert. Damit soll sich diese Bachelorarbeit bes
     \end{flushright}
 \end{center}\vspace{3mm}
 
-Das Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die Studentinnen und Studenten Wissen zu den Themen \textit{E-Graphs} und \textit{Equality Saturation}
-vermittelt. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch praktischer Ebene mit den Themen auseinander setzen zu können.
+Ziel dieser Bachelorarbeit ist es, eine Anwendung für die Lehre zu entwickeln, die Studentinnen und Studenten Wissen zu den Themen \textit{E-Graphs} und \textit{Equality Saturation}
+vermittelt. Dabei sollen sie die Möglichkeit haben, sich sowohl auf theoretischer als auch auf praktischer Ebene mit den Themen auseinander setzen zu können.
 Die Grundlage der theoretischen Ebene bildet diese Arbeit, in der notwendige Hintergrundkenntnisse erarbeitet werden. Außerdem wird ein Einblick in die Implementierung gegeben. 
 Die praktische Ebene besteht aus der Anwendung, mit deren Hilfe Schritt für Schritt aufgezeigt wird, wie \textit{E-Graphs} und \textit{Equality Saturation} funktionieren.
 Für grö{\ss}tmöglichen Nutzen soll die Anwendung zudem plattformunabhängig sein und möglichst nur von \textit{Open-Source-Software} (OSS) Gebrauch machen.
-Damit wird das Problem der unterschiedlichen Betriebssysteme der Studenten umgangen und zeitgleich die Hürden für Erweiterungen gesenkt.
+Damit wird das Problem der unterschiedlichen Betriebssysteme der Studentinnen und Studenten umgangen und zeitgleich die Hürden für Erweiterungen gesenkt.
 
 \subsection{Verwandte Arbeiten}\label{sub:verwandtearbeiten}
 
-Die folgenden Arbeiten haben sich bereits mit den Themen E-Graphs und Equality Saturation beschäftigt und bieten die Grundlage dieser Arbeit.
+Die folgenden Arbeiten haben sich bereits mit den Themen E-Graphs und Equality Saturation beschäftigt und dienen als Grundlage dieser Arbeit.
 
 \noindent\textbf{egg} Das Akronym \textit{egg} bildet sich aus den Wörtern \textit{e-graphs good} und ist eine in der Programmiersprache \textit{Rust} geschriebene Bibliothek.
 Die Bibliothek implementiert die Datenstruktur \textit{E-Graph} und stellt Funktionen zur Manipulation dieser zur Verfügung.
@@ -61,29 +61,29 @@ Da \textit{egg} keine Möglichkeit zur schrittweisen Ausführung von Befehlen bi
 das Projekt und insbesondere auch der Pseudocode vorgestellt werden.
 
 \noindent\textbf{Intro to EGraphs} In diesem Google Colab Notebook~\cite{devito} wurde ein Prototyp basierend auf dem Paper zu \textit{egg} erstellt.
-Das Notebook stammt von Zachary Devito und zeigt auch die Implementierung von Methoden, zu denen es im Paper zu \textit{egg} keine weiteren Informationen gibt. 
-Daher wurde einige der Methoden in dieser Arbeit übernommen.
+Das Notebook stammt von Zachary Devito und zeigt darüber hinaus die Implementierung von Methoden, zu denen es im Paper zu \textit{egg} keine weiteren Informationen gibt. 
+Daher wurden einige der Methoden in dieser Arbeit übernommen.
 
 \subsection{Aufbau der Arbeit}
 
-In diesem Kapitel wurde ein Blick auf die Motivation der Arbeit, ihr Ziel und themenverwandte Arbeiten geworfen. Die restlichen Kapitel sind wie folgt aufgebaut.
+In diesem Kapitel wurden die Motivation der Arbeit, ihr Ziel und themenverwandte Arbeiten dargelegt. Die restlichen Kapitel sind wie folgt aufgebaut:
 
 \noindent {\itshape Kapitel \ref{sec:grundlagen} - Grundlagen}\vspace{-2mm}
 
-In Kapitel zwei werden die nötigen theoretischen Grundlagen vermittelt. Beginnend mit einem naiven Ansatz zur Optimierung, werden schrittweise Verbesserungen
-eingeführt, die schließlich in der Erstellung von \textit{E-Graphs} und das Anwenden von \textit{Equality Saturation} resultieren. 
+In Kapitel zwei werden die notwendigen theoretischen Grundlagen vermittelt. Beginnend mit einem naiven Ansatz zur Optimierung, werden schrittweise Verbesserungen
+eingeführt, die schließlich in der Erstellung von \textit{E-Graphs} und in der Anwendung von \textit{Equality Saturation} resultieren. 
 
 \vspace{6mm}
 
 \noindent {\itshape Kapitel \ref{sec:entscheidungen} - Technologiestack}\vspace{-2mm}
 
-Der Fokus im vierten Kapitel liegt auf den getroffenen Entscheidungen hinsichtlich Softwarelösungen, die in der Arbeit zum Einsatz kamen. Dazu werden Argumente für deren Verwendung erörtert.
+Der Fokus im dritten Kapitel liegt auf den getroffenen Entscheidungen hinsichtlich der Softwarelösungen, die in der Arbeit zum Einsatz kamen. Dazu werden Argumente für deren Verwendung erörtert.
 
 \vspace{6mm}
 
 \noindent {\itshape Kapitel \ref{sec:architektur} - Architektur der Anwendung}\vspace{-2mm}
 
-Im dritten Kapitel wird die Architektur der Anwendung skizziert sowie die Intention hinter einzelnen Komponenten erläutert. Zusätzlich wird die Kommunikation zwischen 
+Im vierten Kapitel wird die Architektur der Anwendung skizziert sowie die Intention hinter einzelnen Komponenten erläutert. Zusätzlich wird die Kommunikation zwischen 
 Server und Weboberfläche beleuchtet. 
 
 \vspace{6mm}
@@ -103,4 +103,4 @@ inwiefern das Ziel der Arbeit erreicht wurde und an welchen Faktoren dies gemess
 
 \noindent {\itshape Kapitel \ref{sec:fazit} - Fazit und Ausblick}\vspace{-2mm}
 
-Im abschließenden Kapitel wird ein Fazit der Arbeit gezogen und ein Ausblick auf mögliche Erweiterungen der Software gegeben.
+Im abschließenden Kapitel wird ein Fazit zu der Arbeit gezogen und ein Ausblick auf mögliche Erweiterungen der Software gegeben.

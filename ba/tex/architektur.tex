@@ -1,6 +1,6 @@
 \section{Architektur der Anwendung}\label{sec:architektur}
 
-Die im letzte Kapitel vorgestellten, theoretischen Konzepte sollen nun in die Praxis umgesetzt werden.
+Die im letzten Kapitel vorgestellten theoretischen Konzepte sollen nun in die Praxis umgesetzt werden.
 Dazu wird in diesem Kapitel die Architektur hinter der Anwendung erläutert sowie die Funktionsweise der Komponenten erklärt.
 
 \subsection{Grundlegende Komponenten}
@@ -14,13 +14,13 @@ Abbildung~\ref{fig:architektur} zeigt den Zusammenhang zwischen diesen Komponent
 
 Die erste Komponente (\textit{E-Graph}) ist für die Erstellung und Verwaltung der E-Graph Datenstruktur zuständig. Dafür existieren sechs Klassen:
 \textit{AbstractSyntaxTreeNode}, \textit{AbstractSyntaxTree}, \textit{RewriteRule}, \textit{ENode}, \textit{EClass} und \textit{EGraph}.
-Die Klasse \textit{EGraph} enthält die Datenstruktur sowie einige weitere Funktionen, wie zum Beispiel das Visualisieren dieser.
-Sie ist abhängig zu vier weiteren Klassen. Die beiden Klassen \textit{ENode} und \textit{EClass} repräsentieren \textit{E-Nodes} und \textit{E-Classes}.
+Die Klasse \textit{EGraph} enthält die Datenstruktur sowie einige weitere Funktionen, wie zum Beispiel die Visualisierung dieser.
+Sie ist abhängig von vier weiteren Klassen. Die beiden Klassen \textit{ENode} und \textit{EClass} repräsentieren \textit{E-Nodes} und \textit{E-Classes}.
 Die Klasse \textit{RewriteRule} verkörpert eine \textit{rewrite rule}, die aus einem linken und einem rechten Ausdruck besteht. Beide Ausdrücke werden in einen AST umgewandelt, 
 um das Anwenden der Regel auf den E-Graph zu vereinfachen.
-Die letzte Abhängigkeit besteht zur Klasse \textit{AbstractSyntaxTree}. Sie stellt einen AST (\textbf{Abstract Syntax Tree}) dar und benötigt dafür eine Klasse, 
+Die letzte Abhängigkeit besteht von der Klasse \textit{AbstractSyntaxTree}. Sie stellt einen AST (\textbf{Abstract Syntax Tree}) dar und benötigt dafür eine Klasse, 
 die die Knoten repräsentiert (\textit{AbstractSyntaxTreeNode}).
-Ein mathematischer Ausdruck, aus dem ein E-Graph entstehen soll, wird zuerst in einen AST umgewandelt, was später die Erstellung des E-Graphs vereinfacht.
+Ein mathematischer Ausdruck, aus dem ein E-Graph entstehen soll, wird zuerst in einen AST umgewandelt. Dies vereinfacht später die Erstellung des E-Graphs.
 
 
 % Die erste Komponente bildet die Klasse \textit{EGraph}. Instanzen dieser Klasse implementieren die Datenstruktur E-Graph. Dazu sind fünf weitere Klassen nötig: 
@@ -35,9 +35,9 @@ Ein mathematischer Ausdruck, aus dem ein E-Graph entstehen soll, wird zuerst in 
 % Die beiden Klassen \textit{ENode} und \textit{EClass} fungieren als Datencontainer, auf die der E-Graph aufbaut.
 
 
-Die zweite Komponente (\textit{Service}) ist für die Interaktion zwischen dem Server und der Datenstruktur verantwortlich. Die zuständige Klasse heißt \textit{EGraphService} und 
-eine Instanz wird beim Start des Servers erzeugt.
-Sie stellt dem Server Funktionen wie zum Beispiel das Debugging zur Verfügung und regelt die Sicherheitsüberprüfungen für Eingaben und Zustände. 
+Die zweite Komponente (\textit{Service}) ist für die Interaktion zwischen dem Server und der Datenstruktur verantwortlich. Die zuständige Klasse heißt \textit{EGraphService}. 
+Von dieser wird eine Instanz beim Start des Servers erzeugt. 
+Sie stellt dem Server Funktionen, wie zum Beispiel das Debugging, zur Verfügung und regelt die Sicherheitsüberprüfungen für Eingaben und Zustände. 
 
 
 % Die zweite Komponente stellt die Klasse \textit{EGraphService} dar. Über sie läuft die Interaktion zwischen dem Server und einer EGraph-Instanz.
@@ -46,7 +46,7 @@ Sie stellt dem Server Funktionen wie zum Beispiel das Debugging zur Verfügung u
 % zu beobachten und Informationen über die Vorgehensweise zu erhalten. 
 
 Die dritte Komponente (\textit{Server}) stellt das Backend der Anwendung dar. Sie enthält eine Datei \textit{server.py}, in der ein mit FastAPI erstellter Webserver
-Anfragen der Weboberfläche entgegennimmt und zur Umsetzung der Anfragen mit den Service interagiert. Da zwischen dem Server und der Weboberfläche Daten ausgetauscht werden
+Anfragen der Weboberfläche entgegennimmt und zur Umsetzung der Anfragen mit dem Service interagiert. Da zwischen dem Server und der Weboberfläche Daten ausgetauscht werden
 müssen, kommunizieren sie über das HTTP-Protokoll, während die Daten im JSON-Format übertragen werden.
 
 % Die dritte Komponente ist der Server (\textit{server.py}). Er bildet die Verbindung zwischen dem Service und der Weboberfläche. Für die Umsetzung wurde auf das Framework 
@@ -77,20 +77,20 @@ Hierzu zeigt Abbildung~\ref{fig:ablauf} die leicht vereinfachte Erstellung eines
 
 % Abbildung~\ref{fig:ablauf} zeigt eine beispielhafte Interaktion zwischen Server, Weboberfläche und Benutzer.
 
-Die Interaktion startet mit der Eingabe eines Ausdrucks und dem Klicken auf den entsprechenden Button (Abb., Schritt 1) durch den Benutzer.
+Die Interaktion startet mit der Eingabe eines Ausdrucks und dem Klicken auf den entsprechenden Button (Abb.~\ref{fig:ablauf}, Schritt 1) durch den Benutzer.
 Das triggert die in JavaScript geschriebene Funktion \textit{create()}. 
-Die Funktion \textit{create()} überprüft zuerst, ob der Service bereits einen E-Graph geladen hat (Abb., Schritt 2-3). Wenn dies der Fall ist, wird der Benutzer
+Die Funktion \textit{create()} überprüft zuerst, ob der Service bereits einen E-Graph geladen hat (Abb.~\ref{fig:ablauf}, Schritt 2-3). Wenn dies der Fall ist, wird der Benutzer
 gefragt, ob er diesen und alle mit ihm verbundenen Daten löschen möchte. Im Beispiel ist dieser Schritt nicht gezeigt.
 Wenn der Benutzer dies bestätigt oder noch kein E-Graph im Service geladen ist, wird die Funktion \textit{createEGraph()} aufgerufen. 
-Sie schickt per \textit{POST}-Request den Inhalt des Eingabefeldes an den Server (Abb., Schritt 4), der sich um die Erstellung kümmert.
-Nach der Erstellung gibt die Antwort des Servers (Abb., Schritt 5) dem Benutzer Auskunft (Abb., Schritt 6), ob das Erstellen des E-Graphs erfolgreich war.
+Sie schickt per \textit{POST}-Request den Inhalt des Eingabefeldes an den Server (Abb.~\ref{fig:ablauf}, Schritt 4), der sich um die Erstellung kümmert.
+Nach der Erstellung gibt die Antwort des Servers (Abb.~\ref{fig:ablauf}, Schritt 5) dem Benutzer Auskunft darüber (Abb.~\ref{fig:ablauf}, Schritt 6), ob das Erstellen des E-Graphs erfolgreich war.
 Im nächsten Schritt muss die Benutzeroberfläche aktualisiert werden, um den E-Graph und die zugehörigen \textit{rewrite rules} darzustellen.
 Dafür ist die Funktion \textit{loadData()} verantwortlich, die auch bei einem erneuten Laden der Website dafür sorgt, dass die Inhalte weiterhin angezeigt werden.
 In zwei Schritten lädt sie einmal den E-Graph und danach die \textit{rewrite rules}.
-Zunächst wird also eine \textit{GET}-Anfrage an den Server geschickt (Abb., Schritt 7), deren Antwort einen Status und die angeforderten Daten beinhaltet (Abb., Schritt 8).
+Zunächst wird also eine \textit{GET}-Anfrage an den Server geschickt (Abb.~\ref{fig:ablauf}, Schritt 7), deren Antwort einen Status und die angeforderten Daten beinhaltet (Abb.~\ref{fig:ablauf}, Schritt 8).
 In den Daten befindet sich der entsprechende E-Graph im \textit{DOT}-Format, der sogleich als SVG gerendert und auf 
-der Weboberfläche angezeigt wird (Abb., Schritt 9).
-Abschließend werden die Regeln durch eine weitere \textit{GET}-Anfrage geladen (Abb., Schritt 10-11). Zuletzt werden sie auf der Benutzeroberfläche gerendert (Abb., Schritt 12).
+der Weboberfläche angezeigt wird (Abb.~\ref{fig:ablauf}, Schritt 9).
+Abschließend werden die Regeln durch eine weitere \textit{GET}-Anfrage geladen (Abb.~\ref{fig:ablauf}, Schritt 10-11). Zuletzt werden sie auf der Benutzeroberfläche gerendert (Abb.~\ref{fig:ablauf}, Schritt 12).
 
 % Die Funktion überprüft zuerst, ob es bereits einen E-Graph gibt (Abb., Schritt 2-3) und fragt, ob der Benutzer
 % diesen und die mit ihm verbundenen Daten löschen will (im Beispiel nicht gezeigt). 
@@ -104,7 +104,7 @@ Abschließend werden die Regeln durch eine weitere \textit{GET}-Anfrage geladen 
 % In der nächsten Anfrage werden die Regeln geladen (Abb., Schritt 10-11) und anschließend auf der Weboberfläche dargestellt (Abb., Schritt 12).
 
 Insgesamt spiegelt die in Abbildung~\ref{fig:ablauf} dargestellte Vorgehensweise den Kommunikationsverlauf bei anderen Funktionen wider.
-Dabei wurde versucht, die Kommunikation mit dem Server möglichst gering und effizient zu halten, wodurch auch auf ein JavaScript-Framework verzichtet wurde (siehe Kapitel~\ref{sec:entscheidungen}).
+Dabei wurde beabsichtigt, die Kommunikation mit dem Server möglichst gering und effizient zu halten. Folglich konnte auf ein JavaScript-Framework verzichtet werden (siehe Kapitel~\ref{sec:entscheidungen}).
 
 \begin{figure}[H]
   \centering

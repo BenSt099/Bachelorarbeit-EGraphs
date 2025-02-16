@@ -3,7 +3,7 @@
 % Es beginnt mit einem naiven Ansatz zur Optimierung von Ausdrücken und leitet zu \textit{E-Graphs} und \textit{Equality Saturation} über.
 
 Dieses Kapitel leitet mit einem naiven Ansatz zur Optimierung ein und diskutiert die daraus entstehenden Nachteile.
-Danach wir schrittweise zu \textit{E-Graphs}
+Danach wird schrittweise zu \textit{E-Graphs}
 übergeleitet und schließlich der Prozess \textit{Equality Saturation} erklärt.
 Die folgenden beiden Abschnitte~\ref{subsec:naiv} und~\ref{subsec:egraphs} stützen sich auf~\cite{cole}. Viele Beispiele wurden aus dieser Quelle übernommen.
 
@@ -12,7 +12,7 @@ Die folgenden beiden Abschnitte~\ref{subsec:naiv} und~\ref{subsec:egraphs} stüt
 Für das naive Optimieren von Ausdrücken wird zuerst das Konzept der \textit{rewrite rules} benötigt. Gegeben sei ein beliebiger mathematischer Ausdruck, z.B.
 $a * 1$. Um eine Umformung dieses Ausdrucks durchführen zu können, kann eine \textit{rewrite rule} auf diesen Ausdruck angewendet werden.
 Als Beispiel sei hier die folgende Regel gegeben: $[\mathbf{1}] x * 1 \Leftrightarrow x$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
-beschreibt ein \textbf{Muster}, das dem Ausdruck entsprechen muss. Das wird als \textit{Matching} bezeichnet. Dabei spielt der Name der Variablen, in diesem Falle $x$, keine Rolle.
+beschreibt ein \textbf{Muster}, das dem Ausdruck entsprechen muss. Dies wird als \textit{Matching} bezeichnet. Dabei spielt der Name der Variablen, in diesem Falle $x$, keine Rolle.
 Der rechte Teil vermittelt, in welche neue Form dieses Muster gebracht werden soll. Wendet man also Regel $[1]$ an,
 ergibt sich: $a * 1  \overset{[2]}{\rightarrow} a$. 
 Eine Regel wie $\frac{x}{x} \Leftrightarrow 1$ \textit{matcht} nicht und würde damit auch nicht angewendet werden können.
@@ -98,8 +98,8 @@ Diese Idee setzt Algorithmus~\ref{alg:ausdruck2} um.
   \end{algorithmic}
 \end{algorithm}
 
-Algorithmus~\ref{alg:ausdruck2} durchläuft ebenfalls eine while-Schleife bis sich keine Änderungen mehr ergeben. In jedem Schleifendurchlauf wird wiederrum die Liste durchlaufen.
-Für jeden Ausdruck der Liste wird festgestellt, ob eine Regel anwendbar ist, und in diesem Fall angewendet. Der Trick ist hierbei den neu erzeugten Ausdruck wieder zur Liste 
+Algorithmus~\ref{alg:ausdruck2} durchläuft ebenfalls eine while-Schleife bis sich keine Änderungen mehr ergeben. In jedem Schleifendurchlauf wird wiederum die Liste durchlaufen.
+Für jeden Ausdruck der Liste wird festgestellt, ob eine Regel anwendbar ist. In diesem Fall wird sie angewendet. Der Trick ist hierbei, den neu erzeugten Ausdruck wieder zur Liste 
 hinzuzufügen. Somit kann am Ende aus einer Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks ein optimaler Ausdruck extrahiert werden.
 Durch das Umgehen des \textit{Phase Ordering Problems} treten indessen zwei neue Probleme auf.
 Der Speicherbedarf des Algorithmus (also die Größe der Liste) lässt sich durch die Konstruktion einer trivialen Situation exponentiell erhöhen.
@@ -138,7 +138,7 @@ Die Bälle werden also bzgl. ihrer Funktion in die Äquivalenzklassen \textit{Sp
 \subsubsection{Zusammenhang zu E-Graphs}
 
 Die vorherigen Ansätze basierten auf einer Liste von konkreten Ausdrücken. Dadurch musste für jede kleine Änderung, wie zum Beispiel $[\mathbf{6}]: a \Leftrightarrow b$ (siehe zweiter Ansatz),
-ein neuer Ausdruck eingefügt werden. Der neue Ansatz fußt auf zwei Ideen: \textbf{Sharing} und \textbf{Klassen}.
+ein neuer Ausdruck eingefügt werden. Der neue Ansatz beruht auf zwei Ideen: \textbf{Sharing} und \textbf{Klassen}.
 Sharing bedeutet, dass Elemente, die in verschiedenen Ausdrücken vorkommen, also zum Beispiel eine Zahl oder eine Variable, nicht mehr im konkreten Ausdruck abgespeichert werden.
 Stattdessen wird dort ein Platzhalter (Pointer) eingefügt, der auf das Element zeigt. Abbildung~\ref{fig:sharing} zeigt eine Veranschaulichung des Prinzips.
 Zusätzlich werden Klassen eingefügt. Die Platzhalter zeigen jetzt nicht mehr auf einzelne Elemente, sondern auf eine Klasse, die Elemente enthält. Wird also Regel $[6]$ angewendet,
@@ -162,7 +162,7 @@ verdoppelt sich die Liste nicht, denn die Klasse mit Element $a$ wird nur um ein
     \end{figure}
 \end{minipage}}
 
-Auf den beiden vorgestellten Prinzipien fußen auch \textit{E-Graphs}. \textit{E-Graphs} bestehen aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. 
+Auf den beiden vorgestellten Prinzipien beruhen auch \textit{E-Graphs}. \textit{E-Graphs} bestehen aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. 
 Abbildung~\ref{fig:egraphexp} zeigt einen beispielhaften E-Graph. \textit{E-Nodes} sind dabei weiß und \textit{E-Classes} beige eingefärbt.
 
 \begin{figure}[H]
@@ -218,10 +218,10 @@ Damit kann eine E-Class gefunden werden, die eine kongruente E-Node enthält. \t
 
 \subsection{Equality Saturation}
 
-Nachdem \textit{E-Graphs} eingeführt wurden stellt sich jetzt die Frage, wie damit ein optimaler Ausdruck gefunden werden kann.
+Nachdem \textit{E-Graphs} eingeführt wurden, stellt sich die Frage, wie damit ein optimaler Ausdruck gefunden werden kann.
 Hierzu kann die Methode der \textit{Equality Saturation} eingesetzt werden.
 \textit{Equality Saturation} beschreibt eine aus zwei Phasen bestehende, iterative Methode.
-In der ersten Phase werden \textit{rewrite rules} auf den \textit{E-Graph} angewendet, bis sich keine Änderungen an diesem mehr ergeben.
+In der ersten Phase werden \textit{rewrite rules} auf den \textit{E-Graph} angewendet bis sich keine Änderungen an diesem mehr ergeben.
 Der E-Graph gilt nach dieser Phase als \textit{saturiert}.
 In der zweiten Phase kann mithilfe einer Kostenfunktion der optimale Ausdruck aus dem E-Graph extrahiert werden.
 Algorithmus~\ref{alg:eqsat} zeigt den traditionellen Prozess der \textit{Equality Saturation}.
@@ -248,5 +248,5 @@ Algorithmus~\ref{alg:eqsat} zeigt den traditionellen Prozess der \textit{Equalit
 \end{algorithm}
 
 Mit Algorithmus~\ref{alg:eqsat} gibt es nun eine effiziente Lösung, mit der das \textit{Phase Ordering Problem} umgangen und Speicherbedarf gesenkt werden kann.
-Doch auch diese Methode kommt mit einem Haken. Der Extraktionsschritt ist ein NP-schweres Problem~\cite{phaseorder-2009}. In der Praxis ist dennoch möglich ein optimales
+Doch auch diese Methode ist nicht unproblematisch. Der Extraktionsschritt ist ein NP-schweres Problem~\cite{phaseorder-2009}. In der Praxis ist es dennoch möglich, ein optimales
 Ergebnis in kurzer Zeit zu erhalten, wie die Bibliothek \textit{egg} demonstriert.  

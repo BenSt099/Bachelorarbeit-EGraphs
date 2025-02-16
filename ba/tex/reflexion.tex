@@ -1,6 +1,6 @@
 \section{Reflexion der Arbeit}\label{sec:reflexion}
 
-Im vorliegenden Kapitel wird eine kritische Reflexion der Arbeit vorgenommen. 
+Im folgenden Kapitel wird eine kritische Reflexion der Arbeit vorgenommen. 
 Der Fokus der Untersuchung liegt dabei auf der Arbeit als solche und auf der Software.
 Dementsprechend werden im ersten Abschnitt Komplikationen während der Entwicklungsphase thematisiert sowie mögliche Lösungsansätze beschrieben.
 Im zweiten Abschnitt wird auf die Frage eingegangen, inwiefern das Ziel der Bachelorarbeit erreicht wurde.
@@ -8,29 +8,29 @@ Eine Analyse der Softwarequalität wird im dritten Abschnitt durchgeführt.
 
 \subsection{Komplikationen während der Entwicklung}\label{sec:probleme}
 
-In diesem Abschnitt werden einige der Probleme, die während der Entwicklung auftraten, diskutiert und deren Ursachen sowie Lösungsansätze beleuchtet.
+In diesem Abschnitt werden einige der Probleme, die während der Entwicklung auftraten, diskutiert und deren Ursachen sowie Lösungsansätze evaluiert.
 
 \noindent\textbf{Kombination zweier Implementierungen} Wie in Kapitel~\ref{sec:grundlagen} erläutert, basiert die vorliegende Implementierung
 auf der Kombination zweier bestehender Ansätze. Für diese Entscheidung gab es mehrere Gründe.
-Einerseits basieren viele Implementierungen, darunter auch \textit{egg}, auf der Standarddefintion von \textit{E-Graphs} wie sie auch in Kapitel~\ref{sec:grundlagen} vorliegt.
-Das Google Colab Notebook, das als zweite Quelle dient, setzt aber bereits auf eine modifzierte Variante, was eventuell zu Verwirrung unter den Studentinnen und Studenten
-führen würde. Daher wurde die Implementierung von \textit{egg} der zweiten Quelle vorgezogen.
+Einerseits basieren viele Implementierungen, darunter auch \textit{egg}, auf der Standarddefinition von \textit{E-Graphs}, wie sie auch in Kapitel~\ref{sec:grundlagen} vorliegt.
+Das Google Colab Notebook, das als zweite Quelle dient, setzt aber bereits auf eine modifizierte Variante. Dies könnte zur Verwirrung unter den Studentinnen und Studenten
+führen. Folglich wurde die Implementierung von \textit{egg} der zweiten Quelle vorgezogen.
 
-Andererseits beschreibt das Paper, das die Hintergründe zu \textit{egg} beschreibt~\cite{2021-egg}, nicht genau, wie \textit{E-Matching} und \textit{Extraction} funktionieren.  
+Andererseits beschreibt das Paper, in dem die Hintergründe zu \textit{egg} erläutert werden~\cite{2021-egg}, nicht genau, wie \textit{E-Matching} und \textit{Extraction} funktionieren.  
 Diese beiden Konzepte konnte allerdings das Notebook zur Verfügung stellen. Somit komplementieren sich die beiden Ansätze.
 Aus der Kombination resultierten jedoch auch einige Probleme. Neben der \textit{Darstellung der Datenstruktur} (siehe unten) mussten mehrere Sonderfälle in der \textit{add}-Methode
 berücksichtigt werden, sodass die Methode insgesamt länger wurde als in den beiden Ansätzen vorgesehen.
 
-\noindent\textbf{Darstellung der Datenstruktur} Nur eine der zwei Implementierungen, auf denen diese Arbeit fußt, verfügt über eine Methode zur Visualisierung der Datenstruktur.
-Die Methode ist kurz und effizient programmiert. Die Darstellung hingegen weist einige Schwächen auf, besonders im Hinblick auf Verständlichkeit und Klarheit.
-Diese beiden Aspekte sind jedoch für eine Anwendung, die von unerfahrenen oder fachfremden bedient werden soll, essenziell.
+\noindent\textbf{Darstellung der Datenstruktur} Nur eine der zwei Implementierungen, auf denen diese Arbeit beruht, verfügt über eine Methode zur Visualisierung der Datenstruktur.
+Die Methode ist kurz und effizient programmiert. Die Darstellung hingegen weist einige Schwächen auf, besonders in Bezug auf Verständlichkeit und Klarheit.
+Diese beiden Aspekte sind jedoch für eine Anwendung, die von unerfahrenen oder fachfremden Personen bedient werden soll, essenziell.
 Außerdem wurde die Methode durch die Kombination der beiden Implementierungen unbrauchbar.
 Dementsprechend wurde eine eigene Methode \textit{egraph\_to\_dot()} in der Datei \textit{EGraph.py} angefertigt.
 
-Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der \textit{E-Classes} im \textit{Dot}-Format zu kontrollieren.
-Damit kann es zu einer falschen Darstellung kommen, da eventuell die Pfeile einer \textit{E-Node} verkehrt herum auf die Klassen zeigen.
+Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der \textit{E-Classes} im \textit{DOT}-Format zu kontrollieren.
+Daher zeigen die Pfeile einer E-Node eventuell verkehrt herum auf die Klassen. Mithin kann es zu einer falschen Darstellung kommen.
 Zusätzlich musste, aufgrund des Debugging-Features, Code eingefügt werden, der es ermöglicht, \textit{E-Classes} einzufärben.
-Diese Anforderungen und Sonderfälle resultierten schließlich in einer Methode mit recht kompliziertem Code, der 106 Zeilen lang ist.
+Diese Anforderungen und Sonderfälle resultierten schließlich in einer Methode mit komplizierterem Code, der 106 Zeilen lang ist.
 
 Daher wurde bei dieser Methode der \textit{PEP 8} Style Guide~\cite{pep} vernachlässigt sowie die Formatierung durch das Werkzeug \textit{Black}~\cite{black} unterlassen.
 Das Testen dieser Methode gestaltete sich ebenfalls schwierig, da der Output ein String im \textit{Dot}-Format ist. Entsprechend bedarf das Testen der Methode
@@ -39,56 +39,56 @@ einer manuellen Ausführung der Tests mit anschließender Prüfung der Visualisi
 \noindent\textbf{Spezialfall: Kreis im E-Graph} Ein E-Graph muss kein \textbf{Directed Acyclic Graph} (DAG) sein, d.h. er kann unter Umständen auch Kreise enthalten. 
 Dementsprechend kann ein E-Graph auch unendlich viele äquivalente Ausdrücke repräsentieren.
 Als Beispiel sei der E-Graph gegeben, der nur den Ausdruck $a$ enthält. Wendet man die Regel $x \Leftrightarrow x * 1$ auf diesen an, entsteht ein Kreis im E-Graph.
-Wendet man die Regel erneut an, tritt ein Fehler in der Darstellung auf. Dabei werden zwei Pfeile, die beide auf die gleiche E-Class zeigen, nicht von der linken Kante und der rechten
-Kante der E-Node aus gezeichnet, sondern beide starten auf der linken Seite. Es handelt sich hierbei um einen Sonderfall, der nur in dieser Situation auftritt und nicht zu einem 
+Wendet man die Regel erneut an, tritt ein Fehler in der Darstellung auf. Dabei werden zwei Pfeile, die beide auf die gleiche E-Class zeigen, nicht von der linken und der rechten
+Kante der E-Node aus gezeichnet, sondern starten beide auf der linken Seite. Es handelt sich hierbei um einen Sonderfall, der nur in dieser Situation auftritt und nicht zu einem 
 Missverständnis des Themas beiträgt. Der Fehler lässt sich durch die Korrektur der entsprechenden Methode beseitigen.
 
 Darüber hinaus muss während der Equality Saturation ein Timeout angegeben werden, um den Prozess unterbrechen zu können. Durch den Zyklus wird immer wieder ein neues \textit{Match}
 im E-Graph gefunden, wodurch sich die Version des E-Graphs ständig ändert. Damit wird eine Endlosschleife erzeugt.
 
-\noindent\textbf{Pfadangabe im Server} Während dem Testen des Servers hat sich herausgestellt, dass der Pfad zum Ordner \textit{static/} unter Testbedingungen abweicht.
-Dementsprechend muss der Pfad erst berechnet werden, und kann nicht durch die Angabe \textit{static/} erreicht werden. Die Lösung stammt aus einem Issue auf 
+\noindent\textbf{Pfadangabe im Server} Während der Testphase des Servers hat sich herausgestellt, dass der Pfad zum Ordner \textit{static/} unter Testbedingungen abweicht.
+Dementsprechend muss der Pfad erst berechnet werden, und kann nicht durch die Angabe \textit{static/} erreicht werden. Diese Lösung stammt aus einem Issue auf 
 \textit{GitHub}~\footnote{\hspace{1.5mm}\url{https://github.com/fastapi/fastapi/issues/3550}}.
 
 \subsection{Ziel der Bachelorarbeit}\label{sub:ziel}
 
 Das Ziel wurde in der Einleitung bereits definiert (Kapitel~\ref{sec:einleitung}, Ziel der Arbeit).
 Wie dort gefordert, wurde die Entwicklung einer Lernanwendung in dieser Arbeit durchgeführt. Damit können sich Studentinnen und Studenten auf praktische Weise mit den Themen 
-\textbf{E-Graphs} und \textbf{Equality Saturation} auseinander setzen. Kapitel~\ref{sec:grundlagen} dieser Arbeit kann genutzt werden, um sich mit den
+\textbf{E-Graphs} und \textbf{Equality Saturation} auseinandersetzen. Kapitel~\ref{sec:grundlagen} dieser Arbeit kann genutzt werden, um sich mit den
 theoretischen Grundlagen vertraut zu machen. 
-Wie in Kapitel~\ref{sec:entscheidungen} bereits festgestellt wurde, macht die Anwendung nur von \textit{Open-Source-Software} Gebrauch. Außerdem ist
+Wie in Kapitel~\ref{sec:entscheidungen} bereits festgestellt wurde, verwendet die Anwendung nur \textit{Open-Source-Software}. Außerdem ist
 sie plattformunabhängig (siehe Abschnitt~\ref{softwarequalität}).
 
-Als zusätzliches, objektives Maß für die Vollständigkeit kann das Exposé herangezogen werden.
+Als zusätzliches, objektives Maß für die Vollständigkeit, kann das Exposé herangezogen werden.
 Im Exposé~\cite{expose} wurden dabei neun Funktionen definiert, die in der Anwendung vorhanden sein müssen.
 
 Die erste Funktion fordert eine Benutzeroberfläche im Browser. Diese Benutzeroberfläche wurde mit \textit{Bootstrap} gestaltet und läuft durch \textit{FastAPI} als lokale Website 
 im Browser. Die zweite Funktion definiert die Erzeugung eines E-Graphs und die Visualisierung von diesem als SVG in der Benutzeroberfläche. Mit der Anwendung kann ein E-Graph erstellt
-werden, der durch eine Methode ins DOT-Format umgewandelt wird und anschließend durch die Einbindung von JavaScript-Bibliotheken (siehe Kapitel~\ref{sec:entscheidungen}) als SVG in der Benutzeroberfläche dargestellt werden kann.
+werden, der durch eine Methode in das DOT-Format umgewandelt wird und anschließend durch die Einbindung von JavaScript-Bibliotheken (siehe Kapitel~\ref{sec:entscheidungen}) als SVG in der Benutzeroberfläche dargestellt werden kann.
 Durch die dritte Funktion soll es möglich sein, rewrite rules zu erstellen und diese unabhängig voneinander auf den E-Graph anwenden zu können.  
 Mit der Benutzeroberfläche ist das Erzeugen von rewrite rules möglich. Dabei erlaubt der Einsatz von Checkboxen eine individuelle Auswahl der Regeln, die somit unabhängig
-voneiander auf den E-Graph angewendet werden können.
+voneinander auf den E-Graph angewendet werden können.
 
 Daran anschließend fordert die vierte Funktion das Vorhandensein von einigen vordefinierten Regeln, die dem Benutzer als Beispiel dienen sollen.
 Diese Funktion wurde in der entsprechenden Methode im Server eingebaut (vgl. Code in \textit{server.py}).
 Die fünfte Funktion beschreibt die Möglichkeit, dem Benutzer eine Historie des E-Graphs anzeigen zu können, sodass Modifikationen am E-Graph erneut durchgeführt werden können.
-Mithilfe des Debugging-Features (siehe Kapitel~\ref{sec:entwicklung}) können die am Graph durchgeführten Veränderungen detailiert nachvollzogen werden.
-Durch die sechste Funktion soll es möglich sein, einen optimalen Term aus dem E-Graph zu extrahieren. Durch das Übernehmen der entsprechende Extract-Methode aus~\cite{devito}, 
-is die Anwendung dazu in der Lage.
+Mithilfe des Debugging-Features (siehe Kapitel~\ref{sec:entwicklung}) können die am Graph durchgeführten Veränderungen detailliert nachvollzogen werden.
+Durch die sechste Funktion soll es möglich sein, einen optimalen Term aus dem E-Graph zu extrahieren. 
+Die Anwendung ist durch das das Übernehmen der entsprechende Extract-Methode aus~\cite{devito} dazu in der Lage.
 
 Die nächste Funktion fordert den Export des E-Graphs in ein gängiges Format. Durch Einbinden von \textit{Graphviz} kann der Benutzer den E-Graph in drei Dateiformate (SVG, PDF, PNG) exportieren.
-Die achte Funktion soll es dem Benutzer erlauben, seine Eingaben während der Sitzung in einer Datei zu speichern, um später am selben Punkt weiter machen zu können.
+Die achte Funktion soll es dem Benutzer ermöglichen, seine Eingaben während der Sitzung in einer Datei zu speichern, um später am selben Punkt weiter arbeiten zu können.
 Die Anwendung stellt daher eine Up- und Download-Funktion zur Verfügung, die Sitzungen in einer Datei abspeichert und das spätere Hochladen erlaubt.
 Durch die letzte Funktion soll der Benutzer die Möglichkeit haben, über die Benutzeroberfläche auf die Dokumentation zugreifen zu können. Die Dokumentation wurde mit \textit{docusaurus}
 umgesetzt und die Benutzeroberfläche integriert (siehe Kapitel~\ref{sec:entwicklung}).
 
 Darüber hinaus wurden zwei weitere Feature-Requests eingearbeitet. 
-Beim ersten ging es um die Vereinfachung der Erstellung von rewrite rules. Hierzu wurde eine Upload- und Download-Funktion in die Anwendung integriert, wodurch
+Bei dem ersten Feature ging es um die Vereinfachung der Erstellung von rewrite rules. Hierzu wurde eine Upload- und Download-Funktion in die Anwendung integriert, wodurch
 Regeln in einer separaten Datei gespeichert und später wieder hochgeladen werden können, ohne dass sie erneut händisch eingegeben werden müssen.
-Der zweite Feature-Request betraf das Anwenden der Regeln auf den E-Graph. Hierzu wurde eine Saturate-Funktion hinzugefügt, die solange alle zur Verfügung stehenden
+Der zweite Feature-Request betraf die Anwendung der Regeln auf den E-Graph. Hierzu wurde eine Saturate-Funktion hinzugefügt, die solange alle zur Verfügung stehenden
 Regeln auf den E-Graph anwendet, bis dieser saturiert ist.
 
-Somit kann abschließend resümiert werden, dass die im Exposé festgehaltenen Funktion umgesetzt und die Feature-Requests der Anwendung hinzugefügt wurden.
+Somit kann abschließend resümiert werden, dass die im Exposé festgehaltenen Funktionen umgesetzt und die Feature-Requests der Anwendung hinzugefügt wurden.
 Damit ist das Ziel der Bachelorarbeit erreicht worden.
 
 \subsection{Qualität der Software}\label{softwarequalität}
@@ -99,22 +99,22 @@ In diesem sind folgende Qualitätsmerkmale aufgelistet:
 
 \noindent\textbf{Übertragbarkeit} Die Anwendung läuft problemlos auf allen gängigen Plattformen. Das liegt erstens daran, dass nur Open-Source-Software eingesetzt wurde,
 wodurch Schwierigkeiten beim Beschaffen von Lizenzen vermieden werden können. 
-Zweitens basieren vier der fünf Dependencies auf Python und die fünfte, \textit{Grahviz}, wird für alle gängigen Plattformen angeboten. Da Python plattformunabhängig ist, gilt dies auch
+Zweitens basieren vier der fünf Dependencies auf Python. Die fünfte Dependency \textit{Grahviz} wird für alle gängigen Plattformen angeboten. Da Python plattformunabhängig ist, gilt dies auch
 für die Dependencies.
 Drittens läuft die Benutzeroberfläche im Browser, der als Dependency vorausgesetzt werden kann.
 Somit kann auf eine Plattformunabhängigkeit der Anwendung geschlossen werden.
 
-\noindent\textbf{Wartbarkeit} Die Architektur der Anwendung folgt einem logischen Aufbau mit klar definierten Abhängigkeiten, was das Hinzufügen neuer Funktionen erlaubt.
+\noindent\textbf{Wartbarkeit} Die Architektur der Anwendung folgt einem logischen Aufbau mit klar definierten Abhängigkeiten. Dies erlaubt das Hinzufügen neuer Funktionen.
 Der Code wurde mit \textit{Black}~\cite{black} formatiert und richtet sich nach \textit{PEP 8}~\cite{pep}. Jede Funktion oder Methode, die in Python oder JavaScript geschrieben wurde, 
-ist mit einem Kommentar versehen, der Parameter, Rückgabewerte und Zweck erläutert. Weiterhin ist die Anwendung mit 100 Unit-Tests und zahlreichen händischen Simulationen abgedeckt, die eine breites Spektrum an 
+ist mit einem Kommentar versehen, der Parameter, Rückgabewerte und Zweck erläutert. Weiterhin ist die Anwendung mit 100 Unit-Tests und zahlreichen händischen Simulationen abgedeckt, die ein breites Spektrum an 
 möglichen Eingaben und Zuständen simulieren.
 
 \noindent\textbf{Sicherheit} Für das Ausführen der Anwendung werden keine erweiterten Berechtigungen des Nutzers eingefordert. Bei der Verwendung der Software werden keine persönlichen Daten gespeichert 
 oder weitergegeben und die Kommunikation findet ausschließlich im lokalen Netzwerk statt.
-Zusätzlich wurde der gesamte Code der Anwendung auf \textit{GitHub} veröffentlicht, wodurch eine unabhängige Prüfung auf Sicherheitslücken und mögliche, illegale Aktivitäten der Software vorgenommen werden kann.
+Zusätzlich wurde der gesamte Code der Anwendung auf \textit{GitHub} veröffentlicht, wodurch eine unabhängige Prüfung auf Sicherheitslücken und mögliche illegale Aktivitäten der Software vorgenommen werden kann.
 
 \noindent\textbf{Zuverlässigkeit} Die Anwendung basiert auf einem publizierten Paper~\cite{2021-egg}, indem auch die Vorgehensweise für die Bibliothek \textit{egg} erklärt wird.
-Die Tatsache, dass E-Graphs basierend auf dem Paper implementiert wurden, lässt einen logischen Fehler in der Software höchst unwahrscheinlich wirken.
+Die Tatsache, dass E-Graphs basierend auf dem Paper implementiert wurden, spricht für eine hohe Zuverlässigkeit der Software.
 Die erstellten Unit-Tests geben weitere Gewissheit über die praktische Umsetzung.
 
 
@@ -125,17 +125,17 @@ Die Anwendung bietet Studentinnen und Studenten die Möglichkeit, sich auf inter
 
 
 
-\noindent\textbf{Performance} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht prioritisiert, da die Software in der Lehre eingesetzt werden sollte
-und somit andere Anforderungen wie zum Beispiel die Benutzbarkeit erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Auch die Übertragung eines E-Graphs ins DOT-Format 
+\noindent\textbf{Performance} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht priorisiert, da die Software in der Lehre eingesetzt werden sollte
+und somit andere Anforderungen, wie zum Beispiel die Benutzbarkeit, erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Auch die Übertragung eines E-Graphs ins DOT-Format 
 geschieht mit Aufwand. Trotzdem ist die Software in der Lage, Darstellungen flüssig zu rendern und dem Benutzer eine verzögerungsfreie Interaktion mit E-Graphs zu ermöglichen.
 
 \noindent\textbf{Kompatibilität} Die Software setzt auf bekannte Standards wie dem JSON- und dem DOT-Format und kann daher, mit eventuellen Modifikationen, auch mit anderen Systemen Daten austauschen.
-Außerdem ist die Kommunikation zwischen Server und Weboberfläche so gestaltet, dass auch andere Systeme wie zum Beispiel eine REST-API oder eine andere Benutzeroberfläche an die Anwendung anbinden könnten.
+Außerdem ist die Kommunikation zwischen Server und Weboberfläche so gestaltet, dass auch andere Systeme, wie zum Beispiel eine REST-API oder eine andere Benutzeroberfläche, an die Anwendung anbinden könnten.
 
 \noindent\textbf{Benutzbarkeit} Die Weboberfläche setzt auf eine Website, die mithilfe des Frameworks \textit{Bootstrap}~\cite{bootstrap} übersichtlich gestaltet werden konnte.
-Über die Website lässt sich die Dokumentation abrufen, die als Bedienungsanleitung fungiert und dem Benutzer mit Beispielen behilflich ist.
+Über die Website lässt sich die Dokumentation abrufen, die als Bedienungsanleitung fungiert und dem Benutzer anhand von Beispielen behilflich ist.
 Bei der Visualisierung von E-Graphs wurde besonders großen Wert auf die Benutzerfreundlichkeit gelegt. Nicht nur lassen sich andere Strukturen der Website für eine bessere Übersicht 
-einklappen, sondern die Darstellung eines E-Graphs lässt sich vergrößern, verkleinern und herumschieben. Es ist auch möglich die Grafik in einem neuen Tab zu öffnen, damit auch Benutzer
+einklappen, sondern die Darstellung eines E-Graphs lässt sich vergrößern, verkleinern und verschieben. Es ist auch möglich, die Grafik in einem neuen Tab zu öffnen, damit auch Benutzer
 mit einem kleineren Bildschirm die Anwendung nutzen können.
 Des Weiteren kann ein E-Graph durch das Debugging-Feature in jedem Stadium beobachtet werden. Hilfreiche Statusmeldungen erklären dem Benutzer die Abläufe.
 Es ist auch möglich, eine Session bzw. die \textit{rewrite rules} in einer Datei zu speichern und später hochzuladen, sodass dem Benutzer Zeit erspart wird.

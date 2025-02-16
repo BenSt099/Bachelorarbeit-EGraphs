@@ -57,8 +57,8 @@ end note
 
 note left of [EGraphService]
 Regelt die Interaktion zwischen Server
-und EGraph. Stellt revelante Funktionen
-z.B. für das Debugging bereit. 
+und EGraph. Stellt revelante Funktionen,
+z.B. für das Debugging, bereit. 
 end note
 
 note right of [EGraph]
