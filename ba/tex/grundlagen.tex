@@ -1,7 +1,5 @@
 \section{Grundlagen}\label{sec:grundlagen}
 
-% Es beginnt mit einem naiven Ansatz zur Optimierung von Ausdrücken und leitet zu \textit{E-Graphs} und \textit{Equality Saturation} über.
-
 Dieses Kapitel leitet mit einem naiven Ansatz zur Optimierung ein und diskutiert die daraus entstehenden Nachteile.
 Danach wird schrittweise zu \textit{E-Graphs}
 übergeleitet und schließlich der Prozess \textit{Equality Saturation} erklärt.
@@ -10,21 +8,13 @@ Die folgenden beiden Abschnitte~\ref{subsec:naiv} und~\ref{subsec:egraphs} stüt
 \subsection{Naives Optimieren}\label{subsec:naiv}
 
 Für das naive Optimieren von Ausdrücken wird zuerst das Konzept der \textit{rewrite rules} benötigt. Gegeben sei ein beliebiger mathematischer Ausdruck, z.B.
-$a * 1$. Um eine Umformung dieses Ausdrucks durchführen zu können, kann eine \textit{rewrite rule} auf diesen Ausdruck angewendet werden.
-Als Beispiel sei hier die folgende Regel gegeben: $[\mathbf{1}] x * 1 \Leftrightarrow x$. Die \textit{rewrite rule} besteht aus einem linken und rechten Teil. Der linke Teil
+$a \cdot 1$. Um eine Umformung dieses Ausdrucks durchführen zu können, kann eine rewrite rule auf diesen Ausdruck angewendet werden.
+Als Beispiel sei hier die folgende Regel gegeben: $[\mathbf{1}]\; x \cdot 1 \Leftrightarrow x$. Die rewrite rule besteht aus einem linken und rechten Teil. Der linke Teil
 beschreibt ein \textbf{Muster}, das dem Ausdruck entsprechen muss. Dies wird als \textit{Matching} bezeichnet. Dabei spielt der Name der Variablen, in diesem Falle $x$, keine Rolle.
 Der rechte Teil vermittelt, in welche neue Form dieses Muster gebracht werden soll. Wendet man also Regel $[1]$ an,
-ergibt sich: $a * 1  \overset{[2]}{\rightarrow} a$. 
-Eine Regel wie $\frac{x}{x} \Leftrightarrow 1$ \textit{matcht} nicht und würde damit auch nicht angewendet werden können.
+ergibt sich: $a \cdot 1  \overset{[1]}{\rightarrow} a$. 
+Eine Regel wie $\frac{x}{x} \Leftrightarrow 1$ matched nicht und würde damit auch nicht angewendet werden können.
 Mit diesen Bausteinen kann bereits ein naiver Algorithmus entworfen werden, der in Ansatz~\ref{alg:ausdruck1} skizziert wurde. 
-
-% Gegeben sei ein mathematischer Ausdruck, zum Beispiel: $a * 1$. Um diesen Ausdruck umzuformen, kann eine \textit{rewrite rule} eingesetzt werden.
-% Eine \textit{rewrite rule} beschreibt die Umformung eines Ausdrucks in einen anderen. Als Beispiel sei hier folgende Regel gegeben: $x * 1 \Leftrightarrow x \;\; (1)$.
-% Angewendet auf den obigen Ausdruck würde sich folgendes ergeben: $a * 1  \overset{(1)}{\Leftrightarrow} a$.
-
-% Die Anwendung dieser \textit{rewrite rule} ist nur möglich, weil die Regel \textit{matcht}. Das bedeutet, dass der Ausdruck und die linke Seite der Regel identisch sind 
-% (abgesehen vom Namen der Variablen). Die folgende \textit{rewrite rule} würde nicht \textit{matchen} und damit auch nicht angewendet werden können: $\frac{x}{x} \Leftrightarrow 1$.
-% Mit diesen Bausteinen lässt sich bereits ein naiver Algorithmus anfertigen, der in Abbildung~\ref{alg:ausdruck1} dargestellt ist.
 
 \begin{algorithm}[H]
   \caption{Naiver Algorithmus zur Optimierung von Ausdrücken}\label{alg:ausdruck1}
@@ -48,17 +38,17 @@ Mit diesen Bausteinen kann bereits ein naiver Algorithmus entworfen werden, der 
 \end{algorithm}
 
 Der Algorithmus durchläuft solange die while-Schleife, bis keine Änderungen am Ausdruck mehr auftreten.
-Dabei werden alle \textit{rewrite rules} auf den Ausdruck angewendet, die \textit{matchen}.
+Dabei werden alle rewrite rules auf den Ausdruck angewendet, die \textit{matchen}.
 Diese Lösung zeichnet sich durch ihre Einfachheit aus, hat aber auch ihre Schwächen. So läuft der Algorithmus
 bereits bei einfachen Beispielen in lokale Optima.
-Als Beispiel sei hier der Ausdruck $(a * 2) / 2$ gegeben, der, durch Anwendung folgender Regeln, zum Ausdruck $a$ umgeformt werden kann: \\ \\
-$[\mathbf{2}] (x * y) / z \Leftrightarrow x * (y / z)$, \\
-$[\mathbf{3}] x / x \Leftrightarrow 1$, \\
-$[\mathbf{4}] x * 1 \Leftrightarrow x$ 
+Als Beispiel sei hier der Ausdruck $(a \cdot 2) / 2$ gegeben, der, durch Anwendung folgender Regeln, zum Ausdruck $a$ umgeformt werden kann: \\ \\
+$[\mathbf{2}]\; (x \cdot y) / z \Leftrightarrow x \cdot (y / z)$, \\
+$[\mathbf{3}]\; x / x \Leftrightarrow 1$, \\
+$[\mathbf{4}]\; x \cdot 1 \Leftrightarrow x$ 
 
-$(a * 2) / 2 \overset{[2]}{\Leftrightarrow} a * (2 / 2) \overset{[3]}{\Leftrightarrow} a * 1 \overset{[4]}{\Leftrightarrow} a$.
+$(a \cdot 2) / 2 \overset{[2]}{\Leftrightarrow} a \cdot (2 / 2) \overset{[3]}{\Leftrightarrow} a \cdot 1 \overset{[4]}{\Leftrightarrow} a$.
 
-Wird statt Regel $[2]$ eine weitere Regel $[5]$ angewendet, zum Beispiel $[\mathbf{5}] x * 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
+Wird statt Regel $[2]$ eine weitere Regel $[5]$ angewendet, zum Beispiel $[\mathbf{5}]\; x \cdot 2 \Leftrightarrow x << 1$, könnte der Algorithmus auch mit folgendem Ausdruck enden: $(a << 1) / 2$.
 Das Ergebnis hängt also davon ab, in welcher Reihenfolge die Regeln auf den Ausdruck angewendet werden. 
 Dieses Problem ist allgemein als das \textit{Phase Ordering Problem} bekannt~\cite{phaseorder-2009}.
 Selbst mit der Anwendung von Heuristiken würde dieses Problem bestehen bleiben, da auch sie dazu tendieren, kurzsichtige Entscheidungen zu treffen~\cite{phaseorder-2009}.
@@ -66,12 +56,6 @@ Selbst mit der Anwendung von Heuristiken würde dieses Problem bestehen bleiben,
 \noindent Trotz der genannten Schwierigkeiten lässt sich das \textit{Phase Ordering Problem} umgehen. Der vorherige Algorithmus~\ref{alg:ausdruck1} wird dazu um eine Liste erweitert.
 Indem alle erzeugbaren Ausdrücke in einer Liste gespeichert werden (Duplikate sind hier ausgeschlossen), kann der Algorithmus in kein lokales Optimum laufen.
 Diese Idee setzt Algorithmus~\ref{alg:ausdruck2} um.
-
-% \noindent Um diese Probleme zu umgehen, kann der vorherige Algorithmus um eine Liste erweitert werden 
-% Diese Liste speichert alle erzeugten Ausdrücke ohne Duplikate.
-
-% Nun wird versucht, alle möglichen Regeln auf die Ausdrücke in der Liste anzuwenden. 
-% Dies setzt der nächste Algorithmus in Abbildung~\ref{alg:ausdruck2} um.
 
 \begin{algorithm}[H]
   \caption{Verbesserter, naiver Algorithmus zur Optimierung von Ausdrücken}\label{alg:ausdruck2}
@@ -98,25 +82,21 @@ Diese Idee setzt Algorithmus~\ref{alg:ausdruck2} um.
   \end{algorithmic}
 \end{algorithm}
 
-Algorithmus~\ref{alg:ausdruck2} durchläuft ebenfalls eine while-Schleife bis sich keine Änderungen mehr ergeben. In jedem Schleifendurchlauf wird wiederum die Liste durchlaufen.
+Algorithmus~\ref{alg:ausdruck2} durchläuft ebenfalls eine while-Schleife bis sich keine Änderungen mehr ergeben. In jedem Schleifendurchlauf wird wiederum die Liste \textit{expression\_list} durchlaufen.
 Für jeden Ausdruck der Liste wird festgestellt, ob eine Regel anwendbar ist. In diesem Fall wird sie angewendet. Der Trick ist hierbei, den neu erzeugten Ausdruck wieder zur Liste 
 hinzuzufügen. Somit kann am Ende aus einer Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks ein optimaler Ausdruck extrahiert werden.
 Durch das Umgehen des \textit{Phase Ordering Problems} treten indessen zwei neue Probleme auf.
 Der Speicherbedarf des Algorithmus (also die Größe der Liste) lässt sich durch die Konstruktion einer trivialen Situation exponentiell erhöhen.
 Dadurch würde auch die Extraktion des optimalen Ausdrucks exponentiell lange dauern.
 
-Sei der Ausdruck $(a * 2) / 2$ mit den entstehenden Regeln aus dem vorherigen Beispiel als Situation gegeben. Durch die Anwendung einer einfachen \textit{rewrite rule} wie 
-$[\mathbf{6}] a \Leftrightarrow b$, würde sich die Größe der Liste bereits verdoppeln.
-Eine effizientere Lösung wäre der Einsatz von \textit{E-Graphs}.
-
-% Am Ende der Ausführung steht eine komplette Liste mit allen möglichen Konfigurationen des Ursprungsausdrucks zur Verfügung, aus der man den optimalen Ausdruck extrahieren kann.
-% Zwar konnte hier das \textit{Phase Ordering Problem} umgangen werden, jedoch hat der Algorithmus eine exponentielle Laufzeit.
-% \textit{E-Graphs} sind Datenstrukturen, die diese Probleme lösen können.
+Sei der Ausdruck $(a \cdot 2) / 2$ mit den entstehenden Regeln aus dem vorherigen Beispiel als Situation gegeben. Durch die Anwendung einer einfachen rewrite rule wie 
+$[\mathbf{6}]\; a \Leftrightarrow b$, würde sich die Größe der Liste bereits verdoppeln.
+Eine effizientere Lösung wäre der Einsatz von E-Graphs.
 
 \subsection{E-Graphs}\label{subsec:egraphs}
 
-Um ein grundlegendes Verständnis von \textit{E-Graphs} zu erlangen und den Unterschied zu den vorherigen Ansätzen besser nachvollziehen zu können,
-werden zunächst einige wichtige Konzepte im Zusammenhang mit \textit{E-Graphs} vorgestellt. 
+Um ein grundlegendes Verständnis von E-Graphs zu erlangen und den Unterschied zu den vorherigen Ansätzen besser nachvollziehen zu können,
+werden zunächst einige wichtige Konzepte im Zusammenhang mit E-Graphs vorgestellt. 
 
 \subsubsection{Äquivalenzrelation}
 
@@ -137,7 +117,7 @@ Die Bälle werden also bzgl. ihrer Funktion in die Äquivalenzklassen \textit{Sp
 
 \subsubsection{Zusammenhang zu E-Graphs}
 
-Die vorherigen Ansätze basierten auf einer Liste von konkreten Ausdrücken. Dadurch musste für jede kleine Änderung, wie zum Beispiel $[\mathbf{6}]: a \Leftrightarrow b$ (siehe zweiter Ansatz),
+Die vorherigen Ansätze basierten auf einer Liste von konkreten Ausdrücken. Dadurch musste für jede kleine Änderung, wie zum Beispiel $[\mathbf{6}]\; a \Leftrightarrow b$ (siehe zweiter Ansatz),
 ein neuer Ausdruck eingefügt werden. Der neue Ansatz beruht auf zwei Ideen: \textbf{Sharing} und \textbf{Klassen}.
 Sharing bedeutet, dass Elemente, die in verschiedenen Ausdrücken vorkommen, also zum Beispiel eine Zahl oder eine Variable, nicht mehr im konkreten Ausdruck abgespeichert werden.
 Stattdessen wird dort ein Platzhalter (Pointer) eingefügt, der auf das Element zeigt. Abbildung~\ref{fig:sharing} zeigt eine Veranschaulichung des Prinzips.
@@ -162,31 +142,24 @@ verdoppelt sich die Liste nicht, denn die Klasse mit Element $a$ wird nur um ein
     \end{figure}
 \end{minipage}}
 
-Auf den beiden vorgestellten Prinzipien beruhen auch \textit{E-Graphs}. \textit{E-Graphs} bestehen aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. 
-Abbildung~\ref{fig:egraphexp} zeigt einen beispielhaften E-Graph. \textit{E-Nodes} sind dabei weiß und \textit{E-Classes} beige eingefärbt.
+Auf den beiden vorgestellten Prinzipien beruhen E-Graphs. E-Graphs bestehen aus zwei Komponenten: \textit{E-Classes} und \textit{E-Nodes}. 
+Abbildung~\ref{fig:egraphexp} zeigt einen beispielhaften E-Graph. E-Nodes sind dabei weiß und E-Classes beige eingefärbt.
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{../fig/egraph_exp.png}
-  \caption{Beispiel eines E-Graphs, der die Ausdrücke $(a * 2) / 2$ und $(b * 2) / 2$ enthält}
+  \caption{Beispiel eines E-Graphs, der die Ausdrücke $(a \cdot 2) / 2$ und $(b \cdot 2) / 2$ enthält}
   \label{fig:egraphexp}
 \end{figure}
 
-\textit{E-Nodes} sind Knoten (ähnlich zum Element $a$ in Abbildung~\ref{fig:sharing}), die arithmetische Operationen, Zahlen oder Variablen enthalten können.
-% Dabei ist zu beachten, dass bei arithmetischen Operationen kein Sharing betrieben wird, da diese auf unterschiedliche  zeigen können.  
-Einer \textit{E-Node} werden als Argumente \textit{E-Classes} übergeben. In Beispiel~\ref{fig:egraphexp} wird der \textit{E-Node} $\mathbf{*}$ die 
-\textit{E-Class} mit den beiden \textit{E-Nodes} $\mathbf{a}$ und $\mathbf{b}$ und die \textit{E-Class} mit der \textit{E-Node} $\mathbf{2}$ übergeben. 
-\textit{E-Classes} stellen also Äquivalenzklassen dar, die äquivalente \textit{E-Nodes} enthalten.
-
-% \textit{E-Classes} sind Äquivalenzklassen mit \textit{E-Nodes}, die äquivalent zueinander sind. 
-% Im Beispiel~\ref{fig:egraphexp} sind $a$ und $b$ äquivalent zueinander.
-% Als Argumente von \textit{E-Nodes} werden \textit{E-Classes} übergeben.
-% Im Beispiel~\ref{fig:egraphexp} wird dem \textit{E-Node} $*$ die \textit{E-Class} mit den beiden \textit{E-Nodes} $a$ und $b$ und die \textit{E-Class} mit dem \textit{E-Node} $2$ übergeben. 
-% Es wird also ausgenutzt, dass $a$ und $b$ in der gleichen \textit{E-Class} sind. 
+E-Nodes sind Knoten (ähnlich zum Element $a$ in Abbildung~\ref{fig:sharing}), die arithmetische Operationen, Zahlen oder Variablen enthalten können.
+Einer E-Node werden als Argumente E-Classes übergeben. In Beispiel~\ref{fig:egraphexp} wird der E-Node $\mathbf{*}$ die 
+E-Class mit den beiden E-Nodes $\mathbf{a}$ und $\mathbf{b}$ und die E-Class mit der E-Node $\mathbf{2}$ übergeben. 
+E-Classes stellen also Äquivalenzklassen dar, die äquivalente E-Nodes enthalten.
 
 \subsubsection{Implementierung von E-Graphs}
 
-Es gibt verschiedene Ansätze für die Implementierung von \textit{E-Graphs}. Der Ansatz, auf dem diese Arbeit beruht, ist eine Kombination aus zwei Quellen 
+Es gibt verschiedene Ansätze für die Implementierung von E-Graphs. Der Ansatz, auf dem diese Arbeit beruht, ist eine Kombination aus zwei Quellen 
 (siehe verwandte Arbeiten~\ref{sub:verwandtearbeiten}).
 Ein \textbf{E-Graph} wird nach~\cite{2021-egg} als Tuple $(\mathbf{U}, \mathbf{M}, \mathbf{H})$ mit folgenden Eigenschaften definiert:
 
@@ -207,24 +180,24 @@ Der \textit{E-Graph} als Datenstruktur für Beispiel~\ref{fig:egraphexp} würde 
 \subsubsection{Invarianten}
 
 Ein E-Graph muss nach~\cite{2021-egg} zwei Invarianten aufrechterhalten, um eine niedrige Laufzeit und eine hohe Effizienz garantieren zu können. 
-Einige Operationen beschädigen die aufgestellen Invarianten, wodurch Methoden zur Aufrechterhaltung angewendet werden müssen (siehe~\ref{sec:entwicklung}).
+Einige Operationen beschädigen die aufgestellen Invarianten, wodurch Methoden zur Aufrechterhaltung angewendet werden müssen (siehe Kapitel~\ref{sec:entwicklung}).
 
 Die erste Invariante, \textbf{Kongruenz-Invariante} genannt, legt fest, dass die Äquivalenzrelation über E-Nodes die Eigenschaft der Kongruenzrelation erfüllen muss.
 Zwei kongruente E-Nodes müssen also in derselben E-Class sein und eine E-Node kann nicht in zwei E-Classes gleichzeitig sein.
-Kongruenz bedeutet in diesem Zusammenhang, dass zwei äquivalente E-Nodes $a, b$ in ihrer Funktion gleich sind, also z.B. gilt: $(a * 2) / 2 \Leftrightarrow (b * 2) / 2$.
+Kongruenz bedeutet in diesem Zusammenhang, dass zwei äquivalente E-Nodes $a, b$ in ihrer Funktion gleich sind, also z.B. gilt: $(a \cdot 2) / 2 \Leftrightarrow (b \cdot 2) / 2$.
 
-Die zweite Invariante, \textbf{Hashmap-Invariante} genannt, verfügt, dass die Hashmap $\mathbf{H}$ alle kanonischen E-Nodes zu ihren EClass-IDs abbildet.
-Damit kann eine E-Class gefunden werden, die eine kongruente E-Node enthält. \textit{Kanonisch} meint hier, dass die EClass-IDs einer E-Node die Repräsentanten ihrer Äquivalenzklassen sind.
+Die zweite Invariante, \textbf{Hashmap-Invariante} genannt, verfügt, dass die Hashmap $\mathbf{H}$ alle kanonischen E-Nodes zu ihren EClass-IDs abbilden muss.
+Damit kann eine E-Class gefunden werden, die eine kongruente E-Node enthält. \textit{Kanonisch} bedeutet in diesem Zusammenhang, dass die EClass-IDs einer E-Node die Repräsentanten ihrer jeweiligen Äquivalenzklassen sind.
 
 \subsection{Equality Saturation}
 
-Nachdem \textit{E-Graphs} eingeführt wurden, stellt sich die Frage, wie damit ein optimaler Ausdruck gefunden werden kann.
+Nachdem E-Graphs eingeführt wurden, stellt sich die Frage, wie damit ein optimaler Ausdruck gefunden werden kann.
 Hierzu kann die Methode der \textit{Equality Saturation} eingesetzt werden.
-\textit{Equality Saturation} beschreibt eine aus zwei Phasen bestehende, iterative Methode.
-In der ersten Phase werden \textit{rewrite rules} auf den \textit{E-Graph} angewendet bis sich keine Änderungen an diesem mehr ergeben.
+Equality Saturation beschreibt eine aus zwei Phasen bestehende, iterative Methode.
+In der ersten Phase werden rewrite rules auf den E-Graph angewendet bis sich keine Änderungen an diesem mehr ergeben.
 Der E-Graph gilt nach dieser Phase als \textit{saturiert}.
 In der zweiten Phase kann mithilfe einer Kostenfunktion der optimale Ausdruck aus dem E-Graph extrahiert werden.
-Algorithmus~\ref{alg:eqsat} zeigt den traditionellen Prozess der \textit{Equality Saturation}.
+Algorithmus~\ref{alg:eqsat} zeigt den traditionellen Prozess der Equality Saturation.
 
 \begin{algorithm}[H]
   \caption{Traditioneller Equality Saturation Workflow nach~\cite{2021-egg}}\label{alg:eqsat}

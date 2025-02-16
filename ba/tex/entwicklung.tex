@@ -104,23 +104,6 @@ In Abbildung~\ref{fig:astexp} wird der fertige AST gezeigt.
 Der \textit{ASTNode} mit dem Schlüssel $/$ fungiert dabei als \textit{root\_node}.
 Die Klasse stellt weitere Methoden für eine Verifikation bereit, die den AST wieder in einen String transformieren. Dieser kann dann mit dem Original-String verglichen werden.
 
-% Fall eins~(Z. \ref{ast0}) ist gegeben, wenn eine öffnende Klammer eingelesen wird. Ein neuer Knoten wird erstellt, der sogleich auf einen Stack geschoben wird. Falls der Stack leer ist, wird
-% dieser Knoten als Wurzelknoten betrachtet und in \textit{root\_ast\_node} gespeichert.
-% Nach einer öffnenden Klammer wird eine arithmetische Operation erwartet. 
-% Daher behandelt Fall zwei~(Z. \ref{ast1}) die vier Operationen ($+, *, -, /$), indem die jeweilige Operation dem Knoten, der gerade TOS ist,
-% als Schlüssel zugewiesen wird. Da Shift-Operationen ($<<, >>$) zwei Zeichen lang sind, werden sie in Fall drei~(Z. \ref{ast2}) behandelt.
-% Zu Fall drei kommt es, wenn in \textit{word} bereits eines der Shift-Zeichen ($<, >$) eingelesen wurde und nun das nächste eingelesen wird.
-% Das Zeichen wird \textit{word} hinzugefügt und dem TOS-Knoten als Schlüssel übergeben.
-
-% Im vierten Fall~(Z. \ref{ast3}) werden Variablen und Zahlen verarbeitet und eventuell auch Knoten vom Stack genommen.
-% Zur Trennung von Variablen und Zahlen wird ein Leerzeichen erwartet und ein nichtleeres \textit{word}.
-% Dabei werden nochmal vier Fälle unterschieden, je nach Zustand des aktuellen TOS-Knotens. Dementsprechend wird entweder ein neuer Knoten mit dem Inhalt von \textit{word} als Schlüssel
-% erzeugt und links oder rechts angehängt oder der aktuelle TOS-Knoten hat noch kein Schlüssel und bekommt entsprechend einen. 
-% Wenn jedoch das Zeichen ein schließende Klammer ist, wird \textit{word} geleert und der TOS-Knoten vom Stack genommen.
-% Fall fünf~(Z. \ref{ast4}) behandelt einen ähnlichen Fall. Hier ist \textit{word} jedoch leer. Der TOS-Knoten wird ebenfalls vom Stack genommen.
-% Fall sechs~(Z. \ref{ast5}) wird nur behandelt, wenn das aktuelle Zeichen ein Leerzeichen ist. Diese werden ignoriert.
-% Der letzte Fall~(Z. \ref{ast6}) ist gegeben, wenn kein anderer Fall zutrifft. Dabei wird das aktuelle Zeichen an \textit{word} angehangen.
-
 \subsubsection{E-Node}
 
 Zur Umsetzung von E-Nodes wird eine weitere Klasse \textit{ENode} (Listing~\ref{lst:enode}) eingeführt. Dieses Vorgehen dient zur strikten Trennung der Komponenten und 
