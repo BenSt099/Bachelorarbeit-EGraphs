@@ -42,7 +42,7 @@ import re
 
 
 class EGraph:
-    """Class that represents an EGraph.
+    """Class that represents an E-Graph.
 
     Attributes:
         - u: Union-find datastructure with EClass-IDs (See EClass.py).
@@ -83,7 +83,7 @@ class EGraph:
         self.is_saturated = False
 
     def _add(self, enode):
-        """Adds an ENode to the EGraph and returns the corresponding EClass-ID."""
+        """Adds an E-Node to the E-Graph and returns the corresponding EClass-ID."""
         enode = self._canonicalize(enode)
         enode_args = [self._find(arg) for arg in enode.arguments]
 
@@ -124,7 +124,7 @@ class EGraph:
 
     def add_node(self, ast_node):
         """Takes an AST, recursively transforms them into
-        ENodes and adds them to the EGraph.
+        E-Nodes and adds them to the E-Graph.
         """
         if ast_node is not None:
             if ast_node.left is not None and ast_node.right is not None:
@@ -142,7 +142,7 @@ class EGraph:
                 return self._add(ENode(ast_node.key, []))
 
     def _new_singleton_eclass(self, enode):
-        """Creates a new EClass."""
+        """Creates a new E-Class."""
         new_eclass = EClass()
         new_eclass.nodes.add(enode)
         self.u.add(new_eclass.id)
@@ -150,7 +150,7 @@ class EGraph:
         return new_eclass.id
 
     def _canonicalize(self, enode):
-        """Returns the canonical ENode."""
+        """Returns the canonical E-Node."""
         return ENode(enode.key, [self._find(child) for child in enode.arguments])
 
     def _find(self, eclass_id):
@@ -158,7 +158,7 @@ class EGraph:
         return self.u.__getitem__(eclass_id)
 
     def merge(self, eclass_id1, eclass_id2):
-        """Merges two EClasses in u via their IDs and returns the new root ID."""
+        """Merges two E-Classes in u via their IDs and returns the new root ID."""
         if self._find(eclass_id1) == self._find(eclass_id2):
             return self._find(eclass_id1)
         self.version += 1
@@ -168,13 +168,13 @@ class EGraph:
         return new_id
 
     def rebuild(self):
-        """Rebuilds the EGraph by processing the pending-list."""
+        """Rebuilds the E-Graph by processing the pending-list."""
         for eclass in set([self._find(eclass) for eclass in self.pending]):
             self._repair(eclass)
         self.pending = []
 
     def _repair(self, eclass_id):
-        """Repairs the EGraph."""
+        """Repairs the E-Graph."""
         for p_node, p_eclass in self.m[eclass_id].parents:
             if p_node in self.h.keys():
                 self.h.pop(p_node)
@@ -192,7 +192,7 @@ class EGraph:
         self.m[self._find(eclass_id)].parents = new_parents
 
     def _ematch(self, eclasses, node_pattern):
-        """Takes a pattern and matches it to ENodes in the EGraph.
+        """Takes a pattern and matches it to E-Nodes in the E-Graph.
 
         (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
@@ -242,7 +242,7 @@ class EGraph:
         return list_of_matches
 
     def _substitute(self, ast_node, environment):
-        """Extends the EGraph with a substitution.
+        """Extends the E-Graph with a substitution.
 
         (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
@@ -282,7 +282,7 @@ class EGraph:
             return self._add(enode)
 
     def get_eclasses(self):
-        """Returns a dictionary with a mapping of eclasses to their enodes.
+        """Returns a dictionary with a mapping of E-Classes to their E-Nodes.
 
         (DISCLAIMER)
         This method is based on work of Zachary DeVito. For more information,
@@ -321,7 +321,7 @@ class EGraph:
             self.str_repr += ast_node.key + " "
 
     def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_eclasses = []):
-        """Returns a string of the EGraph in DOT notation."""
+        """Returns a string of the E-Graph in DOT notation."""
         dot_commands = [
             "digraph parent { graph [compound=true, nodesep=" + str(nodesep)
             + ", ranksep=" + str(ranksep) + "]\n" + """node [fillcolor=white 
@@ -331,11 +331,11 @@ class EGraph:
         node_identifier = 0
         for subset in self.u.subsets():
             fillcolor = 'fillcolor=\"navajowhite\"'
-            ss = str(self._find(next(iter(subset))))
-            if ss in marked_eclasses:
+            eclass_id_subset = str(self._find(next(iter(subset))))
+            if eclass_id_subset in marked_eclasses:
                 fillcolor = 'fillcolor=\"crimson\"'
             dot_commands.append(
-                'subgraph \"cluster-' + ss
+                'subgraph \"cluster-' + eclass_id_subset
                 + '\" { graph [compound=true '
                 + fillcolor
                 + ' style="dashed, rounded, filled"]\n'
@@ -431,7 +431,7 @@ class EGraph:
 
 
 def export_egraph_to_file(egraph, filepath, extension="pdf"):
-    """Exports the e-graph into either svg, pdf or png file format."""
+    """Exports the E-Graph into either svg, pdf or png file format."""
     if (
         not pathlib.Path(pathlib.Path(filepath).parents[0]).exists()
         or not pathlib.Path(pathlib.Path(filepath).parents[0]).is_dir()
@@ -473,16 +473,16 @@ def equality_saturation(rules, eterm_id, egraph):
             timeout += 1
             best_term = _extract_term(eterm_id, egraph)
             debug_information.append(["Best Term: " + best_term, egraph.egraph_to_dot()])
-            egraph, debug = apply_rules(rules, egraph)
-            for x in debug:
-                debug_information.append(x)
+            egraph, debug_output = apply_rules(rules, egraph)
+            for debug_info in debug_output:
+                debug_information.append(debug_info)
             if v == egraph.version:
                 break
     return egraph, debug_information, best_term
 
 
 def equality_saturation_no_extract(rules, egraph):
-    """Performs equality saturation.
+    """Performs equality saturation without extraction.
 
     (DISCLAIMER)
     This method is based on work of Zachary DeVito. For more information,
@@ -494,16 +494,16 @@ def equality_saturation_no_extract(rules, egraph):
         while True and timeout < 5:
             timeout += 1
             v = egraph.version
-            egraph, debug = apply_rules(rules, egraph)
-            for x in debug:
-                debug_information.append(x)
+            egraph, debug_output = apply_rules(rules, egraph)
+            for debug_info in debug_output:
+                debug_information.append(debug_info)
             if v == egraph.version:
                 break
     return egraph, debug_information
 
 
 def apply_rules(rules, egraph):
-    """Apply multiple rules to the egraph.
+    """Apply multiple rules to the E-Graph.
 
     (DISCLAIMER)
     This method is based on work of Zachary DeVito. For more information,
@@ -533,7 +533,6 @@ def apply_rules(rules, egraph):
                 egraph.egraph_to_dot(marked_eclasses=[eclass_id, new_eclass_id]),
             ]
         )
-        # print(eclass_id, new_eclass_id, environment, str(rule.expr_rhs))
         egraph.merge(eclass_id, new_eclass_id)
         debug_info.append(["Rule " + str(rule.name) + ": MERGED.", egraph.egraph_to_dot()])
     if egraph.pending:
@@ -551,8 +550,7 @@ def apply_rules(rules, egraph):
 
 
 def _extract_term(eterm_id, egraph):
-    """
-    Extracts the best term from the egraph based on a simple cost model.
+    """Extracts the best term from the E-Graph based on a simple cost model.
 
     (DISCLAIMER)
     This method is based on work of Zachary DeVito. For more information,

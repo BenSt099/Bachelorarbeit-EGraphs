@@ -123,7 +123,7 @@ async def upload_rules(request: Request):
 
 @app.post("/createegraph")
 async def create_egraph(request: Request):
-    """Creates a new egraph and adds two default rewrite rules.
+    """Creates a new E-Graph and adds two default rewrite rules.
 
     :param request: JSON, {'payload': ...}
     :return: JSON, {"response": ..., "msg": ...}
@@ -138,7 +138,7 @@ async def create_egraph(request: Request):
 
 @app.get("/loadegraph")
 def load_egraph():
-    """Returns the currently selected EGraph in DOT format.
+    """Returns the currently selected E-Graph in DOT format.
 
     :return: JSON, {'response': ..., 'msg': ..., 'payload1': ..., 'payload2': ...}
     """
@@ -202,7 +202,7 @@ async def move(request: Request):
 
 @app.post("/extractterm")
 async def extract_term():
-    """Extracts best term from egraph and returns it.
+    """Extracts best term from E-Graph and returns it.
 
     :return: JSON, {"response": ..., "msg": ..., 'payload': ...}
     """
@@ -212,7 +212,7 @@ async def extract_term():
 
 @app.post("/exportegraph")
 async def export_egraph(request: Request):
-    """Exports current egraph into one format.
+    """Exports current E-Graph into one format.
 
     :param request: JSON, {'payload': ...}
     :return: JSON, {"response": ..., "msg": ...}

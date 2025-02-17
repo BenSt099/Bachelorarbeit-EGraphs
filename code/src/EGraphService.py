@@ -69,8 +69,8 @@ class EGraphService:
         - rrc: rewrite rule counter
         - dict_of_rules: Dictionary of rules
         - applied_rules: List of applied rules
-        - egraph: current egraph
-        - expr: The expression to the corresponding EGraph
+        - egraph: current E-Graph
+        - expr: The expression to the corresponding E-Graph
         - egraphs: List with debug strings
         - current_major: pointer
         - current_minor: pointer
@@ -114,7 +114,7 @@ class EGraphService:
         """Returns the egraph that is currently selected by the minor and
         major pointers.
 
-        :return: String representation of the egraph in DOT format.
+        :return: String representation of the E-Graph in DOT format.
         """
         if self.egraphs == [[]]:
             return False, "No EGraph there.", (None, None)
@@ -143,7 +143,7 @@ class EGraphService:
         )
 
     def export(self, extension_format):
-        """Saves the currently selected EGraph into a chosen format.
+        """Saves the currently selected E-Graph into a chosen format.
 
         :param extension_format: Determines which format should be used (pdf, svg, png).
         :return: True if successful, False otherwise.
@@ -193,7 +193,7 @@ class EGraphService:
         return False, "No valid rule OR Exists already."
 
     def apply_all_rules(self):
-        """Apply all rewrite rules to the egraph.
+        """Apply all rewrite rules to the E-Graph.
 
         :return: bool, str (if action is successful, status msg)
         """
@@ -205,7 +205,7 @@ class EGraphService:
         return True, "Applied all rules - graph saturated."
 
     def apply(self, rules):
-        """Apply rewrite rule(s) to the egraph.
+        """Apply rewrite rule(s) to the E-Graph.
 
         :param rules: list with rewrite rules
         :return: bool, str (if action is successful, status msg)
