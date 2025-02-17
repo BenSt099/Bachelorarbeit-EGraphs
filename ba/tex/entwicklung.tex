@@ -273,7 +273,7 @@ gewählt wird. Dies führt dazu, dass die E-Nodes, die Eltern dieser E-Classes s
 Danach werden die Eltern neu festgelegt (Z.\ref{lst:repair2} bis \ref{lst:repair99}). Hierbei wird zuerst festgestellt, ob die Eltern bereits vorhanden sind (Z.\ref{lst:repair3}). Ist dies der Fall, werden sie
 gemerged (Z.\ref{lst:repair4}).
 
-\begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Klasse \textit{EGraph}, label={lst:methods3}]
+\begin{lstlisting}[language=Python, escapechar=|, caption=\textit{apply\_rules}- und \textit{equality\_saturation}-Funktion, label={lst:methods3}]
 def apply_rules(rules, egraph): |\label{lst:applyrules}|
     debug_info = []
     eclasses = egraph.get_eclasses()
@@ -327,6 +327,78 @@ Die Funktion \textit{\_extract\_term} berechnet auf der Grundlage eines einfache
 Dabei erhalten E-Nodes ohne Operationen Kosten von null. E-Nodes mit Addition, Subtraktion oder Shift-Operationen
 erhalten Kosten von eins, E-Nodes mit Multiplikation erhalten Kosten von zwei und E-Nodes mit Division erhalten Kosten von drei.
 Durch diese Berechnung kann der günstigste (optimale) Ausdruck aus dem E-Graph extrahiert werden.
+
+\begin{lstlisting}[language=Python, escapechar=|, caption=\textit{egraph\_to\_dot}-Methode, label={lst:methods4}]
+def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_eclasses = []):
+    dot_commands = [
+        # String, der Graph in DOT-Format anlegt
+    ]
+    node_set = set()
+    node_identifier = 0
+    for subset in self.u.subsets(): |\label{lst:dot1}|
+        # wenn E-Class in marked_eclasses, dann fillcolor=crimson
+        dot_commands.append(
+            # subgraph wird als cluster hinzugefügt
+        )
+        nodes_in_subset = set()
+        for eclass_id in subset: |\label{lst:dot11}|
+            for n in self.m[eclass_id].nodes:
+                nodes_in_subset.add(n)
+
+        for enode in nodes_in_subset: |\label{lst:dot12}|
+            # berechne Nummer
+            node_set.add(
+                (str(self._find(next(iter(subset)))), node_identifier, enode)
+            )
+            second_diff = enode.key
+            if enode.key in ('<<', '>>'): |\label{lst:dot13}|
+                second_diff = enode.key[0] + '\\' + enode.key[1]
+            dot_commands.append(
+                # enode wird zum subgraph hinzufügt
+            )
+            node_identifier += 1 |\label{lst:dot14}|
+        dot_commands.append("}\n") |\label{lst:dot2}|
+
+    for ecl_id, node_ident, enode in node_set: |\label{lst:dot3}|
+        if enode.arguments:
+            # lokale Variablen werden angelegt
+            enode_arg0, enode_arg1 = enode.arguments
+            k0 = next(iter(self.m[enode_arg0].nodes))
+            k1 = next(iter(self.m[enode_arg1].nodes))
+            # wenn k0 oder k1 Operation, dann berechne linke und rechte Nummer 
+
+            if self._find(enode_arg0) == ecl_id: |\label{lst:dot31}|
+                dot_commands.append(
+                    # E-Node zeigt auf eigene E-Class
+                )
+            else:
+                dot_commands.append(
+                    # E-Node zeigt auf E-Class
+                ) |\label{lst:dot32}|
+
+            if self._find(enode_arg1) == ecl_id: |\label{lst:dot33}|
+                dot_commands.append(
+                    # E-Node zeigt auf eigene E-Class
+                )
+            else:
+                dot_commands.append(
+                    # E-Node zeigt auf E-Class 
+                ) |\label{lst:dot4}|
+    dot_commands.append("}")
+    return "".join(dot_commands) |\label{lst:dot5}|  
+\end{lstlisting} 
+
+In Listing~\ref{lst:methods4} wird die Methode \textit{egraph\_to\_dot} zur Visualisierung eines E-Graphs dargestellt. Die Vorgehensweise wird in zwei Phasen unterteilt.
+In der ersten Phase (Z.~\ref{lst:dot1} bis~Z.~\ref{lst:dot2}) wird für jede Partition der Union-Find-Datenstruktur ein \textit{subgraph} erstellt. Dabei werden aus allen
+E-Classes der Partition die E-Nodes herausgefiltert (Z.~\ref{lst:dot11}). Anschließend wird für jede E-Node eine \textit{Node} erzeugt (Z.~\ref{lst:dot12}).
+Wenn die E-Node eine Shift-Operation als Schlüssel enthält, muss die Operation \textit{escaped} werden (Z.~\ref{lst:dot13}).
+Zum Schluss der Schleife muss der \textit{node\_identifier} aktualisiert werden (Z.~\ref{lst:dot14}). Dies liegt daran, dass die \textit{Nodes} im DOT-Format
+jeweils einen linken und rechten Pfeil haben und diese separat angesprochen werden müssen.
+
+In der zweiten Phase (Z.~\ref{lst:dot3} bis~Z.~\ref{lst:dot4}) werden die Pfeile gezeichnet. 
+Hierbei wird für jedes Argument der E-Node separater Code ausgeführt (Z.~\ref{lst:dot31} bis~Z.~\ref{lst:dot32} und Z.~\ref{lst:dot33} bis~Z.~\ref{lst:dot4}).
+Zusätzlich muss für jedes Argument der Fall eines Zyklus im E-Graph unterstützt werden (Z.~\ref{lst:dot31} und Z.~\ref{lst:dot33}).
+Schließlich werden die einzelnen Strings zu einem zusammengefügt und zurückgegeben (Z.~\ref{lst:dot5}). 
 
 \subsection{Zweite Komponente: Service}
 
@@ -399,7 +471,7 @@ Die anderen beiden Methoden \textit{move\_fastforward} und \textit{move\_fastbac
 Für die Position innerhalb der Listen gibt es zwei Attribute: \textit{self.current\_minor} und \textit{self.current\_major}. Mit \textit{self.current\_major} kann von Änderung
 zu Änderung gesprungen werden, während \textit{self.current\_minor} innerhalb der Änderung vor- oder zurückspringt.
 
-Diese Vorgehensweise ermöglicht es, an der Position \textit{self.egraphs[self.current\_major][self.current\_minor]} das Abbild des E-Graphs im DOT-Format abzufragen,
+Diese Vorgehensweise ermöglicht es, das Abbild des E-Graphs im DOT-Formatan der Position \textit{self.egraphs[self.current\_major][self.current\_minor]} abzufragen,
 das durch den Server an die Benutzeroberfläche geschickt und dort gerendert wird.
 
 \subsection{Dritte Komponente: Server}
