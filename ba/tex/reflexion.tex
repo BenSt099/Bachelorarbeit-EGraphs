@@ -20,13 +20,13 @@ Andererseits beschreibt das Paper, in dem die Hintergründe zu \textit{egg} erl�
 Diese beiden Konzepte konnte allerdings das Notebook zur Verfügung stellen. Somit komplementieren sich die beiden Ansätze.
 Aus der Kombination resultierten jedoch auch einige Probleme. Neben der \textit{Darstellung der Datenstruktur} (siehe unten) mussten mehrere Sonderfälle in Methoden, wie zum Beispiel in der \textit{add}-Methode,
 berücksichtigt werden. Einige Methoden sind dadurch länger und unübersichtlicher geworden, als die Methoden aus den ursprünglichen Implementierungen. 
-Dies erschwert das das Verständnis für fachfremde Personen, das Debugging sowie die Weiterentwicklung der Software durch andere Entwickler.
+Dies erschwert das Verständnis für fachfremde Personen, das Debugging sowie die Weiterentwicklung der Software durch andere Entwickler.
 
 \noindent\textbf{Darstellung der Datenstruktur} Nur eine der zwei Implementierungen, auf denen diese Arbeit beruht, verfügt über eine Methode zur Visualisierung der Datenstruktur.
 Die Methode ist kurz und effizient programmiert. Die Darstellung hingegen weist einige Schwächen auf, besonders in Bezug auf Verständlichkeit und Klarheit.
 Diese beiden Aspekte sind jedoch für eine Anwendung, die von unerfahrenen oder fachfremden Personen bedient werden soll, essenziell.
 Außerdem wurde die Methode durch die Kombination der beiden Implementierungen unbrauchbar, da sie Konzepte anders umsetzt und dadurch andere Voraussetzungen notwendig sind.
-Dementsprechend wurde eine eigene Methode \textit{egraph\_to\_dot()} in der Datei \textit{EGraph.py} angefertigt.
+Dementsprechend wurde eine eigene Methode \textit{egraph\_to\_dot} in der Datei \textit{EGraph.py} angefertigt.
 
 Im Verlauf der Entwicklung hat es sich als schwierig herausgestellt, die Reihenfolge der E-Classes im DOT-Format zu kontrollieren.
 Daher zeigen die Pfeile einer E-Node eventuell verkehrt herum auf die Klassen. Mithin kann es zu einer falschen Darstellung kommen.
@@ -44,8 +44,8 @@ Wendet man die Regel erneut an, tritt ein Fehler in der Darstellung auf. Dabei w
 Kante der E-Node aus gezeichnet, sondern starten beide auf der linken Seite. Es handelt sich hierbei um einen Sonderfall, der nur in dieser Situation auftritt und nicht zu einem 
 Missverständnis des Themas beiträgt. Der Fehler lässt sich durch die Korrektur der entsprechenden Methode beseitigen.
 
-Darüber hinaus muss während der Equality Saturation ein Timeout angegeben werden, um den Prozess unterbrechen zu können. Durch den Zyklus wird immer wieder ein neues \textit{Match}
-im E-Graph gefunden, wodurch sich die Version des E-Graphs ständig ändert. Damit wird eine Endlosschleife erzeugt.
+Durch den Zyklus wird immer wieder ein neues \textit{Match} im E-Graph gefunden, wodurch sich die Version des E-Graphs ständig ändert. Somit wird eine Endlosschleife erzeugt.
+Daher muss während der Equality Saturation ein Timeout angegeben werden, um den Prozess beenden zu können. 
 
 \noindent\textbf{Pfadangabe im Server} Während der Testphase des Servers hat sich herausgestellt, dass der Pfad zum Ordner \textit{static/} unter Testbedingungen abweicht, weil
 die Tests in einem anderen Ordner untergebracht sind. Die Angabe \textit{static/} reichte daher nicht aus und die Tests schlugen fehl, weil kein Ordner \textit{static/} gefunden wird, der \textit{gemounted} werden kann. Die Lösung für das Problem stammt aus einem Issue auf 
@@ -121,6 +121,7 @@ Die erstellten Unit-Tests geben weitere Gewissheit über die praktische Umsetzun
 
 \noindent\textbf{Funktionale Eignung} In Abschnitt~\ref{sub:ziel} wurde bereits dargelegt, dass die im Exposé festgehaltenen Anforderungen an die Software erreicht worden sind.
 Die Anwendung bietet Studentinnen und Studenten die Möglichkeit, sich auf interaktive Weise mit E-Graphs und Equality Saturation auseinander zu setzen.
+Darüber hinaus werden praktische Features, wie das Herunterladen der Session, angeboten, um die Benutzung erleichtern.
 
 \noindent\textbf{Performance} Bei der Entwicklung der Anwendung wurde das Ziel der Leistungseffizienz anerkannt, aber nicht priorisiert, da die Software in der Lehre eingesetzt werden sollte
 und somit andere Anforderungen, wie zum Beispiel die Benutzbarkeit, erfüllen muss. Dementsprechend ist die Wahl der Programmiersprache Python nicht optimal. Dies wurde zu Gunsten einer einfachen Benutzbarkeit
@@ -139,6 +140,6 @@ Bei der Visualisierung von E-Graphs wurde besonders großen Wert auf die Benutze
 Nicht nur lassen sich andere Strukturen der Website für eine bessere Übersicht 
 einklappen, sondern die Darstellung eines E-Graphs lässt sich vergrößern, verkleinern und verschieben. Es ist auch möglich, die Grafik in einem neuen Tab zu öffnen, damit auch Benutzer
 mit einem kleineren Bildschirm die Anwendung nutzen können.
-Des Weiteren kann ein E-Graph durch das Debugging-Feature in jedem Stadium beobachtet werden, wodurch Abläufe während Equality Saturation besser verstanden werden können.
+Des Weiteren kann ein E-Graph durch das Debugging-Feature in jedem Stadium beobachtet werden, wodurch Abläufe während der Equality Saturation besser verstanden werden können.
 Hilfreiche Statusmeldungen dienen als zusätzliches Hilfsmittel, um Benutzung der Anwendung zu erleichtern.
 Es ist auch möglich, eine Session bzw. die rewrite rules in einer Datei zu speichern und später hochzuladen, sodass dem Benutzer Zeit erspart wird.

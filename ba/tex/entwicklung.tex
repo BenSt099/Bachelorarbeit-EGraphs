@@ -133,8 +133,7 @@ Jedes Tuple enthält eine E-Node $x$, die auf diese E-Class zeigt sowie die ECla
 Die Referenzen auf Eltern der E-Class werden für den \textit{rebuild}-Schritt benötigt.
 
 \begin{lstlisting}[language=Python, caption=Klasse \textit{EClass}, label={lst:eclass}]
-# ... 
-
+# Importe ausgelassen 
 class EClass:
     def __init__(self):
         self.id = str(uuid.uuid4())
@@ -482,6 +481,7 @@ Die Datei \textit{server.py} (Listing~\ref{lst:server}) enthält den Server, der
 \noindent Zu Beginn werden zwei Instanzen initialisiert. Die erste Instanz ist der Server selbst (Z.~\ref{serverinit}), die zweite der EGraphService (Z.~\ref{serverservice}).
 Der Serverinstanz wird die Funktion \textit{lifespan} übergeben, die bei dem Starten und Herunterfahren des Servers benutzerdefinierte Aktionen ausführen kann.
 In diesem Fall wird der Browser unter der Adresse \url{http://127.0.0.1:8000} geöffnet (Z.~\ref{serveropen}).
+\newpage
 
 \begin{lstlisting}[language=Python, escapechar=|, caption=Auszug aus der Datei \textit{server.py}, label={lst:server}]
 # Importe ausgelassen 
