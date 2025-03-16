@@ -1,0 +1,32 @@
+\EnableTitleSlide
+\section{Weiterführendes}
+
+\begin{frame}{Daily Mandelbrot}
+    \begin{center}
+        % \includegraphics[scale=0.45]{utils/mm_x.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Buddhabrot}
+    \begin{columns}
+        \column{.5\textwidth}
+            \begin{itemize}
+                \item Basiert auf der gleichen rekursiven Formel wie $\mathbb{M}$
+                \item Visualisiert die Folgeglieder $\{z^c_0, \dots, z^c_n\}$ für zufällige $c \notin \mathbb{M}$
+                \item Je häufiger ein Folgeglied berechnet wird, desto heller der Punkt
+                \item Detailgrad wächst mit der Anzahl an Iterationen $n$ und der Anzahl ausgewählter $c \notin \mathbb{M}$
+            \end{itemize}
+        \column{.45\textwidth}
+            % \includegraphics[scale=0.42]{../Code/Mandelbrot_buddhabrot/Fig_buddhabrot.png}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Julia-Mengen}
+    Die Mandelbrotmenge weist Parallelen zu \textit{Julia-Mengen} $K_c$ auf und lässt sich darüber auch definieren:
+    \begin{itemize}
+        \item $K_c := \{ z_0 \in \mathbb{C} \ | \ (z^{2}_{n} + c)_{n \in \mathbb{N}} \;\; \textrm{ist beschränkt} \}$
+        \item $\mathbb{M}=\{c \in \mathbb{C} \ | \ 0 \in K_c\} $
+        \item An Randpunkten $r \in \mathbb{M}$ liegt in $\mathbb{M}$ und $K_c$ lokal ein ähnliches Muster vor
+        \item Genau dann, wenn $c\in\mathbb{M}$, dann ist $K_c$ zusammenhängend
+    \end{itemize}
+\end{frame}

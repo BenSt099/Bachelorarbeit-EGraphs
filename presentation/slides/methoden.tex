@@ -1,0 +1,146 @@
+\EnableTitleSlide
+\section{Methoden}
+
+% \begin{frame}{$\mathbb{M}$ Visualisieren}
+%     \begin{center}
+%         \includegraphics[scale=0.38]{../Code/Mandelbrot_blackwhite/blackwhite_zoom1.png}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{$\mathbb{M}$ Visualisieren}
+%     \begin{center}
+%         \includegraphics[scale=0.41]{../Code/Mandelbrot_vortrag/folien/mvisualisieren1.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{$\mathbb{M}$ Visualisieren}
+%     \begin{center}
+%         \includegraphics[scale=0.41]{../Code/Mandelbrot_vortrag/folien/mvisualisieren2.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{$\mathbb{M}$ Visualisieren}
+%     \begin{center}
+%         \includegraphics[scale=0.41]{../Code/Mandelbrot_vortrag/folien/mvisualisieren3.pdf}
+%     \end{center}
+% \end{frame}
+
+\begin{frame}{$\mathbb{M}$ Visualisieren}
+    \begin{center}
+        \begin{algorithmic}
+            \Function{ist\_Teil\_von\_Mandelbrot}{c}
+            \State $i \gets 0$
+            \State $iterationen \gets 20$
+            \State $z_{n+1}, z_n = 0$
+            \While{$i < iterationen$}
+            
+            \State $z_{n+1} = {z_n}^2 + c$
+
+            \If{$|z_{n+1}| > 2$}
+            \State \Return $0$
+            \EndIf
+
+            \State $i \gets i + 1$
+            \EndWhile
+
+            \State \Return $1$
+            \EndFunction
+        \end{algorithmic}
+    \end{center}
+\end{frame}
+
+% \begin{frame}{$\mathbb{M}$ Visualisieren}
+%     \begin{center}
+%         \includegraphics[scale=0.41]{../Code/Mandelbrot_vortrag/folien/mvisualisieren4.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Parallelisieren}
+%     \begin{center}
+%         \includegraphics[scale=0.39]{../Code/Mandelbrot_vortrag/folien/matrix_parallel.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Einfärbung}
+%     \begin{center}
+%         \includegraphics[scale=0.12]{utils/Region6_1.jpg}
+%     \end{center}
+% \end{frame}
+
+\begin{frame}{Einfärbung - diskret}
+    \begin{center}
+        \begin{algorithmic}
+            \Function{ist\_Teil\_von\_Mandelbrot}{c}
+            \State $i \gets 0$
+            \State $iterationen \gets 40$
+            \State $z_{n+1}, z_n = 0$
+            \While{$i < iterationen$}
+            
+            \State $z_{n+1} = {z_n}^2 + c$
+
+            \If{$|z_{n+1}| > 2$}
+            \State \Return \BoxedString[fill=yellow]{$i$}
+            \LComment{return 0}
+            \EndIf
+
+            \State $i \gets i + 1$
+            \EndWhile
+
+            \State \Return \BoxedString[fill=yellow]{$i$}
+            \LComment{return 1}
+            \EndFunction
+        \end{algorithmic}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Einfärbung - diskret}
+    % \begin{columns}
+    %     \column{.5\textwidth}
+    %         \begin{itemize}
+    %             \item Einfärbung von $c \notin \mathbb{M}$
+    %             \item Ab welcher Iteration $n$ ist $|z_n| > 2$?
+    %         \end{itemize} 
+    %         \vspace{0.2cm}
+    %         \begin{center}
+    %             \includegraphics[scale=0.8]{../Code/Mandelbrot_colored/iterations_colors.pdf}
+    %         \end{center}
+    %     \column{.45\textwidth}
+    %         \includegraphics[scale=0.09]{../Code/Mandelbrot_colored/Fig2_color_pil.jpg}
+    % \end{columns}
+\end{frame}
+
+% \begin{frame}{Einfärbung - kontinuierlich}
+%     \begin{center}
+%         % \includegraphics[scale=0.33]{../Code/Mandelbrot_vortrag/folien/einfaerbung.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Zoom}
+%     \begin{center}
+%         \includegraphics[scale=0.33]{../Code/Mandelbrot_vortrag/folien/zoom1.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Zoom}
+%     \begin{center}
+%         \includegraphics[scale=0.33]{../Code/Mandelbrot_vortrag/folien/zoom2.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Zoom}
+%     \begin{center}
+%         \includegraphics[scale=0.33]{../Code/Mandelbrot_vortrag/folien/zoom3.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Zoomfahrt}
+%     \begin{center}
+%         \includegraphics[scale=0.51]{../Code/Mandelbrot_vortrag/folien/zoomfahrt.pdf}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}{Zoomfahrt}
+%     \begin{center}
+%         \includegraphics[scale=0.38]{../Code/Mandelbrot_vortrag/folien/zoomfahrt-explanation.pdf}
+%     \end{center}
+% \end{frame}

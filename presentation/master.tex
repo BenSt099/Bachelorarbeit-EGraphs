@@ -1,135 +1,214 @@
-\documentclass[%
-%handout,%
-9pt,hyperref={pdfpagelabels=false},aspectratio=169]{beamer}
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{SimplePlus}
 
-\mode<presentation> {
-    \usetheme{HHUD}
-    \setbeamercovered{invisible}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{graphicx} % Allows including images
+\usepackage{subcaption} % Subfigures
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[ngerman]{babel}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\usepackage{algpseudocodex}
+
+\algrenewcommand\algorithmicrequire{\textbf{Voraussetzung:}}
+\algrenewcommand\algorithmicfunction{\textbf{Funktion}}
+
+\usepackage{datetime}
+\newdate{vortragsdatum}{01}{04}{2025}
+
+\usepackage{bootstrapcolors}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[short title]{\vspace{-10mm}{\bf\normalsize \color{black} Bachelorarbeit} \vspace{3mm}\\ \\ \normalsize Entwicklung einer Anwendung zum Vermitteln von Lerninhalten über E-Graphs und Equality Saturation für die Lehre} % The short title appears at the bottom of every slide, the full title is only on the title page
+%\subtitle{Subtitle}
+
+\author[rjb] {\bf Ben Steinhauer} 
+
+\institute[HHU] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+    Lehrstuhl für Softwaretechnik und Programmiersprachen \\
+    Heinrich-Heine-Universität Düsseldorf% Your institution for the title page
+}
+%\date{\today} % Date, can be changed to a custom date
+\date{\displaydate{vortragsdatum}}
+
+\definecolor{lightblue1}{rgb}{0.92, 0.92, 0.97}
+\definecolor{hhuUniBlau}{RGB}{0,106,179}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER TITLE SLIDES
+%----------------------------------------------------------------------------------------
+
+% Define a flag to control the display of the title slide
+\newif\ifshowtitleslide
+
+% Set the default behavior to not show the title slide
+\showtitleslidefalse
+
+% Redefine the \AtBeginSection command to check the flag
+\AtBeginSection[]{
+  \ifshowtitleslide
+    \begin{frame}
+      \vfill
+      \centering
+      \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+        \usebeamerfont{title}\insertsectionhead\par%
+      \end{beamercolorbox}
+      \vfill
+    \end{frame}
+  \fi
+  % Reset the flag to the default state after each section
+  \showtitleslidefalse
 }
 
+% New command to enable the title slide for the next section
+\newcommand{\EnableTitleSlide}{\showtitleslidetrue}
 
-%\listfiles
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
 
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage{times}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath}
-\usepackage{subfigure}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{xmpmulti}
-\usepackage{multicol}
-
-%\usepackage{appendixnumberbeamer}
-
-% potentially useful packages
-\usepackage{nicefrac}
-\usepackage{tikz}
-
-
-% background image
-\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/background_16-9.pdf}}
-% commands for low and high decoration in frame foot
-\newcommand{\footdecorationlow}{\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/background_small_16-9}}}
-%\newcommand{\footdecorationhigh}{\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/titel_slide_info.pdf}}}
-\newcommand{\footdecorationend}{\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{fig/end_slide.pdf}}}
-
-
-% Fix build errors on debian (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=452333)
-\providecommand \thispdfpagelabel[1]{} {}
-
-%% The following lines are used to include section slides at the beginning of a new section;
-% \AtBeginSection[] {
-%   \footdecorationhigh
-%   \begin{frame}<beamer>
-%     \thispagestyle{empty}
-%     \frametitle{Gliederung}
-%     \vspace{-5mm}
-%     \tableofcontents[currentsection]
-%   \end{frame}
-%   \footdecorationlow
-% }
-
-
-% Template based on slides from the Institute of Computer Science
-% Modifications regarding the design by Marcel Käufler and Sara Schulte
-% % % % % % % % % %  CHANGE TOPIC AND AUTHOR INFORMATION HERE % % % % % % % % %
-                    
-\title{Entwicklung einer Anwendung zum Vermitteln von Lerninhalten über E-Graphs und Equality Saturation für die Lehre}
-%\subtitle{Add further information / subtitles / authors ...}
-\author{Ben Steinhauer}
-\date{17.02.2025}
-\institute{Lehrstuhl für Softwaretechnik und Programmiersprachen \\Heinrich-Heine-Universität Düsseldorf}
-\subject{Informatik}
-
-%
-% Start of the document
-%
 \begin{document}
-%\footdecorationhigh
-\begin{frame}[noframenumbering]
-\thispagestyle{empty}
-%\titlepage
-	%\begin{columns}
-	 %  	\column{0.4\paperwidth}
-	  % 	{
-	   %		\footnotesize
-	   	%	\color{hhuUniBlau}
-	   		%\put(50,-190){\insertdate}
-	   		
-	   	%}
-	   	%\column{0.6\paperwidth}
-	   	\centering 
-		\Large\color{black} \textbf{Bachelorarbeit}\\[\baselineskip]
-	   	
-		\color{hhuUniBlau}
-	   	\LARGE \inserttitle\\[\baselineskip]
-	   	%\normalsize \insertsubtitle\\[1.2\baselineskip]
-	   	
-	   	\large \insertauthor\\[\baselineskip]
 
-	   	
-	   	\color{black}
-	   	\small
-	   	\insertinstitute\\[\baselineskip]
-	   	\small  \insertdate
-	%\end{columns}
-\end{frame}
+\input{slides/deckblatt.tex}
 
-% \footdecorationlow
-% \begin{frame}
-% 	\thispagestyle{empty}
-% 	\frametitle{Gliederung}
-% 	Diese Gliederung ist optional und nicht unbedingt empfohlen (vor allem bei Präsentationen unter einer halben Stunde; löschen in master.tex)
-% 	\vspace{-5mm}
-% 	\tableofcontents
+%\input{slides/ueberblick.tex}
+
+\input{slides/einleitung.tex}
+
+\input{slides/hintergrund.tex}
+
+\input{slides/methoden.tex}
+
+\input{slides/ergebnisse.tex}
+
+%\input{slides/diskussion.tex}
+
+\input{slides/referenzen.tex}
+
+\input{slides/weiterfuehrendes.tex}
+
+% %------------------------------------------------
+% \section{First Section}
+% %------------------------------------------------
+
+% \begin{frame}{Bullet Points}
+%     \begin{itemize}
+%         \item Lorem ipsum dolor sit amet, consectetur adipiscing elit
+%         \item Aliquam blandit faucibus nisi, sit amet dapibus enim tempus eu
+%         \item Nulla commodo, erat quis gravida posuere, elit lacus lobortis est, quis porttitor odio mauris at libero
+%         \item Nam cursus est eget velit posuere pellentesque
+%         \item Vestibulum faucibus velit a augue condimentum quis convallis nulla gravida
+%     \end{itemize}
 % \end{frame}
-% \footdecorationlow
 
-% % % % % % % % % % Start of the conent % % % % % % % % % %
+% %------------------------------------------------
 
-%%% Slides can directly be included here instead of additional tex files
-\input{einleitung}
+% \begin{frame}{Blocks of Highlighted Text}
+%     In this slide, some important text will be \alert{highlighted} because it's important. Please, don't abuse it.
 
-\input{ergebnisse}
+%     \begin{block}{Block}
+%         Sample text
+%     \end{block}
 
-\input{schluss}
+%     \begin{alertblock}{Alertblock}
+%         Sample text in red box
+%     \end{alertblock}
 
+%     \begin{examples}
+%         Sample text in green box. The title of the block is ``Examples".
+%     \end{examples}
+% \end{frame}
 
-\footdecorationlow
-\section{Quellen}
-\begin{frame}[allowframebreaks]
-	\thispagestyle{empty}
-	\frametitle{Literatur}
-	Die Quellen werden in der Datei \textit{references.bib} eingefügt und hier angezeigt.
-	\nocite{*}
-	\bibliography{references.bib}
-	\bibliographystyle{abbrv}
-\end{frame}
+% %------------------------------------------------
 
-\appendix
+% \begin{frame}{Multiple Columns}
+%     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 
-\input{anhang}
+%         \column{.45\textwidth} % Left column and width
+%         \textbf{Heading}
+%         \begin{enumerate}
+%             \item Statement
+%             \item Explanation
+%             \item Example
+%         \end{enumerate}
+
+%         \column{.5\textwidth} % Right column and width
+%         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+
+%     \end{columns}
+% \end{frame}
+
+% %------------------------------------------------
+% \section{Second Section}
+% %------------------------------------------------
+
+% \begin{frame}{Table}
+%     \begin{table}
+%         \begin{tabular}{l l l}
+%             \toprule
+%             \textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2} \\
+%             \midrule
+%             Treatment 1         & 0.0003262           & 0.562               \\
+%             Treatment 2         & 0.0015681           & 0.910               \\
+%             Treatment 3         & 0.0009271           & 0.296               \\
+%             \bottomrule
+%         \end{tabular}
+%         \caption{Table caption}
+%     \end{table}
+% \end{frame}
+
+% %------------------------------------------------
+
+% \begin{frame}{Theorem}
+%     \begin{theorem}[Mass--energy equivalence]
+%         $E = mc^2$
+%     \end{theorem}
+% \end{frame}
+
+% %------------------------------------------------
+
+% \begin{frame}{Figure}
+%     Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
+%     %\begin{figure}
+%     %\includegraphics[width=0.8\linewidth]{test}
+%     %\end{figure}
+% \end{frame}
+
+% %------------------------------------------------
+
+% \begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+%     \frametitle{Citation}
+%     An example of the \verb|\cite| command to cite within the presentation:\\~
+
+%     This statement requires citation \cite{p1}.
+% \end{frame}
+
+% %------------------------------------------------
+
+% \begin{frame}{References}
+%     % Beamer does not support BibTeX so references must be inserted manually as below
+%     \footnotesize{
+%         \begin{thebibliography}{99}
+%             \bibitem[Smith, 2012]{p1} John Smith (2012)
+%             \newblock Title of the publication
+%             \newblock \emph{Journal Name} 12(3), 45 -- 678.
+%         \end{thebibliography}
+%     }
+% \end{frame}
+
+% %------------------------------------------------
+
+% \begin{frame}
+%     \Huge{\centerline{\textbf{The End}}}
+% \end{frame}
+
+% %----------------------------------------------------------------------------------------
 
 \end{document}
