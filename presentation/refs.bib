@@ -1,200 +1,219 @@
-@Inbook{Weitz2021,
-author="Weitz, Edmund",
-title="Die Mandelbrot-Menge",
-bookTitle="Konkrete Mathematik (nicht nur) f{\"u}r Informatiker: Mit vielen Grafiken und Algorithmen in Python",
-year="2021",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="425--431,495--502",
--abstract="Auf den folgenden Seiten werden wir uns mit der Mandelbrot-Menge besch{\"a}ftigen,da wir nun alle Begriffe zur Verf{\"u}gung haben, um sie beschreiben zu k{\"o}nnen. F{\"u}r das Verst{\"a}ndnis der nachfolgenden Kapitel ist dieses Thema nicht unbedingt notwendig; eine kursorische Auseinandersetzung mit der Mandelbrot-Menge bietet sich aber an, weil sie wohl eines der popul{\"a}rsten mathematischen Objekte {\"u}berhaupt ist. Das liegt sicher haupts{\"a}chlich daran,dass graphische Darstellungen dieser Menge sehr {\"a}sthetisch sind.",
--isbn="978-3-662-62618-4",
--doi="10.1007/978-3-662-62618-4_40",
--url="https://doi.org/10.1007/978-3-662-62618-4_40"
+@inbook{Ehrig2001,
+  author    = {Ehrig, Hartmut
+               and Mahr, Bernd
+               and Gro{\ss}e-Rhode, Martin
+               and Cornlius, Felix
+               and Zeitz, Philip},
+  title     = {Mathematisch-strukturelle Grundlagen der Informatik},
+  booktitle = {Mathematisch-strukturelle Grundlagen der Informatik},
+  year      = {2001},
+  chapter   = {{\"A}quivalenzrelationen},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  pages     = {93--107},
+  abstract  = {{\"A}quivalenzrelationen sind ein sehr m{\"a}chtiges Hilfsmittel f{\"u}r Klassifikation und Abstraktion in der Mathematik und speziell der mathematischen Informatik. Dies zeigt sich vor allem in dem Begriff der {\"A}quivalenzklassen, den wir in Abschnitt 5.4 einf{\"u}hren. Zuvor behandeln wir im Anschlu{\ss} an die konzeptuelle Einleitung zun{\"a}chst die zentrale Definition der {\"A}quivalenzrelation selbst und die Konstruktion der Abschlu{\ss}bildung. Dahinter verbirgt sich die minimale Erg{\"a}nzung einer beliebigen Relation zu einer {\"A}quivalenzrelation, die diese enth{\"a}lt. Da{\ss} dies immer eindeutig moglich ist, ist ein wichtiges Ergebnis.},
+  isbn      = {978-3-642-56792-6},
+  doi       = {10.1007/978-3-642-56792-6_6},
+  url       = {https://doi.org/10.1007/978-3-642-56792-6_6}
 }
 
-@Inbook{Mandelbrot2004,
-author="Mandelbrot, Benoit B.",
-title="Introduction to papers on quadratic dynamics: a progression from seeing to discovering",
-bookTitle="Fractals and Chaos: The Mandelbrot Set and Beyond",
-year="2004",
-publisher="Springer New York",
-address="New York, NY",
-pages="9--26",
--abstract="THIS CHAPTER DESCRIBES THE CIRCUMSTANCES under which I had the privilege of discovering in 1980 the set that is the main topic of this book. As will be meticulously documented in Chapters C12 and C14, I actually saw this set in 1979 but bumbled and fumbled for about a year.",
--isbn="978-1-4757-4017-2",
--doi="10.1007/978-1-4757-4017-2_1",
--url="https://doi.org/10.1007/978-1-4757-4017-2_1"
+@article{eqsatexploration,
+  author     = {Pal, Anjali and Saiki, Brett and Tjoa, Ryan and Richey, Cynthia and Zhu, Amy and Flatt, Oliver and Willsey, Max and Tatlock, Zachary and Nandi, Chandrakana},
+  title      = {Equality Saturation Theory Exploration \`{a} la Carte},
+  year       = {2023},
+  issue_date = {October 2023},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {7},
+  number     = {OOPSLA2},
+  url        = {https://doi.org/10.1145/3622834},
+  doi        = {10.1145/3622834},
+  abstract   = {Rewrite rules are critical in equality saturation, an increasingly popular technique
+                in optimizing compilers, synthesizers, and verifiers. Unfortunately,
+                developing high-quality rulesets is difficult and error-prone. Recent
+                work on automatically inferring rewrite rules does not scale to large
+                terms or grammars, and existing rule inference tools are monolithic and
+                opaque. Equality saturation users therefore struggle to guide inference and
+                incrementally construct rulesets. As a result, most users still
+                manually develop and maintain rulesets.
+                
+                This paper proposes Enumo, a new domain-specific language for
+                programmable theory exploration. Enumo provides a small set of core
+                operators that enable users to strategically guide rule inference and
+                incrementally build rulesets. Short Enumo programs easily replicate
+                results from state-of-the-art tools, but Enumo programs can also scale
+                to infer deeper rules from larger grammars than prior approaches. Its
+                composable operators even facilitate developing new strategies for
+                ruleset inference. We introduce a new fast-forwarding strategy that does not require
+                evaluating terms in the target language, and can thus support domains
+                that were out of scope for prior work.
+                
+                We evaluate Enumo and fast-forwarding across a variety of domains. Compared to
+                state-of-the-art techniques, enumo can synthesize better rulesets over a
+                diverse set of domains, in some cases matching the effects of
+                manually-developed rulesets in systems driven by equality saturation.},
+  journal    = {Proc. ACM Program. Lang.},
+  month      = oct,
+  articleno  = {258},
+  numpages   = {29},
+  keywords   = {Rewrite rules, equality saturation, program synthesis}
 }
 
-@article{Devaney1999,
- -ISSN = {00029890, 19300972},
- -URL = {http://www.jstor.org/stable/2589552},
- author = {Robert L. Devaney},
- journal = {The American Mathematical Monthly},
- number = {4},
- pages = {289--302},
- publisher = {Mathematical Association of America},
- title = {The Mandelbrot Set, the Farey Tree, and the Fibonacci Sequence},
- urldate = {2024-05-14},
- volume = {106},
- year = {1999}
+@misc{yang2021,
+  title         = {Equality Saturation for Tensor Graph Superoptimization},
+  author        = {Yichen Yang and Phitchaya Mangpo Phothilimtha and Yisu Remy Wang and Max Willsey and Sudip Roy and Jacques Pienaar},
+  year          = {2021},
+  eprint        = {2101.01332},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2101.01332}
 }
 
-@Inbook{Remmert1995,
-author="Remmert, Reinhold",
-title="Komplexe Zahlen und stetige Funktionen",
-bookTitle="Funktionentheorie 1",
-year="1995",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="7--35",
-abstract="Eine Darstellung der Funktionentheorie mu{\ss} notwendig mit einer Beschreibung der komplexen Zahlen beginnen. Wir erinnern zun{\"a}chst an ihre wichtigen Eigenschaften; eine ausf{\"u}hrliche Darstellung findet man im Band [Zahlen] dieser Lehrbuchreihe, wo auch die historische Entwicklung ausf{\"u}hrlich behandelt wird.",
--="978-3-642-97632-2",
--doi="10.1007/978-3-642-97632-2_3",
--url="https://doi.org/10.1007/978-3-642-97632-2_3"
+@misc{wang2020,
+  title         = {SPORES: Sum-Product Optimization via Relational Equality Saturation for Large Scale Linear Algebra},
+  author        = {Yisu Remy Wang and Shana Hutchison and Jonathan Leang and Bill Howe and Dan Suciu},
+  year          = {2020},
+  eprint        = {2002.07951},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.DB},
+  url           = {https://arxiv.org/abs/2002.07951}
+}
+
+@article{2021-egg,
+  author     = {Willsey, Max and Nandi, Chandrakana and Wang, Yisu Remy and Flatt, Oliver and Tatlock, Zachary and Panchekha, Pavel},
+  title      = {egg: Fast and Extensible Equality Saturation},
+  year       = {2021},
+  issue_date = {January 2021},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {5},
+  number     = {POPL},
+  url        = {https://doi.org/10.1145/3434304},
+  doi        = {10.1145/3434304},
+  abstract   = {An e-graph efficiently represents a congruence relation over many expressions. Although they were originally developed in the late 1970s for use in automated theorem provers, a more recent technique known as equality saturation repurposes e-graphs to implement state-of-the-art, rewrite-driven compiler optimizations and program synthesizers. However, e-graphs remain unspecialized for this newer use case. Equality saturation workloads exhibit distinct characteristics and often require ad-hoc e-graph extensions to incorporate transformations beyond purely syntactic rewrites.  This work contributes two techniques that make e-graphs fast and extensible, specializing them to equality saturation. A new amortized invariant restoration technique called rebuilding takes advantage of equality saturation's distinct workload, providing asymptotic speedups over current techniques in practice. A general mechanism called e-class analyses integrates domain-specific analyses into the e-graph, reducing the need for ad hoc manipulation.  We implemented these techniques in a new open-source library called egg. Our case studies on three previously published applications of equality saturation highlight how egg's performance and flexibility enable state-of-the-art results across diverse domains.},
+  journal    = {Proc. ACM Program. Lang.},
+  month      = jan,
+  articleno  = {23},
+  numpages   = {29},
+  keywords   = {equality saturation, e-graphs}
+}
+
+@inproceedings{phaseorder-2009,
+  author    = {Tate, Ross and Stepp, Michael and Tatlock, Zachary and Lerner, Sorin},
+  title     = {Equality saturation: a new approach to optimization},
+  year      = {2009},
+  isbn      = {9781605583792},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/1480881.1480915},
+  doi       = {10.1145/1480881.1480915},
+  abstract  = {Optimizations in a traditional compiler are applied sequentially, with each optimization destructively modifying the program to produce a transformed program that is then passed to the next optimization. We present a new approach for structuring the optimization phase of a compiler. In our approach, optimizations take the form of equality analyses that add equality information to a common intermediate representation. The optimizer works by repeatedly applying these analyses to infer equivalences between program fragments, thus saturating the intermediate representation with equalities. Once saturated, the intermediate representation encodes multiple optimized versions of the input program. At this point, a profitability heuristic picks the final optimized program from the various programs represented in the saturated representation. Our proposed way of structuring optimizers has a variety of benefits over previous approaches: our approach obviates the need to worry about optimization ordering, enables the use of a global optimization heuristic that selects among fully optimized programs, and can be used to perform translation validation, even on compilers other than our own. We present our approach, formalize it, and describe our choice of intermediate representation. We also present experimental results showing that our approach is practical in terms of time and space overhead, is effective at discovering intricate optimization opportunities, and is effective at performing translation validation for a realistic optimizer.},
+  booktitle = {Proceedings of the 36th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+  pages     = {264–276},
+  numpages  = {13},
+  keywords  = {intermediate representation, equality reasoning, compiler optimization},
+  location  = {Savannah, GA, USA},
+  series    = {POPL '09}
+}
+
+@book{ullman2008,
+  author    = {Ullman, Jeffrey D. and Lam, Monica S. and Sethi, Ravi and Aho, Alfred V.},
+  title     = {{Compiler  Prinzipien, Techniken und Werkzeuge}},
+  abstract  = {{Compiler Grunds\"atze, Techniken und Werkzeuge: das "Drachenbuch" von Aho, Sethi und Ullman gilt als das unumstrittene Referenzbuch des Compilerbaus. Das Autorenteam, verst\"arkt durch die weltber\"uhmte Informatikerin Monica Lam, hat das Standardwerk in einer zweiten Auflage komplett \"uberarbeitet ver\"offentlicht. Es bietet eine in allen Aspekten detaillierte Einf\"uhrung in die Theorie und Praxis des Compilerbaus. Das Buch stellt, beginnend mit der Beschreibung der Grammatik einfacher Sprachen, die Grundideen vor, die hinter der Compiler-Technologie stehen und vertieft dann im zweiten Teil die vorgestellten Techniken. Die Autoren behandeln wichtige Themen wie die lexikalische Analyse, die Syntaxanalyse, Typ\"uberpr\"ufung, Zwischencodegenerierung, Codeoptimierung und Softwaredesign. Neu hinzugef\"ugt wurden vier Kapitel, die sich mit der Laufzeitumgebung sowie den Besonderheiten moderner Prozessorarchitektur besch\"aftigen. Dieses geballte Wissen wird in Praxisbeispielen effizient zusammengef\"uhrt. Dabei wird die Verwendung der Werkzeuge wie lex und yacc in Beispielen demonstriert. Das urspr\"ungliche Drachenbuch st\"utzte sich auf die Werkzeuge lex und yacc, um Compiler in der Programmiersprache C zu entwickeln. Um den heutigen Anspr\"uchen gerecht zu werden, beinhaltet die Neuauflage das \"Ubersichtskapitel 2, zusammen mit Anhang A, deshalb ein komplett in Java entwickeltes Compiler Front-End. Da die restlichen Kapitel (insbesondere Kapitel 3, 4 und 5) immer noch auf lex und yacc aufbauen, wurde in der deutschen \"Ubersetzung der Anhang C hinzugef\"ugt. Dieser stellt das Werkzeug SableCC vor, mit dem Lexer und Parser in Java erstellt werden k\"onnen. Vorgestellt wird auch, wie man mit SableCC abstrakte Syntaxb\"aume generieren und Analysephasen implementieren kann. Der Anhang C sowie die CWS-Webseite zu diesem Buch enthalten zus\"atzliche \"Ubungen. Diese Erg\"anzungen erm\"oglichen den Einsatz dieses Buches sowohl f\"ur die Lehre, basierend auf Java, als auch die praktische Anwendung des Wissens f\"ur Informatiker, die in Java entwickeln. Wahrlich ein "Drachenbuch" Dieses Buch richtet sich an Studierende und Praktiker aus der Informatik und an alle, die effizienten Code entwickeln wollen. Begleitend zum Buch dazu gibt es L\"osungsans\"atze zu den Aufgaben und alle Abbildungen aus dem Buch als Foliensatz. Inhalt Struktur eines Compilers Evolution der Programmiersprachen Wissenschaft des Compilerbaus Anwendungen der Compilertechnologie Grundlagen von Programmiersprachen Ein einfacher syntaxgerichteter \"Ubersetzer Lexikalische Analyse (neu) Syntaktische Analyse Syntaxgerichtete \"Ubersetzung Zwischencodeerzeugung Laufzeitumgebungen (neu) Codeerzeugung Maschinenunabh\"angige Optimierungen Optimierungen f\"ur Parallelit\"at und Lokalit\"at (neu) Interprozedurale Analyse (neu) Hier finden Sie Downloads zu diesem Titel.}},
+  pages     = {1296},
+  publisher = {Pearson Deutschland},
+  year      = {2008},
+  isbn      = {9783827370976},
+  doi       = {},
+  url       = {https://elibrary.pearson.de/book/99.150005/9783863265748},
+  keywords  = {Code},
+  keywords  = {Compiler},
+  keywords  = {Programmiersprache},
+  keywords  = {Drachenbuch},
+  keywords  = {Übersetzer}
+}
+
+@misc{expose,
+  author = {Ben Steinhauer},
+  title  = {Exposé zur Bachelorarbeit},
+  url    = {https://github.com/BenSt099/Bachelorarbeit-EGraphs/blob/main/exposé/expose.pdf},
+  note   = {besucht am 11.02.2025}
+}
+
+@misc{cole,
+  author = {Cole Kurashige},
+  title  = {The e-graph data structure},
+  url    = {https://www.cole-k.com/2023/07/24/e-graphs-primer/},
+  note   = {besucht am 05.02.2025}
+}
+
+@misc{pep,
+  author = {van Rossum, Guido and Warsaw, Barry and Coghlan, Alyssa},
+  title  = {PEP 8 – Style Guide for Python Code},
+  url    = {https://peps.python.org/pep-0008/},
+  note   = {besucht am 07.02.2025}
+}
+
+@misc{black,
+  author = {Łukasz Langa and others},
+  title  = {Black | The uncompromising code formatter},
+  url    = {https://black.readthedocs.io/en/stable/},
+  note   = {besucht am 07.02.2025}
+}
+
+@misc{docusaurus,
+  author = {Meta Open Source, Inc. and others},
+  title  = {Docusaurus},
+  url    = {https://docusaurus.io/},
+  note   = {besucht am 11.02.2025}
 }
 
 
-@article{Bridger1988,
- -ISSN = {07468342, 19311346},
- -URL = {http://www.jstor.org/stable/2686471},
- author = {Mark Bridger},
- journal = {The College Mathematics Journal},
- number = {4},
- pages = {353--363},
- publisher = {Mathematical Association of America},
- title = {Looking at the Mandelbrot Set},
-- urldate = {2024-05-22},
- volume = {19},
- year = {1988}
+@misc{franklin,
+  author = {Eric Eckert},
+  title  = {Misquotes and Memes: Did Ben Franklin REALLY Say That?},
+  url    = {https://news.web.baylor.edu/news/story/2015/misquotes-and-memes-did-ben-franklin-really-say},
+  note   = {besucht am 04.02.2025}
 }
 
-@article{Ewing1995,
- -ISSN = {07468342, 19311346},
- -URL = {http://www.jstor.org/stable/2687359},
- author = {John Ewing},
- journal = {The College Mathematics Journal},
- number = {2},
- pages = {90--99},
- publisher = {Mathematical Association of America},
- title = {Can We See the Mandelbrot Set?},
- urldate = {2024-05-23},
- volume = {26},
- year = {1995}
+@misc{cranelift,
+  author = {Bytecode Alliance, NPO},
+  title  = {Cranelift},
+  url    = {https://cranelift.dev/},
+  note   = {besucht am 23.11.2024}
 }
 
-
-@article{Lei1990,
- author = {Tan Lei},
- journal = {Communications in Mathematical Physics},
- pages = {587--617},
- publisher = {Mathematical Association of America},
- title = {Similarity between the Mandelbrot set and Julia sets},
- volume = {134},
- year = {1990}
+@misc{bootstrap,
+  author = {Mark Otto and others},
+  title  = {Bootstrap 5.3.3},
+  url    = {https://getbootstrap.com/},
+  note   = {besucht am 11.12.2024}
 }
 
-@Inbook{Douady1986,
-author="Douady, Adrien",
-title="Julia Sets and the Mandelbrot Set",
-bookTitle="The Beauty of Fractals: Images of Complex Dynamical Systems",
-year="1986",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="161--174",
--abstract="Quadratic Julia sets, and the Mandelbrot set, arise in a mathematical situation which is extremely simple, namely from sequences of complex numbers defined inductively by the relation {\$}{\$}z{\_}n  +  = z{\_}n^2  + c,{\$}{\$}where c is a complex constant. I must say that, in 1980, whenever I told my friends that I was just starting with J.H. Hubbard a study of polynomials of degree 2 in one complex variable (and more specifically those of the form z↦z2+c). they would all stare at me and ask: Do you expect to find anything new? It is, however, this simple family of polynomials which is responsible for producing these objects which are so complicated --- not chaotic, but on the contrary, rigorously organized according to sophisticated combinatorial laws.",
--isbn="978-3-642-61717-1",
--doi="10.1007/978-3-642-61717-1_13",
--url="https://doi.org/10.1007/978-3-642-61717-1_13"
+@misc{graphviz,
+  author = {Ellson, John and Gansner, Emden and Hu, Yifan and North, Stephen and others},
+  title  = {Graphviz},
+  url    = {https://graphviz.org/},
+  note   = {besucht am 08.01.2025}
 }
 
-@article{Shishikura1998,
- -ISSN = {0003486X},
- -URL = {http://www.jstor.org/stable/121009},
- -abstract = {It is shown that the boundary of the Mandelbrot set M has Hausdorff dimension two and that for a generic c ∈ ∂ M, the Julia set of z $\mapsto $ z2 + c also has Hausdorff dimension two. The proof is based on the study of the bifurcation of parabolic periodic points.},
- author = {Mitsuhiro Shishikura},
- journal = {Annals of Mathematics},
- number = {2},
- pages = {225--267},
- publisher = {Annals of Mathematics},
- title = {The Hausdorff Dimension of the Boundary of the Mandelbrot Set and Julia Sets},
- -urldate = {2024-05-31},
- volume = {147},
- year = {1998}
+@misc{d3-graphviz,
+  author = {Magnus Jacobsson},
+  title  = {d3-graphviz},
+  url    = {https://github.com/magjac/d3-graphviz},
+  note   = {besucht am 08.01.2025}
 }
 
-@inbook{Precht+2005+93+118,
--url = {https://doi.org/10.1524/9783486593358.93},
-title = {Kapitel 7: Folgen, Reihen und Grenzwerte},
-booktitle = {Mathematik 2 für Nichtmathematiker: Funktionen - Folgen und Reihen - Differential- und Integralrechnung - Differentialgleichungen - Ordnung und Chaos},
-booktitle = {Funktionen - Folgen und Reihen - Differential- und Integralrechnung - Differentialgleichungen - Ordnung und Chaos},
-author = {Manfred Precht},
-publisher = {Oldenbourg Wissenschaftsverlag},
-address = {München},
-pages = {93--118},
-edition = 7,
--doi = {doi:10.1524/9783486593358.93},
--isbn = {9783486593358},
-year = {2005},
-lastchecked = {2024-05-11}
+@misc{fastapi,
+  author = {Sebastián Ramírez},
+  title  = {FastAPI},
+  url    = {https://fastapi.tiangolo.com/},
+  note   = {besucht am 11.12.2024}
 }
 
-@article{XU1993245,
-title = {Fractals, fractal dimensions and landscapes - a review},
-journal = {Geomorphology},
-volume = 8,
-number = 4,
-pages = {245-262},
-year = {1993},
--issn = {0169-555X},
--doi = {https://doi.org/10.1016/0169-555X(93)90022-T},
--url = {https://www.sciencedirect.com/science/article/pii/0169555X9390022T},
-author = {Tingbao Xu and Ian D. Moore and John C. Gallant},
-}
-
-@inbook{fractalgeometry,
-publisher = {John Wiley \& Sons, Ltd},
-title = {Fractal Geometry: Mathematical Foundations and Applications},
-author = {Kenneth Falconer},
-pages = {xxv},
-year = {2003},
-abstract = {Summary The prelims comprise: Half-Title Page Title Page Copyright Page Table of Contents Preface Preface to the Second Edition Course Suggestions Introduction},
--isbn = {9780470013854},
--doi = {https://doi.org/10.1002/0470013850},
--url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/0470013850},
--eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/0470013850}
-}
-
-@Inbook{AlsinaNelson2015,
-author="Alsina, Claudi and Nelsen, Roger B.",
-title="Selbstähnliche Figuren",
-bookTitle="Perlen der Mathematik: 20 geometrische Figuren als Ausgangspunkte für mathematische Erkundungsreisen",
-year="2015",
-edition = 1,
-publisher="Springer Spektrum",
-address="Berlin, Heidelberg",
-pages="217",
--isbn="978-3-662-45461-9",
--doi="10.1007/978-3-662-45461-9",
--url="https://doi.org/10.1007/978-3-662-45461-9"
-}
-
-@article{Andreadis2015,
-  author = {Andreadis, Ioannis and Karakasidis, Theodoros E.},
-  journal = {Nonlinear Dynamics},
-  -number = {},
-  title = {On a numerical approximation of the boundary structure and of the area of the Mandelbrot set},
-  volume = {80},
-  year = {2015},
-  pages = {929--935}
-}
-
-@Online{Green1993,
-  author = {Melinda Green},
-  title = {The {B}uddhabrot {T}echnique [{O}nline]},
-  -howpublished = {Available: \url{https://superliminal.com/fractals/bbrot/}},
-  -note = {(Zugriff: 28.05.2024)},
-  url = {https://superliminal.com/fractals/bbrot/},
-  urldate = {2024-05-28},
-  -year = {???}
+@misc{devito,
+  author = {Zachary DeVito},
+  title  = {Intro to EGraphs},
+  url    = {https://colab.research.google.com/drive/1tNOQijJqe5tw-Pk9iqd6HHb2abC5aRid?usp=sharing},
+  note   = {besucht am 26.11.2024}
 }

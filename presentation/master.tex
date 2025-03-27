@@ -17,9 +17,26 @@
 \algrenewcommand\algorithmicfunction{\textbf{Funktion}}
 
 \usepackage{datetime}
-\newdate{vortragsdatum}{01}{04}{2025}
+\newdate{vortragsdatum}{07}{04}{2025}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{listings}
+\tcbuselibrary{raster}
+\tcbuselibrary{skins}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 
 \usepackage{bootstrapcolors}
+
+\usepackage{annotate-equations}
+
+\usepackage{algpseudocodex}
+\algrenewcommand\algorithmicfunction{\textbf{Funktion}}
+\usepackage{algorithm}
+\floatname{algorithm}{Algorithmus}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -74,11 +91,16 @@
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
 
+% (* (+ (/ (* x 2) 2) (+ (* z 0) (+ (- y 3) 3))) (+ (/ (* x 2) 2) (+ (* z 0) (+ (- y 3) 3)))) 
+
+
+% (* (+ (/ (* x 2) 2) y) (+ (/ (* x 2) 2) y))
+
 \begin{document}
 
 \input{slides/deckblatt.tex}
 
-%\input{slides/ueberblick.tex}
+\input{slides/ueberblick.tex}
 
 \input{slides/einleitung.tex}
 

@@ -468,7 +468,7 @@ def equality_saturation(rules, eterm_id, egraph):
     timeout = 0
     if not egraph.is_saturated:
         debug_information.append(["Cost model: ['+'|'-'|'<<'|'>>']: 1, ['*']: 2, ['/']: 3, [other]: 0", egraph.egraph_to_dot()])
-        while True and timeout < 5:
+        while True and timeout < 3:
             v = egraph.version
             timeout += 1
             best_term = _extract_term(eterm_id, egraph)

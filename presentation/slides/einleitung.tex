@@ -2,41 +2,81 @@
 \section{Einleitung}
 
 \begin{frame}{Einleitung}
-    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+    \begin{center}
+        \textbf{Wie kommen wir von links nach rechts?}
+    \end{center}\vspace{5mm}
 
-        \column{.45\textwidth} % Left column and width
-        \textbf{Mandelbrot-Menge $\mathbb{M}$}
-        \begin{itemize}
-            \item 1979 durch Benoît Mandelbrot entdeckt
-            \item Teilmenge der komplexen Zahlen
-            \item Fraktal                           %(unendlich detailliert bei Vergrößerung) -> Bei Grafischer Darstellung
-            \begin{itemize}
-                \item selbstähnlich                 %(nicht strikt selbstähnlich)
-            \end{itemize}
-        \end{itemize}
+    \begin{tcbitemize}[raster equal height=rows, raster columns=3, raster column skip = 1.5cm,
+        raster every box/.style={size=small,valign=center,halign=center,colframe=white,colback=white}]
+        \tcbitem {\Large $\left(\frac{x \cdot 2}{2} + x \cdot \frac{y - 3 + 3 + z \cdot 0}{x}\right)^2$ }
+        \tcbitem \begin{tikzpicture}
+            \draw[line width=10mm, -{Stealth[length=4mm, open, round]}, black, thick] (0,0) -- (2,0);
+        \end{tikzpicture}
+        \tcbitem {\Large $(x + y)^2$ }  
+    \end{tcbitemize}\vspace{5mm}
 
-        \column{.5\textwidth} % Right column and width
-        %\includegraphics[scale=0.045]{utils/Fig1_color_pil.jpg}
-        % \includegraphics[scale=0.36]{../Code/Mandelbrot_blackwhite/blackwhite_zoom2.png}
-    \end{columns}
+    % {\Large $\left(\frac{(x \cdot 2)}{2} + x \cdot \frac{(y - 3 + 3 + z \cdot 0)}{x}\right)^2$ } \hspace{7mm}
+    % \begin{tikzpicture}
+    %     \draw[line width=10mm, -{Stealth[length=4mm, open, round]}, black, thick] (0,0) -- (2,0);
+    % \end{tikzpicture}\hspace{26mm} {\Large $(x + y)^2$ }    
 \end{frame}
 
+\begin{frame}{Rewrite Rules}
+    \textbf{Benutzen einer Rewrite Rule}: \vspace{5mm}
 
-% Eigenschaften der Mandelbromenge
-\begin{frame}{Eigenschaften der Mandelbrotmenge}
-    \textbf{Verwendung:}
-    \begin{itemize}
-        \item computergenerierte Kunst
-        \item mathematischer Forschungsgegenstand % Gegenstand mathematischer Forschung
-    \end{itemize} \vspace{0.3cm}
+    \begin{tcbitemize}[raster equal height=rows, raster columns=3,
+        raster every box/.style={size=small,valign=center,halign=center,colframe=white,colback=white}]
+        \tcbitem
+        \tcbitem {\Large\color{red-500} $a \cdot 0 \Leftrightarrow 0$ }
+        \tcbitem 
+    \end{tcbitemize}\vspace{5mm}
     \pause
-    \textbf{Forschungsstand:} 
-    \begin{itemize}
-        \item global zusammenhängen (d.h. ohne Inseln)
-        \begin{itemize}
-            \item lokaler Zusammenhang vermutet ("`MLC-Vermutung"')  \cite{Mandelbrot2004}
-        \end{itemize}
-        \item Numerische Schätzung des \textit{Flächeninhalts}: $1,5052$ \cite{Andreadis2015}
-        \item Besitzt eine \textit{fraktale Dimension} von $D=2$ (Hausdorffdimension) \cite{Shishikura1998}
-    \end{itemize}
+
+    \begin{tcbitemize}[raster equal height=rows, raster columns=3,
+        raster every box/.style={size=small,valign=center,halign=center,colframe=white,colback=white}]
+        \tcbitem {\Large $x + \eqnmarkbox[red]{node5}{y \cdot 0}$ } 
+        \annotate[yshift=-1.5em]{below,right}{node5}{Anwenden der Regel} 
+    \tcbitem\begin{tikzpicture}
+        \draw[line width=10mm, -{Stealth[length=4mm, open, round]}, black, thick] (0,0) -- (2,0);
+    \end{tikzpicture}
+        \tcbitem {\Large $x$}
+    \end{tcbitemize}
+\end{frame}
+
+\begin{frame}{Naiver Algorithmus}
+
+    \begin{algorithm}[H]
+        \caption{Naiver Algorithmus zur Optimierung von Ausdrücken}\label{alg:ausdruck1}
+        \begin{algorithmic}
+          \Function{optimize\_expression}{expression}
+          \State rules $\gets$ [\ldots]
+          
+          \While{old\_expression $\neq$ expression}
+            \State old\_expression $\gets$ expression
+      
+            \For{rule in rules}
+              \If{match(expression, rule)}
+              \State apply(expression, rule)
+              \EndIf
+            \EndFor
+          \EndWhile
+      
+          \State \Return expression
+          \EndFunction
+        \end{algorithmic}
+      \end{algorithm}
+   
+\end{frame}
+
+\begin{frame}{Problem}
+
+    \begin{center}
+        {\Large $\left(\eqnmarkbox[red]{node5}{\frac{x \cdot 2}{2}} + x \cdot \frac{y - 3 + 3 + z \cdot 0}{x}\right)^2$ }\vspace{7mm}
+    \end{center}
+
+    \begin{tcbitemize}[raster equal height=rows, raster columns=2,
+        raster every box/.style={size=small,valign=center,halign=center,colframe=white,colback=white}]
+        \tcbitem {\Large $\frac{x\; \ll \;1}{2}$}
+        \tcbitem {\Large $x$}
+    \end{tcbitemize}
 \end{frame}
