@@ -4,6 +4,9 @@
 \documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
 \usetheme{SimplePlus}
 
+\usepackage[backend=biber,style=numeric,citestyle=ieee]{biblatex}
+\addbibresource{refs.bib}
+
 \usepackage{hyperref}
 \usepackage{color}
 \usepackage{graphicx} % Allows including images
@@ -32,6 +35,11 @@
 \usepackage{bootstrapcolors}
 
 \usepackage{annotate-equations}
+
+\setbeamertemplate{caption}[numbered]
+
+\usepackage{caption}
+\captionsetup{width=0.9\textwidth,labelfont=bf,font=small}
 
 \usepackage{algpseudocodex}
 \algrenewcommand\algorithmicfunction{\textbf{Funktion}}
