@@ -1,0 +1,47 @@
+@startuml components
+
+<style>
+.legende {
+ LineStyle 2
+}
+</style>
+
+skinparam Nodesep 5 
+skinparam Ranksep 1
+skinparam padding 1
+
+footer Einige Dateien ausgelassen
+
+title Komponenten der Anwendung
+
+allowmixing
+
+together {
+    frame Weboberfläche #LightBlue {
+        file "index.html" as index
+        file "index.js" as javascript
+        component "dokumentation" as docs
+    }
+    frame Server #LightBlue{
+        file [ server.py ] as server
+    }
+    frame Service #LightBlue {
+        class EGraphService
+    }
+    frame E-Graph #LightBlue {
+        together {
+            class EGraph
+            class ENode
+            class AbstractSyntaxTreeNode
+        }
+        together {
+            class EClass 
+            class AbstractSyntaxTree
+            class RewriteRule
+        }
+    }
+}
+
+hide members
+
+@enduml
