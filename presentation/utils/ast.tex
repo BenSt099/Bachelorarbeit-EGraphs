@@ -1,0 +1,23 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\begin{document}
+\begin{tikzpicture}[level distance=8mm, level 1/.style={sibling distance=1cm},
+    level 2/.style={sibling distance=0.8cm},
+    level 3/.style={sibling distance=0.3cm}]
+    \node {ASTNode}
+          child {  node {ASTNode} 
+            child { child { node{ASTNode} child { node {.}}
+            child { node [text=purple]{\textbf{a}}}
+            child { node {.}} }}
+            child { node [text=purple]{\textbf{*}}}
+            child { child { node{ASTNode} child { node {.}}
+            child { node [text=purple]{\textbf{2}}}
+            child { node {.}} }}  }
+          child {  node [text=purple]{\textbf{/}}}
+          child {  node {ASTNode}
+          child { node {.}}
+          child { node [text=purple]{\textbf{2}}}
+          child { node {.}}};
+    \end{tikzpicture}
+\end{document}

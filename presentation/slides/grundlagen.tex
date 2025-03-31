@@ -121,11 +121,11 @@ Der \textit{E-Graph} als Datenstruktur für Abbildung~\ref{fig:egraphexp}: \vspa
 
 \begin{frame}{Equality Saturation}
     \begin{algorithm}[H]
-        \caption{Traditioneller Equality Saturation Workflow nach~\cite{2021-egg}}\label{alg:eqsat}
+        \caption{Traditioneller Equality Saturation Workflow nach~\cite{2021-egg}}\label{alg:eqsat} % \cite{2021-egg} ~\footcite{2021-egg}
         \begin{algorithmic}
           \Function{eqsat}{expr, rewrites}
           \State egraph $\gets$ initial\_egraph(expr)
-          
+            
           \While{$\mathbf{not}$ egraph.is\_saturated\_or\_timeout()}
             
             \For{rw in rewrites}
