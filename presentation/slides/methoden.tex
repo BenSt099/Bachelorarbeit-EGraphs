@@ -36,18 +36,56 @@
 \end{frame}
 
 \begin{frame}{Ablauf (1)}
+    \begin{tcbitemize}[raster equal height=rows, raster columns=3, raster column skip = 1.5cm,
+        raster every box/.style={size=small,valign=center,halign=center,colframe=white,colback=white}]
+        \tcbitem {\Large $\left(\frac{x \cdot 2}{2} + x \cdot \frac{y - 3 + 3 + z \cdot 0}{x}\right)^2$ }
+        \tcbitem \begin{tikzpicture}
+            \draw[line width=10mm, -{Stealth[length=4mm, open, round]}, black, thick] (0,0) -- (2,0);
+        \end{tikzpicture}
+        \tcbitem {\Large $(x + y)^2$ }  
+    \end{tcbitemize}\vspace{5mm}
+\end{frame}
+
+\begin{frame}{Ablauf (2): AST}
     \begin{figure}[H]
         \centering
         \includegraphics[scale=1.4]{utils/ast.pdf}
-        \caption{Abstract Syntax Tree des Ausdrucks $(a \cdot 2) / 2$}
+        \caption{\textbf{A}bstract \textbf{S}yntax \textbf{T}ree des Teilausdrucks $(x \cdot 2) / 2$}
         \label{fig:komponenten}
     \end{figure}
 \end{frame}
 
-\begin{frame}{Ablauf (2)}
-    
+\begin{frame}{Ablauf (3): Add}
+    %% add - Code
+    \begin{columns}[c]
+        \column{.6\textwidth}
+            
+            
+        \column{.4\textwidth}
+            \includegraphics[scale=1]{utils/ast.pdf}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{Ablauf (3)}
-    
+\begin{frame}{Ablauf (4): Saturate}
+    %% Eqsat - Code
+\end{frame}
+
+\begin{frame}{Ablauf (4): Extract}
+    \begin{columns}[c]
+        \column{.6\textwidth}
+            \textbf{Kostenfunktion}:
+            \begin{itemize}
+                \item Operatoren: \begin{itemize}
+                    \item $+, -, \ll, \gg$: \colorbox{blue-300}{1}
+                    \item $*$: \colorbox{blue-300}{2}
+                    \item $/$: \colorbox{blue-300}{3}
+                \end{itemize}
+                \item E-Node ohne Operatoren: \colorbox{blue-300}{0}
+                \item E-Node mit Operatoren: \colorbox{blue-300}{Operator + Kosten der Kinder}
+                \item E-Class: \colorbox{blue-300}{Kind mit Minimum der Kosten}
+            \end{itemize}
+            
+        \column{.4\textwidth}
+            %\includegraphics[scale=1]{utils/ast.pdf}
+    \end{columns}
 \end{frame}

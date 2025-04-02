@@ -78,7 +78,6 @@ class EGraph:
         self.m = {}
         self.h = {}
         self.pending = []
-        self.version = 0
         self.str_repr = ""
         self.is_saturated = False
 
@@ -107,15 +106,12 @@ class EGraph:
                 e_node.arguments = [self._find(arg) for arg in e_node.arguments]
                 if e_node.key == enode.key and e_node.arguments == enode.arguments:
                     return self.h[e_node]
-
-            self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
                 self.m[child].parents.add((enode, eclass_id))
             self.h[enode] = eclass_id
             return eclass_id
         else:
-            self.version += 1
             eclass_id = self._new_singleton_eclass(enode)
             for child in enode.arguments:
                 self.m[child].parents.add((enode, eclass_id))
@@ -161,7 +157,6 @@ class EGraph:
         """Merges two E-Classes in u via their IDs and returns the new root ID."""
         if self._find(eclass_id1) == self._find(eclass_id2):
             return self._find(eclass_id1)
-        self.version += 1
         self.u.merge(eclass_id1, eclass_id2)
         new_id = self._find(eclass_id1)
         self.pending.append(new_id)
@@ -465,23 +460,23 @@ def equality_saturation(rules, eterm_id, egraph):
     """
     debug_information = []
     best_term = ""
-    timeout = 0
+    old_term = best_term
     if not egraph.is_saturated:
         debug_information.append(["Cost model: ['+'|'-'|'<<'|'>>']: 1, ['*']: 2, ['/']: 3, [other]: 0", egraph.egraph_to_dot()])
-        while True and timeout < 3:
-            v = egraph.version
-            timeout += 1
+        while True:
             best_term = _extract_term(eterm_id, egraph)
+            if old_term == best_term:
+                break
+            old_term = best_term
             debug_information.append(["Best Term: " + best_term, egraph.egraph_to_dot()])
             egraph, debug_output = apply_rules(rules, egraph)
             for debug_info in debug_output:
                 debug_information.append(debug_info)
-            if v == egraph.version:
-                break
+           
     return egraph, debug_information, best_term
 
 
-def equality_saturation_no_extract(rules, egraph):
+def equality_saturation_no_extract(rules, eterm_id, egraph):
     """Performs equality saturation without extraction.
 
     (DISCLAIMER)
@@ -489,16 +484,18 @@ def equality_saturation_no_extract(rules, egraph):
     please see the implementation section in the module's docstring.
     """
     debug_information = []
-    timeout = 0
+    best_term = ""
+    old_term = best_term
     if not egraph.is_saturated:
-        while True and timeout < 5:
-            timeout += 1
-            v = egraph.version
+        while True:
+            best_term = _extract_term(eterm_id, egraph)
+            if old_term == best_term:
+                break
+            old_term = best_term
             egraph, debug_output = apply_rules(rules, egraph)
             for debug_info in debug_output:
                 debug_information.append(debug_info)
-            if v == egraph.version:
-                break
+            
     return egraph, debug_information
 
 
@@ -517,7 +514,8 @@ def apply_rules(rules, egraph):
             debug_info.append(["No MATCH for rule: " + str(rule), egraph.egraph_to_dot()])
         else:
             for eclass_id, environment in egraph._ematch(eclasses, rule.expr_lhs.root_node):
-                list_of_matches.append((rule, eclass_id, environment))
+                if environment:
+                    list_of_matches.append((rule, eclass_id, environment))
     for rule, eclass_id, environment in list_of_matches:
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
         if eclass_id != new_eclass_id:

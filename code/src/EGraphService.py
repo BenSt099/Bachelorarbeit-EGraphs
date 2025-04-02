@@ -149,7 +149,7 @@ class EGraphService:
         :return: True if successful, False otherwise.
         """
         return export_egraph_to_file(
-            self.get_current_egraph()[1], str(os.getcwd()), extension=extension_format
+            self.get_current_egraph()[2][1], str(os.getcwd()), extension=extension_format
         )
 
     def get_all_rules(self):
@@ -198,7 +198,7 @@ class EGraphService:
         :return: bool, str (if action is successful, status msg)
         """
         egraph, debug_information = equality_saturation_no_extract(
-            list(self.dict_of_rules.values()), self.egraph[0]
+            list(self.dict_of_rules.values()), self.egraph[1], self.egraph[0]
         )
         self.egraphs.append(debug_information)
         self.egraph = (egraph, self.egraph[1])

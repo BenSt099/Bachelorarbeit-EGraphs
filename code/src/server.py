@@ -4,7 +4,7 @@ Paths:
     - ``/getrules``: GET
     - ``/addrule``: POST
     - ``/applyrule``: POST
-    - ``/applyallrandomly``: POST
+    - ``/applyallrules``: POST
     - ``/downloadrules``: POST
     - ``/uploadrules``: POST
     - ``/createegraph``: POST
