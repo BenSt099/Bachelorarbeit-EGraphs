@@ -34,6 +34,33 @@
 
 \usepackage{bootstrapcolors}
 
+\usepackage{listings}
+\usepackage{algorithmicx}
+
+\lstdefinestyle{codestyleBA}{
+    backgroundcolor=\color{white},   
+    commentstyle=\color{red-500},
+    keywordstyle=\color{blue-500},
+    numberstyle=\tiny\color{black},
+    stringstyle=\color{green-500},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    postbreak=\mbox{\textcolor{black}{$\hookrightarrow$}\space},
+    literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"{A}}}1 {Ö}{{\"{O}}}1 {Ü}{{\"{U}}}1 {ß}{{\ss}}1,
+}
+
+\lstset{style=codestyleBA}
+\usepackage{minted}
+
 \usepackage{annotate-equations}
 
 \setbeamertemplate{caption}[numbered]
@@ -45,6 +72,14 @@
 \algrenewcommand\algorithmicfunction{\textbf{Funktion}}
 \usepackage{algorithm}
 \floatname{algorithm}{Algorithmus}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%       pdflatex -shell-escape master.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
