@@ -1,87 +1,109 @@
 \EnableTitleSlide
 \section{Ergebnisse \& Diskussion}
 
-\begin{frame}{Ergebnisse}
-    
+\begin{frame}[fragile]{Komplikationen während der Entwicklung}
+    \begin{enumerate}
+        \item \onslide<1->{\textbf{Kombination zweier Implementierungen}}
+        
+        \only{
+            \vspace{8mm}
+            \begin{center}
+                \includegraphics[scale=0.75]{utils/colabegg.png}
+            \end{center}
+        }<1>
+
+        \item \onslide<2->{\textbf{Darstellung der Datenstruktur}}
+        
+        \only{
+            \vspace{2mm}
+            \begin{center}
+                \includegraphics[scale=0.4]{utils/egraph_exp.png}
+            \end{center}
+        }<2>
+
+        \begin{onlyenv}<3>
+            \vspace{3mm}
+            \begin{center}
+\begin{minted}[fontsize=\small]{python}    
+def egraph_to_dot(self, nodesep=0.5, ranksep=0.5, marked_eclasses = []):
+    dot_commands = [
+        "digraph parent { graph [compound=true, nodesep=" + str(nodesep)
+        + ", ranksep=" + str(ranksep) + "]\n" + """node [fillcolor=white 
+        fontname=\"Times-Bold\" fontsize=20 shape=record style=\"rounded, 
+        filled\"]\n"""
+    ]
+    # ... insgesamt 106 Zeilen lang
+    return "".join(dot_commands)
+\end{minted}
+        \end{center}
+        \end{onlyenv}
+
+        \item \onslide<4->{\textbf{Spezialfall: Kreis im E-Graph}}
+        
+        \only<4>{\vspace{3mm}\begin{center}\includegraphics[scale=0.3]{utils/loop.png}\end{center}}
+        
+\begin{onlyenv}<5>
+    \vspace{3mm}
+    \begin{center}
+\begin{minted}[fontsize=\small]{python}    
+def equality_saturation(rules, eterm_id, egraph):
+    #
+    while True and timeout < 3:
+        v = egraph.version
+        timeout += 1
+        #
+        if v == egraph.version:
+            break
+\end{minted}
+\end{center}
+\end{onlyenv}
+
+\begin{onlyenv}<6>
+    \vspace{3mm}
+    \begin{center}
+\begin{minted}[fontsize=\small]{python}    
+def equality_saturation(rules, eterm_id, egraph):
+    #
+    while True:
+        best_term = _extract_term(eterm_id, egraph)
+        if old_term == best_term:
+            break
+        old_term = best_term
+        #  
+\end{minted}
+\end{center}
+\end{onlyenv}
+        
+        \item \onslide<7->{\textbf{Pfadangabe im Server}}
+        
+\begin{onlyenv}<8>
+    \vspace{3mm}
+    \begin{center}
+\begin{minted}[fontsize=\small]{python}    
+app.mount("/", 
+StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True),
+    name="static"
+) # https://github.com/fastapi/fastapi/issues/3550
+\end{minted}
+\end{center}
+\end{onlyenv}
+
+    \end{enumerate}
 \end{frame}
 
+\begin{frame}{Ergebnisse}
+    \begin{itemize}
+        \item funktionstüchtige Anwendung
+        \item plattformunabhängig
+        \item getestet
+    \end{itemize}
+\end{frame}
 
-% Abb. zur Entwicklung der MM
-%\begin{frame}{Approximation der Mandelbrotmenge \only<1>{$i=2$}\only<2>{$i=5$}\only<3>{$i=10$}\only<4>{$i=15$}\only<5>{$i=20$}\only<6>{$i=40$}}
-%    \centering
-    % \includegraphics<1>[width=0.7\linewidth]{../Code/Mandelbrot_blackwhite/Fig1_blackwhite.pdf}
-    % \includegraphics<2>[width=0.7\linewidth]{../Code/Mandelbrot_blackwhite/Fig2_blackwhite.pdf}
-    % \includegraphics<3>[width=0.7\linewidth]{../Code/Mandelbrot_blackwhite/Fig3_blackwhite.pdf}
-    % \includegraphics<4>[width=0.7\linewidth]{../Code/Mandelbrot_blackwhite/Fig4_blackwhite.pdf}
-    % \includegraphics<5>[width=0.7\linewidth]{../Code/Mandelbrot_blackwhite/Fig5_blackwhite.pdf}
-    % \includegraphics<6>[width=0.7\linewidth]{../Code/Mandelbrot_blackwhite/Fig6_blackwhite.pdf}
-    %  \only<7->{
-    %     \begin{figure}[H]
-    %         \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=0.82\linewidth]{../Code/Mandelbrot_blackwhite/Fig1_blackwhite.pdf}
-    %         \caption{2 Iterationen}
-    %         \label{fig:blackwhite1}
-    %         \end{subfigure} \hspace{-1.78cm}
-    %         \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=0.82\linewidth]{../Code/Mandelbrot_blackwhite/Fig2_blackwhite.pdf}
-    %         \caption{5 Iterationen}
-    %         \label{fig:blackwhite2}
-    %         \end{subfigure} \hspace{-1.78cm}
-    %         \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=0.82\linewidth]{../Code/Mandelbrot_blackwhite/Fig3_blackwhite.pdf}
-    %         \caption{10 Iterationen}
-    %         \label{fig:blackwhite3}
-    %         \end{subfigure}
-
-    %         \vspace{-0.3cm} \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=0.82\linewidth]{../Code/Mandelbrot_blackwhite/Fig4_blackwhite.pdf}
-    %         \caption{15 Iterationen}
-    %         \label{fig:blackwhite4}
-    %         \end{subfigure} \hspace{-1.78cm}
-    %         \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=0.82\linewidth]{../Code/Mandelbrot_blackwhite/Fig5_blackwhite.pdf}
-    %         \caption{20 Iterationen}
-    %         \label{fig:blackwhite5}
-    %         \end{subfigure} \hspace{-1.78cm}
-    %         \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=0.82\linewidth]{../Code/Mandelbrot_blackwhite/Fig6_blackwhite.pdf}
-    %         \caption{40 Iterationen}
-    %         \label{fig:blackwhite6}
-    %         \end{subfigure}
-    %     \end{figure}
-    %  }
-%\end{frame}
-
-
-% \captionsetup{font=scriptsize}
-% \begin{frame}{Verschiedene Ausschnitte: Teil 1}
-%   \begin{figure}[H]
-%     \begin{subfigure}{.32\textwidth}
-%     \centering
-%     % \includegraphics[width=0.9\linewidth]{../Code/Mandelbrot_regions/Region1_2.jpg}
-%     \caption{\parbox{0.8\textwidth}{$\text{ m}=-0.733+0.2395i$ \\ 
-%     \hspace*{0.52em}$\text{i }=200$ \\
-%     \hspace*{0.43em}$\text{t}\hspace{1.5pt}\approx39.5~s$}}
-%     \end{subfigure} 
-%     \begin{subfigure}{.32\textwidth}
-%     \centering
-%     % \includegraphics[width=0.9\linewidth]{../Code/Mandelbrot_regions/Region3_2.jpg}
-%     \caption{\parbox{0.8\textwidth}{$\text{ m}=-0.7410277+0.1570681i$ \\ 
-%     \hspace*{0.52em}$\text{i }=400$ \\
-%     \hspace*{0.43em}$\text{t}\hspace{1.5pt}\approx68.7~s$}}
-%     \end{subfigure} 
-%     \begin{subfigure}{.32\textwidth}
-%     \centering
-%     % \includegraphics[width=0.9\linewidth]{../Code/Mandelbrot_regions/Region7_1.jpg}
-%     \caption{\parbox{0.8\textwidth}{$\text{ m}=-0.4604+0.5612i$ \\ 
-%     \hspace*{0.52em}$\text{i }=200$ \\
-%     \hspace*{0.43em}$\text{t}\hspace{1.5pt}\approx63.9~s$}}
-%     \end{subfigure}
-%   \end{figure}
-% \end{frame}
+\begin{frame}{Erweiterungen}
+    \begin{enumerate}
+        \item \textbf{Erweitertes Testing}
+        \item \textbf{Erstellung von E-Graphs visualisieren}
+        \item \textbf{Abindung an egg}
+        \item \textbf{E-Class Analysis}
+    \end{enumerate}
+\end{frame}
