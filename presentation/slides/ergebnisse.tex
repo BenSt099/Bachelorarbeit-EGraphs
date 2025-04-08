@@ -92,18 +92,59 @@ StaticFiles(directory=realpath(f"{realpath(__file__)}/../static"), html=True),
 \end{frame}
 
 \begin{frame}{Ergebnisse}
-    \begin{itemize}
+    \begin{enumerate}
         \item funktionstüchtige Anwendung
-        \item plattformunabhängig
-        \item getestet
-    \end{itemize}
+        \item plattformunabhängig \& getestet
+        \item basiert ausschließlich auf Open-Source-Software
+        \item erfüllt Anforderungen des Exposés~\cite{expose}:
+        \begin{itemize}
+            \item Benutzeroberfläche im Browser
+            \item Erzeugen \& Visualisieren von E-Graphs
+            \item Erstellen \& Anwenden von rewrite rules, vordefinierte rewrite rules
+            \item Debugging-Feature
+            \item Extraktion des optimalen Terms
+            \item Export des E-Graphs in gängige Formate
+            \item Eingaben als Session abspeichern
+            \item Dokumentation
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Qualität der Software}
+    nach ISO/OEC 20510:2011 Standard:\vspace{4mm}
+
+    \begin{enumerate}
+        \bf
+        \item Übertragbarkeit
+        \item Wartbarkeit
+        \item Sicherheit
+        \item Zuverlässigkeit
+        \item Funktionale Eignung
+        \item Performance
+        \item Kompatibilität
+        \item Benutzbarkeit
+    \end{enumerate}
 \end{frame}
 
 \begin{frame}{Erweiterungen}
     \begin{enumerate}
         \item \textbf{Erweitertes Testing}
+        \begin{itemize}
+            \item Vergleichsmethode: eigene Implementierung vs. egg 
+        \end{itemize}
         \item \textbf{Erstellung von E-Graphs visualisieren}
+        \begin{itemize}
+            \item schrittweises Darstellung vom Aufbauprozess (AST zu E-Graph) 
+        \end{itemize}
         \item \textbf{Abindung an egg}
+        \begin{itemize}
+            \item Benutzer kann zwischen eigener Implementierung und egg als Backend wählen
+            \item benötigt Methoden in Rust
+        \end{itemize}
         \item \textbf{E-Class Analysis}
+        \begin{itemize}
+            \item Conditional and Dynamic Rewrites
+            \item Constant Folding
+        \end{itemize}
     \end{enumerate}
 \end{frame}
