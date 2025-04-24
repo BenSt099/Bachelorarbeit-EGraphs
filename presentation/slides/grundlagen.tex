@@ -19,7 +19,7 @@
     \tcbitem\begin{tikzpicture}
         \draw[line width=10mm, -{Stealth[length=4mm, open, round]}, black, thick] (0,0) -- (2,0);
     \end{tikzpicture}
-        \tcbitem {\Large $x$}
+        \tcbitem {\Large $x + 0$}
     \end{tcbitemize}
 \end{frame}
 
@@ -113,9 +113,10 @@
 Der \textit{E-Graph} als Datenstruktur für Abbildung~\ref{fig:egraphexp}: \vspace{5mm}
 
 \begin{itemize}
-  \item $\mathbf{U}$: \{ID1\}, \{ID2\}, \{ID3\}, \{ID4, ID5\} 
-  \item $\mathbf{M}$: $ID1 \rightarrow EClass(\ldots)$, $ID2 \rightarrow EClass(\ldots)$, $ID3 \rightarrow EClass(\ldots)$, \ldots 
-  \item $\mathbf{H}$: $/ \rightarrow ID1$, $* \rightarrow ID2$, $2 \rightarrow ID3$, $a \rightarrow ID4$, $b \rightarrow ID5$
+\setlength\itemsep{1em}
+  \item $\mathbf{U}$: \{ID1\}, \;\; \{ID2\}, \;\; \{ID3\}, \;\; \{ID4, ID5\} 
+  \item $\mathbf{M}$: \\ $ID1 \rightarrow EClass(\ldots)$, \\ $ID2 \rightarrow EClass(\ldots)$, \\ $ID3 \rightarrow EClass(\ldots)$, \ldots 
+  \item $\mathbf{H}$: \\ $/ \rightarrow ID1$, \\ $* \rightarrow ID2$, \\ $2 \rightarrow ID3$, \\ $a \rightarrow ID4$, \\ $b \rightarrow ID5$
 \end{itemize}
 \end{frame}
 

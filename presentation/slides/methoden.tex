@@ -28,15 +28,39 @@
 \end{frame}
 
 \begin{frame}{Anwendung (1)}
-    
+    \begin{center}
+        \includegraphics[scale=0.3]{utils/anwendung/anwendung1.png}
+    \end{center}
 \end{frame}
 
 \begin{frame}{Anwendung (2)}
-    
+    \begin{center}
+        \includegraphics[scale=0.3]{utils/anwendung/anwendung2.png}
+    \end{center}
 \end{frame}
 
 \begin{frame}{Anwendung (3)}
-    
+    \begin{center}
+        \includegraphics[scale=0.3]{utils/anwendung/anwendung3.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Anwendung (4)}
+    \begin{center}
+        \includegraphics[scale=0.3]{utils/anwendung/anwendung4.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Anwendung (5)}
+    \begin{center}
+        \includegraphics[scale=0.3]{utils/anwendung/anwendung5.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Docs}
+    \begin{center}
+        \includegraphics[scale=0.3]{utils/anwendung/docs.png}
+    \end{center}
 \end{frame}
 
 \begin{frame}{Aufbau}
@@ -110,8 +134,7 @@ def apply_rules(rules, egraph):
         new_eclass_id = egraph._substitute(rule.expr_rhs.root_node, environment)
         egraph.merge(eclass_id, new_eclass_id)
         
-    if egraph.pending:
-        egraph.rebuild()
+    egraph.rebuild()
 \end{minted}
 \end{frame}
 
